@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { t } from '@/utils/localisation'; // Team note: All user-facing text must be localised.
+import { Button } from './Button'; // Team note: Use the shared SHADCN Button for consistency.
 
 type ViewPreset = 'top' | 'front' | 'side' | 'corner';
 
@@ -21,23 +23,21 @@ export const ViewControls = () => {
     { id: 'side', label: 'Side View' },
   ];
   
+  // Team note: Styled with SHADCN/Tailwind for modern, accessible UI. All text is localised.
   return (
-    <div className="view-controls p-4 bg-white rounded shadow-md">
-      <h2 className="text-xl font-bold mb-4">Camera Views</h2>
-      
+    <div className="p-4 bg-white rounded shadow mb-4">
+      <h2 className="text-lg font-semibold mb-4">{t('viewControls.title')}</h2>
       <div className="grid grid-cols-2 gap-2">
         {views.map((view) => (
-          <button
+          <Button
             key={view.id}
             onClick={() => handleViewChange(view.id)}
-            className={`py-2 px-4 rounded ${
-              activeView === view.id
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 hover:bg-gray-300'
-            }`}
+            variant={activeView === view.id ? 'default' : 'outline'}
+            className="w-full"
+            aria-label={view.label}
           >
             {view.label}
-          </button>
+          </Button>
         ))}
       </div>
     </div>

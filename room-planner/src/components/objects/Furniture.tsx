@@ -3,19 +3,28 @@ import { useFrame } from '@react-three/fiber';
 import { useDrag } from '@use-gesture/react';
 import * as THREE from 'three';
 
+import { useFurnitureStore } from '@/store/furnitureStore';
+
 interface FurnitureProps {
-  position?: [number, number, number];
+  id: string;
+  type: string;
+  position: [number, number, number];
+  rotation: number;
   size?: [number, number, number];
   color?: string;
-  name?: string;
 }
 
+// Team note: Furniture receives id and type, so it can update global state and render type-specific geometry.
 export const Furniture: React.FC<FurnitureProps> = ({
-  position = [0, 0, 0],
+  id,
+  type,
+  position,
+  rotation,
   size = [1, 1, 1],
   color = '#8B4513',
-  name = 'Furniture',
 }) => {
+  const updateFurniture = useFurnitureStore((s) => s.updateFurniture);
+
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
   const [selected, setSelected] = useState(false);
@@ -24,21 +33,20 @@ export const Furniture: React.FC<FurnitureProps> = ({
   const [dragPos, setDragPos] = useState<[number, number, number]>(position);
 
   // Gesture handler for dragging on XZ plane using @use-gesture/react
-  const bind = useDrag(({ offset: [x, y] }) => {
-    // y is used as z in 3D XZ plane
+  // Team note: On drag end, update position in global store for consistency.
+  const bind = useDrag(({ offset: [x, y], last }) => {
     setDragPos([x, 0, y]);
     if (meshRef.current) {
       meshRef.current.position.x = x;
       meshRef.current.position.z = y;
     }
+    if (last) {
+      updateFurniture(id, { position: [x, 0, y] });
+    }
   }, {
-    // Lock to XZ plane (ignore Y axis)
     axis: 'lock',
-    // Set initial position (renamed from 'initial' to 'from' in @use-gesture/react v10+)
     from: () => [dragPos[0], dragPos[2]],
-    // Bounds for dragging (example: -10 to 10)
     bounds: { left: -10, right: 10, top: -10, bottom: 10 },
-    // Only trigger on drag, not tap
     filterTaps: true,
   });
 
@@ -76,11 +84,20 @@ export const Furniture: React.FC<FurnitureProps> = ({
     }
   });
 
+  // Team note: Use different geometry for each furniture type for clarity and future extensibility.
+  let geometry = <boxGeometry args={size} />;
+  if (type === 'chair') geometry = <cylinderGeometry args={[0.4, 0.4, 1, 16]} />;
+  if (type === 'table') geometry = <boxGeometry args={[1.2, 0.1, 0.8]} />;
+  if (type === 'sofa') geometry = <boxGeometry args={[1.5, 0.6, 0.7]} />;
+  if (type === 'bed') geometry = <boxGeometry args={[2, 0.3, 1]} />;
+  if (type === 'wardrobe') geometry = <boxGeometry args={[1, 2, 0.5]} />;
+
   return (
     <mesh
       ref={meshRef}
-      position={dragPos} // Use dragPos state for mesh position
-      {...bind()} // Bind gesture handlers to mesh
+      position={dragPos}
+      rotation={[0, rotation, 0]}
+      {...bind()}
       onClick={(e) => {
         e.stopPropagation();
         setSelected(!selected);
@@ -91,7 +108,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
       }}
       onPointerOut={() => setHovered(false)}
     >
-      <boxGeometry args={size} />
+      {geometry}
       <meshStandardMaterial 
         color={hovered ? '#A67B5B' : color} 
         roughness={0.7}
@@ -99,4 +116,5 @@ export const Furniture: React.FC<FurnitureProps> = ({
       />
     </mesh>
   );
-};
+}
+;

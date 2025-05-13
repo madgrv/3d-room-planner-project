@@ -1,6 +1,8 @@
 import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useRoomStore } from '@/store/roomStore';
+import { useFurnitureStore } from '@/store/furnitureStore';
+import { Furniture } from '../objects/Furniture';
 
 export const Room = () => {
   const { dimensions } = useRoomStore();
@@ -9,12 +11,15 @@ export const Room = () => {
   // Create a reference to the mesh
   const roomRef = useRef<THREE.Group>(null);
   
-  // Optional: Animate the room
-  useFrame(() => {
-    if (roomRef.current) {
-      roomRef.current.rotation.y += 0.001;
-    }
-  });
+  // Auto-rotation disabled: Only enable if a rotation button is toggled by the user.
+  // useFrame(() => {
+  //   if (roomRef.current && rotationEnabled) {
+  //     roomRef.current.rotation.y += 0.001;
+  //   }
+  // });
+
+  // Team note: Render all furniture items from the global store. This ensures the 3D scene always reflects the current state and supports add/remove/update from UI.
+  const furniture = useFurnitureStore((s) => s.furniture);
 
   return (
     <group ref={roomRef}>
@@ -54,6 +59,17 @@ export const Room = () => {
         <planeGeometry args={[width, length]} />
         <meshStandardMaterial color="#f8f8f8" />
       </mesh>
+
+      {/* Furniture from store */}
+      {furniture.map(item => (
+        <Furniture
+          key={item.id}
+          id={item.id}
+          type={item.type}
+          position={item.position}
+          rotation={item.rotation}
+        />
+      ))}
     </group>
   );
 };

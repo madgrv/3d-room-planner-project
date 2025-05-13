@@ -1,0 +1,27 @@
+0 verbose cli /usr/bin/node /usr/lib/node_modules/npm/bin/npm-cli.js
+1 info using npm@10.8.2
+2 info using node@v20.19.1
+3 silly config load:file:/usr/lib/node_modules/npm/npmrc
+4 silly config load:file:/home/user/room-planner/.npmrc
+5 silly config load:file:/home/user/.npmrc
+6 silly config load:file:/usr/etc/npmrc
+7 verbose title npm exec tailwindcss init -p
+8 verbose argv "exec" "--" "tailwindcss" "init" "-p"
+9 verbose logfile logs-max:10 dir:/home/user/.npm/_logs/2025-05-13T18_10_29_547Z-
+10 verbose logfile /home/user/.npm/_logs/2025-05-13T18_10_29_547Z-debug-0.log
+11 silly logfile done cleaning log files
+12 silly packumentCache heap:530317312 maxSize:132579328 maxEntrySize:66289664
+13 verbose stack Error: could not determine executable to run
+13 verbose stack     at getBinFromManifest (/usr/lib/node_modules/npm/node_modules/libnpmexec/lib/get-bin-from-manifest.js:17:23)
+13 verbose stack     at exec (/usr/lib/node_modules/npm/node_modules/libnpmexec/lib/index.js:202:15)
+13 verbose stack     at async Npm.exec (/usr/lib/node_modules/npm/lib/npm.js:207:9)
+13 verbose stack     at async module.exports (/usr/lib/node_modules/npm/lib/cli/entry.js:74:5)
+14 verbose pkgid tailwindcss@4.1.6
+15 error could not determine executable to run
+16 verbose cwd /home/user/room-planner
+17 verbose os Linux 6.1.102
+18 verbose node v20.19.1
+19 verbose npm  v10.8.2
+20 verbose exit 1
+21 verbose code 1
+22 error A complete log of this run can be found in: /home/user/.npm/_logs/2025-05-13T18_10_29_547Z-debug-0.log

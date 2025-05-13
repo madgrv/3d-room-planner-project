@@ -1,0 +1,33 @@
+{
+  "roomPlannerTitle": "3D Room Planner",
+  "roomControls": {
+    "widthLabel": "Width (m)",
+    "lengthLabel": "Length (m)",
+    "heightLabel": "Height (m)",
+    "applyButton": "Apply"
+  },
+  "viewControls": {
+    "cameraViews": "Camera Views",
+    "corner": "3D View",
+    "top": "Top View",
+    "front": "Front View",
+    "side": "Side View"
+  },
+  "themeSwitcher": {
+    "toggleLabel": "Toggle theme",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode"
+  },
+  "furnitureControls": {
+    "title": "Furniture",
+    "addLabel": "Add furniture",
+    "typeLabel": "Type",
+    "removeLabel": "Remove",
+    "selectType": "Select furniture type...",
+    "chair": "Chair",
+    "table": "Table",
+    "sofa": "Sofa",
+    "bed": "Bed",
+    "wardrobe": "Wardrobe"
+  }
+}

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useRoomStore } from '@/store/roomStore';
-import { t } from '@/utils/localisation'; // Team note: All user-facing text must be localised.
-import { Button } from './Button'; // Team note: Use the shared SHADCN Button for consistency.
+import { Button } from './Button';
+import { useLanguage } from '@/lang';
 
 export const RoomControls = () => {
+  const { lang } = useLanguage();
   const { dimensions, setDimensions } = useRoomStore();
   const [width, setWidth] = useState(dimensions.width);
   const [length, setLength] = useState(dimensions.length);
@@ -43,52 +44,69 @@ export const RoomControls = () => {
     setDimensions({ width, length, height });
   };
 
+  // Common input style for consistency - matches sm button height exactly
+  const inputStyle =
+    'w-20 h-8 px-2 border rounded-[2px] focus:outline-none focus:ring focus:border-blue-400';
+
   return (
-    <div className="room-controls p-4 bg-white rounded shadow-md">
-      <h2 className="text-xl font-bold mb-4">{t('roomPlannerTitle')}</h2>
-      {/* Team note: All labels and button text below are loaded from the localisation file for maintainability and future translation. */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">{t('roomControls.widthLabel')}</label>
-        <input
-          type="number"
-          min="1"
-          max="20"
-          step="0.1"
-          value={width}
-          onChange={handleWidthChange}
-          className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
-        />
+    <div className='flex justify-between gap-2 room-controls p-2 bg-card text-card-foreground rounded-md border border-border'>
+      <h2 className='text-sm font-medium text-muted-foreground'>
+        {lang.roomControls.title}
+      </h2>
+      <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-1'>
+          <label className='block text-sm font-medium'>
+            {lang.roomControls.widthLabel}
+          </label>
+          <input
+            type='number'
+            min='1'
+            max='20'
+            step='0.1'
+            value={width}
+            onChange={handleWidthChange}
+            className={inputStyle}
+          />
+        </div>
+        <div className='flex items-center gap-1'>
+          <label className='block text-sm font-medium' htmlFor='room-length'>
+            {lang.roomControls.lengthLabel}
+          </label>
+          <input
+            id='room-length'
+            type='number'
+            min='1'
+            max='10'
+            step='0.1'
+            value={length}
+            onChange={handleLengthChange}
+            className={inputStyle}
+          />
+        </div>
+        <div className='flex items-center gap-1'>
+          <label className='block text-sm font-medium' htmlFor='room-height'>
+            {lang.roomControls.heightLabel}
+          </label>
+          <input
+            id='room-height'
+            type='number'
+            min='1'
+            max='5'
+            step='0.1'
+            value={height}
+            onChange={handleHeightChange}
+            className={inputStyle}
+          />
+        </div>
+        {/* Team note: Using the shared SHADCN Button component for consistency and reuse across the app. */}
+        <Button
+          onClick={applyChanges}
+          size='sm'
+          aria-label={lang.roomControls.applyButton}
+        >
+          {lang.roomControls.applyButton}
+        </Button>
       </div>
-      <div className="mb-3">
-        <label className="block text-sm font-medium mb-1" htmlFor="room-length">{t('roomControls.lengthLabel')}</label>
-        <input
-          id="room-length"
-          type="number"
-          min="1"
-          max="10"
-          step="0.1"
-          value={length}
-          onChange={handleLengthChange}
-          className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
-        />
-      </div>
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1" htmlFor="room-height">{t('roomControls.heightLabel')}</label>
-        <input
-          id="room-height"
-          type="number"
-          min="1"
-          max="5"
-          step="0.1"
-          value={height}
-          onChange={handleHeightChange}
-          className="w-full p-2 border rounded focus:outline-none focus:ring focus:border-blue-400"
-        />
-      </div>
-      {/* Team note: Using the shared SHADCN Button component for consistency and reuse across the app. */}
-      <Button onClick={applyChanges} className="w-full" aria-label={t('roomControls.applyButton')}>
-        {t('roomControls.applyButton')}
-      </Button>
     </div>
   );
 };

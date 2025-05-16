@@ -1,0 +1,51 @@
+// Italian language strings for the 3D Room Planner application
+// This file follows the structure defined in the English language file
+
+import en from './en';
+
+// Define the Italian language using the English file as the type definition
+const it: typeof en = {
+  code: 'it',
+  app: {
+    title: 'offCanvas',
+    subtitle: 'Pianificatore di Stanze 3D',
+  },
+  themeSwitcher: {
+    toggleLabel: 'Cambia tema',
+    lightMode: 'Tema Chiaro',
+    darkMode: 'Tema Scuro',
+  },
+  roomControls: {
+    title: 'Impostazioni Stanza',
+    widthLabel: 'Larghezza',
+    lengthLabel: 'Lunghezza',
+    heightLabel: 'Altezza',
+    applyButton: 'Applica Modifiche',
+  },
+  viewControls: {
+    title: 'Impostazioni Vista',
+    orthographicView: 'Ortografica',
+    perspectiveView: 'Prospettiva',
+    cornerView: 'Vista 3D',
+    topView: 'Vista dall\'Alto',
+    frontView: 'Vista Frontale',
+    sideView: 'Vista Laterale',
+    loading: 'Caricamento...',
+  },
+  furnitureControls: {
+    title: 'Arredamento',
+    addItem: 'Aggiungi Elemento',
+    removeItem: 'Rimuovi Elemento',
+    addLabel: 'Aggiungi',
+    removeLabel: 'Rimuovi',
+    selectType: 'Seleziona tipo',
+    noFurniture: 'Nessun arredamento aggiunto',
+    chair: 'Sedia',
+    table: 'Tavolo',
+    sofa: 'Divano',
+    bed: 'Letto',
+    wardrobe: 'Armadio',
+  },
+};
+
+export default it;

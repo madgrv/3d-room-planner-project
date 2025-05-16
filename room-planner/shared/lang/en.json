@@ -1,0 +1,27 @@
+{
+  "app": {
+    "title": "offCanvas",
+    "subtitle": "3D Room Planner"
+  },
+  "themeSwitcher": {
+    "toggleLabel": "Toggle theme",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode"
+  },
+  "roomControls": {
+    "title": "Room Settings",
+    "widthLabel": "Width",
+    "lengthLabel": "Length",
+    "heightLabel": "Height"
+  },
+  "viewControls": {
+    "title": "View Settings",
+    "orthographicView": "Orthographic",
+    "perspectiveView": "Perspective"
+  },
+  "furnitureControls": {
+    "title": "Furniture",
+    "addItem": "Add Item",
+    "removeItem": "Remove Item"
+  }
+}

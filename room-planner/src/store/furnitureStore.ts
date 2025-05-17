@@ -21,6 +21,8 @@ interface FurnitureState {
   clearSelection: () => void;
   snapEnabled: boolean;
   setSnapEnabled: (enabled: boolean) => void;
+  snapValue: number;
+  setSnapValue: (value: number) => void;
 }
 
 export const useFurnitureStore = create<FurnitureState>((set) => ({
@@ -28,6 +30,8 @@ export const useFurnitureStore = create<FurnitureState>((set) => ({
   selectedFurnitureId: null,
   snapEnabled: false,
   setSnapEnabled: (enabled) => set({ snapEnabled: enabled }),
+  snapValue: 0.5, // Default grid size of 0.5 units
+  setSnapValue: (value) => set({ snapValue: value }),
   
   // Select a specific furniture item
   selectFurniture: (id) => set({ selectedFurnitureId: id }),

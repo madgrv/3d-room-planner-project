@@ -19,9 +19,11 @@ export function BottomBar({ className = '' }: BottomBarProps) {
     'move' // Set default to 'move' so axis selector is visible
   );
   
-  // Get snap state from the furniture store
+  // Get snap state and value from the furniture store
   const snapEnabled = useFurnitureStore((state) => state.snapEnabled);
   const setSnapEnabled = useFurnitureStore((state) => state.setSnapEnabled);
+  const snapValue = useFurnitureStore((state) => state.snapValue);
+  const setSnapValue = useFurnitureStore((state) => state.setSnapValue);
 
   // Handle item selection from the outliner
   const handleSelectItem = (id: string) => {
@@ -47,6 +49,8 @@ export function BottomBar({ className = '' }: BottomBarProps) {
         snapEnabled={snapEnabled}
         onToggleSnap={handleToggleSnap}
         onChangeMode={handleModeChange}
+        snapValue={snapValue}
+        onSnapValueChange={setSnapValue}
       />
 
       {/* Main content area with Outliner Panel */}

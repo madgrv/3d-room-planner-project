@@ -4,8 +4,10 @@
 import * as React from 'react';
 import { useLanguage } from '@/lang';
 import { useFurnitureStore } from '@/store/furnitureStore';
-import { MagnifyingGlassIcon, ArrowRightIcon, ArrowUpIcon, ArrowDownIcon, MoveIcon } from '@radix-ui/react-icons';
+import { MagnifyingGlassIcon, ArrowRightIcon, ArrowUpIcon, ArrowDownIcon, MoveIcon, ChevronDownIcon } from '@radix-ui/react-icons';
 import { useViewStore } from '@/store/viewStore';
+import { Popover, PopoverContent, PopoverTrigger } from './popover';
+import { Slider } from './slider';
 
 interface StatusBarProps {
   selectedItemId: string | null;
@@ -13,6 +15,8 @@ interface StatusBarProps {
   snapEnabled?: boolean;
   onToggleSnap?: () => void;
   onChangeMode?: (mode: 'select' | 'move' | 'rotate') => void;
+  snapValue?: number;
+  onSnapValueChange?: (value: number) => void;
 }
 
 export function StatusBar({
@@ -21,6 +25,8 @@ export function StatusBar({
   snapEnabled = false,
   onToggleSnap,
   onChangeMode,
+  snapValue = 0.5,
+  onSnapValueChange,
 }: StatusBarProps) {
   const { lang } = useLanguage();
   const { furniture } = useFurnitureStore();
@@ -98,14 +104,46 @@ export function StatusBar({
           </div>
         </div>
         
-        {/* Snap toggle button */}
-        <button
-          className="flex items-center gap-1"
-          onClick={onToggleSnap}
-        >
-          <MagnifyingGlassIcon className={`h-3 w-3 ${snapEnabled ? 'text-primary' : 'text-muted-foreground'}`} />
-          <span>{snapEnabled ? lang.statusBar.snapEnabled : lang.statusBar.snapDisabled}</span>
-        </button>
+        {/* Snap toggle button with popover for snap value */}
+        <div className="flex items-center gap-2">
+          <button
+            className="flex items-center gap-1"
+            onClick={onToggleSnap}
+          >
+            <MagnifyingGlassIcon className={`h-3 w-3 ${snapEnabled ? 'text-primary' : 'text-muted-foreground'}`} />
+            <span>{snapEnabled ? lang.statusBar.snapEnabled : lang.statusBar.snapDisabled}</span>
+          </button>
+          
+          {snapEnabled && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="flex items-center gap-1 text-xs px-1 py-0.5 rounded border border-border">
+                  <span>Grid: {snapValue}</span>
+                  <ChevronDownIcon className="h-3 w-3" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-xs font-medium">Snap Value</span>
+                    <span className="text-xs">{snapValue}</span>
+                  </div>
+                  <Slider
+                    defaultValue={[snapValue]}
+                    min={0.1}
+                    max={1.0}
+                    step={0.1}
+                    onValueChange={(value) => onSnapValueChange?.(value[0])}
+                  />
+                  <div className="flex justify-between text-xs">
+                    <span>0.1</span>
+                    <span>1.0</span>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+          )}  
+        </div>
         
         {/* Movement axis selector - only show in move mode */}
         {mode === 'move' && (

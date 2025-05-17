@@ -36,12 +36,12 @@ export const Furniture: React.FC<FurnitureProps> = ({
   // State for position (XZ plane)
   const [dragPos, setDragPos] = useState<[number, number, number]>(position);
 
-  // Grid cell size (should match the grid component's cellSize)
-  const gridSize = 0.5;
+  // Access the snap value from the store
+  const snapValue = useFurnitureStore((s) => s.snapValue);
 
   // Function to snap a value to the grid
   const snapToGrid = (value: number): number => {
-    return Math.round(value / gridSize) * gridSize;
+    return Math.round(value / snapValue) * snapValue;
   };
 
   // Get the camera and controls for raycasting

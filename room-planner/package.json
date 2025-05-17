@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build-vercel": "node build-for-vercel.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "shadcn": "shadcn-ui"

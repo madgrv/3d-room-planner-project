@@ -111,11 +111,18 @@ export const TiledFloor = ({ width, length, tileSize = 0.5 }: TiledFloorProps) =
       metalness: 0.2,
       // Add normal map for subtle 3D effect on tiles
       normalScale: new THREE.Vector2(0.1, 0.1),
+      // Ensure proper rendering order
+      depthWrite: true,
+      transparent: false,
     });
   }, [theme, tilesX, tilesZ]);
   
   return (
-    <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+    <mesh 
+      position={[0, 0.001, 0]} 
+      rotation={[-Math.PI / 2, 0, 0]} 
+      receiveShadow
+    >
       <planeGeometry args={[width, length, tilesX, tilesZ]} />
       <primitive object={floorMaterial} attach="material" />
     </mesh>

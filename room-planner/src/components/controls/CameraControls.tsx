@@ -24,7 +24,7 @@ export const CameraControls = () => {
   // Get and set the current view from the store
   const currentView = useViewStore((state) => state.currentView);
   const setCurrentView = useViewStore((state) => state.setCurrentView);
-  
+
   // Get room element visibility functions from store
   const setVisibility = useRoomElementStore((state) => state.setVisibility);
 
@@ -37,84 +37,93 @@ export const CameraControls = () => {
         dimensions.length * 1.5
       );
       camera.lookAt(0, 0, 0);
-      
+
       // Ensure the camera is a PerspectiveCamera and update its projection matrix
       if (camera instanceof THREE.PerspectiveCamera) {
         camera.updateProjectionMatrix();
-        
+
         // Set appropriate near and far planes for the camera
         camera.near = 0.1;
-        camera.far = Math.max(dimensions.width, dimensions.height, dimensions.length) * 5;
+        camera.far =
+          Math.max(dimensions.width, dimensions.height, dimensions.length) * 5;
         camera.updateProjectionMatrix();
       }
     }
   }, [camera, dimensions]);
-  
+
   // Update room element visibility based on camera position
   useFrame(() => {
     if (camera) {
       // Get room dimensions for calculations
       const { width, height, length } = dimensions;
-      
+
       // Calculate camera position relative to room boundaries
       const cameraX = camera.position.x;
       const cameraY = camera.position.y;
       const cameraZ = camera.position.z;
-      
+
       // Calculate room boundaries
       const halfWidth = width / 2;
       const halfLength = length / 2;
-      
+
       // Calculate camera angles to determine which direction we're looking
       // We need to convert from world coordinates to angles
       const cameraDirection = new THREE.Vector3();
       camera.getWorldDirection(cameraDirection);
-      
+
       // Determine which walls should be visible based on camera position and direction
       // More sophisticated approach that considers both position and view direction
-      
+
       // Front wall (positive Z)
       // Hide when camera is in front of the wall AND looking toward the centre
       const isCameraInFrontOfFrontWall = cameraZ > halfLength;
       const isLookingAwayFromFrontWall = cameraDirection.z < 0;
-      const showFrontWall = !(isCameraInFrontOfFrontWall && isLookingAwayFromFrontWall);
-      
+      const showFrontWall = !(
+        isCameraInFrontOfFrontWall && isLookingAwayFromFrontWall
+      );
+
       // Back wall (negative Z)
       // Hide when camera is behind the wall AND looking toward the centre
       const isCameraInFrontOfBackWall = cameraZ < -halfLength;
       const isLookingAwayFromBackWall = cameraDirection.z > 0;
-      const showBackWall = !(isCameraInFrontOfBackWall && isLookingAwayFromBackWall);
-      
+      const showBackWall = !(
+        isCameraInFrontOfBackWall && isLookingAwayFromBackWall
+      );
+
       // Left wall (negative X)
       // Hide when camera is to the left of the wall AND looking toward the centre
       const isCameraInFrontOfLeftWall = cameraX < -halfWidth;
       const isLookingAwayFromLeftWall = cameraDirection.x > 0;
-      const showLeftWall = !(isCameraInFrontOfLeftWall && isLookingAwayFromLeftWall);
-      
+      const showLeftWall = !(
+        isCameraInFrontOfLeftWall && isLookingAwayFromLeftWall
+      );
+
       // Right wall (positive X)
       // Hide when camera is to the right of the wall AND looking toward the centre
       const isCameraInFrontOfRightWall = cameraX > halfWidth;
       const isLookingAwayFromRightWall = cameraDirection.x < 0;
-      const showRightWall = !(isCameraInFrontOfRightWall && isLookingAwayFromRightWall);
-      
+      const showRightWall = !(
+        isCameraInFrontOfRightWall && isLookingAwayFromRightWall
+      );
+
       // Determine ceiling and floor visibility
       // Hide ceiling when camera is above it AND looking down
       // Hide floor when camera is below it AND looking up
       const isCameraAboveCeiling = cameraY > height;
       const isLookingDown = cameraDirection.y < 0;
       const showCeiling = !(isCameraAboveCeiling && isLookingDown);
-      
+
       const isCameraBelowFloor = cameraY < 0;
       const isLookingUp = cameraDirection.y > 0;
       const showFloor = !(isCameraBelowFloor && isLookingUp);
-      
+
       // Update room element visibility in the store
       setVisibility('wall-front', showFrontWall);
       setVisibility('wall-back', showBackWall);
       setVisibility('wall-left', showLeftWall);
       setVisibility('wall-right', showRightWall);
       setVisibility('ceiling', showCeiling);
-      setVisibility('floor', showFloor);
+      setVisibility('floor', showFloor); // Floor tiles visibility is handled in the Room component
     }
   });
 
@@ -155,8 +164,6 @@ export const CameraControls = () => {
 
   // Make setView available globally for UI components
   useEffect(() => {
-    // Team note: This adds setView to the window object for global UI access. Remove or refactor if a more robust state solution is adopted.
-    // @ts-expect-error: Adding to window for demonstration purposes; this is not a standard property.
     window.setView = setView;
   }, [dimensions, setCurrentView]);
 

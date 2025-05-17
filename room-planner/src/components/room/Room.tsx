@@ -43,24 +43,27 @@ export const Room = ({ snapEnabled = false }: RoomProps) => {
 
   return (
     <group ref={roomRef}>
-      {/* Tiled Floor - Selectable */}
+      {/* Floor with tiled pattern - grouped together to ensure proper visibility */}
       {visibility['floor'] && (
-        <mesh 
-          ref={floorRef} 
-          position={[0, 0, 0]} 
-          rotation={[-Math.PI / 2, 0, 0]}
-          userData={{ roomElement: 'floor' }}
-        >
-          <planeGeometry args={[width, length]} />
-          <meshStandardMaterial 
-            color={selectedElement === 'floor' ? '#a8e6cf' : '#f5f5f5'} 
-            side={THREE.DoubleSide} 
-          />
-        </mesh>
+        <group>
+          {/* Base floor - Selectable */}
+          <mesh 
+            ref={floorRef} 
+            position={[0, 0, 0]} 
+            rotation={[-Math.PI / 2, 0, 0]}
+            userData={{ roomElement: 'floor' }}
+          >
+            <planeGeometry args={[width, length]} />
+            <meshStandardMaterial 
+              color={selectedElement === 'floor' ? '#a8e6cf' : '#f5f5f5'} 
+              side={THREE.DoubleSide} 
+            />
+          </mesh>
+          
+          {/* Decorative tiled floor pattern */}
+          <TiledFloor width={width} length={length} tileSize={0.5} />
+        </group>
       )}
-      
-      {/* Decorative tiled floor pattern on top of the selectable floor */}
-      {visibility['floor'] && <TiledFloor width={width} length={length} tileSize={0.5} />}
       
       {/* Walls */}
       {/* Back wall - Selectable */}

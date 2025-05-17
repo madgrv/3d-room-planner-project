@@ -36,10 +36,10 @@ export function ContextMenu({
 }: ContextMenuProps) {
   const { t } = useLanguage(); // Used for localisation in UI text
   const { furniture, removeFurniture, updateFurniture } = useFurnitureStore();
-  // Access the store directly to prevent infinite update loops
-  const roomElementStore = useRoomElementStore();
-  // Only extract values from roomElementStore if actually used in the component
-  // const { selectedElement, setSelectedElement, toggleVisibility, visibility } = roomElementStore;
+  // Access the store using individual selectors to prevent infinite update loops
+  // Only extract the specific values we need from the store
+  const toggleVisibility = useRoomElementStore((state) => state.toggleVisibility);
+  const visibility = useRoomElementStore((state) => state.visibility);
   const menuRef = React.useRef<HTMLDivElement>(null);
 
   // Get and set the movement axis from the store

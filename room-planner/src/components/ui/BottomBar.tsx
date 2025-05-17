@@ -11,9 +11,10 @@ interface BottomBarProps {
 }
 
 export function BottomBar({ className = '' }: BottomBarProps) {
-  const [selectedItemId, setSelectedItemId] = React.useState<string | null>(
-    null
-  );
+  // Get selection state directly from the furniture store
+  const selectedItemId = useFurnitureStore((state) => state.selectedFurnitureId);
+  const selectFurniture = useFurnitureStore((state) => state.selectFurniture);
+  
   const [mode, setMode] = React.useState<'select' | 'move' | 'rotate'>(
     'move' // Set default to 'move' so axis selector is visible
   );
@@ -24,7 +25,7 @@ export function BottomBar({ className = '' }: BottomBarProps) {
 
   // Handle item selection from the outliner
   const handleSelectItem = (id: string) => {
-    setSelectedItemId(id);
+    selectFurniture(id);
   };
 
   // Handle mode change

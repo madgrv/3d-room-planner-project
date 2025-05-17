@@ -38,6 +38,9 @@ const SceneContent = ({
     (state) => state.clearSelection
   );
 
+  // Get the selectFurniture function from the furniture store
+  const selectFurniture = useFurnitureStore((state) => state.selectFurniture);
+  
   // Set up raycasting for object detection
   const handlePointerDown = useCallback(
     (e: MouseEvent) => {
@@ -87,7 +90,7 @@ const SceneContent = ({
 
       console.log(
         'Raycasting result:',
-        clickedItemId ? `Hit item: ${clickedItemId}` : 'No item hit'
+        clickedItemId ? `Hit item: ${clickedItemId}` : roomElement ? `Hit element: ${roomElement}` : 'No hit'
       );
 
       // Handle left-click for selection
@@ -96,19 +99,27 @@ const SceneContent = ({
           // Select room element and clear furniture selection
           setSelectedElement(roomElement);
           clearFurnitureSelection();
+          console.log('Selected room element:', roomElement);
         } else if (clickedItemId) {
           // Select furniture and clear room element selection
           setSelectedElement(null);
+          selectFurniture(clickedItemId);
+          console.log('Selected furniture:', clickedItemId);
         } else {
           // Clicked on empty space, clear all selections
           setSelectedElement(null);
           clearFurnitureSelection();
+          console.log('Cleared selections');
         }
       }
 
       // Call the onRightClick callback with the clicked item ID and room element
       if (e.button === 2) {
+        console.log('Right-click detected in SceneContent', { clickedItemId, roomElement });
         onRightClick(e, clickedItemId, roomElement);
+        // Only prevent default to avoid showing browser's context menu
+        // but don't stop propagation to allow orbit controls to work
+        e.preventDefault();
       }
     },
     [
@@ -120,6 +131,7 @@ const SceneContent = ({
       scene.children,
       setSelectedElement,
       clearFurnitureSelection,
+      selectFurniture
     ]
   );
 
@@ -205,12 +217,14 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     }
   }, [resolvedTheme, mounted]);
 
-  // Handle right-click on canvas - simplified to avoid potential infinite loops
+  // Handle right-click on canvas
   const handleRightClick = useCallback(
     (e: MouseEvent, itemId: string | null, roomElement: RoomElementType) => {
       // If dragging, don't show context menu
       if (isDraggingState || globalIsDragging) return;
-
+      
+      console.log('Right-click detected:', { itemId, roomElement });
+      
       // Show context menu at mouse position
       setContextMenu({
         visible: true,
@@ -219,7 +233,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
         itemId,
         roomElement,
       });
-
+      
       // Prevent default context menu
       e.preventDefault();
     },
@@ -246,10 +260,19 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     });
   };
 
+  // Create a ref to store the canvas element
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
   // Set up mouse event listeners to detect dragging
   useEffect(() => {
     const startPos = { x: 0, y: 0 };
     let hasMoved = false;
+
+    // Get the canvas element
+    const canvas = document.querySelector('canvas');
+    if (canvas) {
+      canvasRef.current = canvas;
+    }
 
     const handleMouseDown = (e: MouseEvent) => {
       // Only track right mouse button
@@ -273,9 +296,16 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
             Math.pow(e.clientY - startPos.y, 2)
         );
 
-        if (distance < 5 && !hasMoved) {
-          // Show context menu directly without going through handleRightClick
-          // This bypasses potential issues with event handling
+        // We only handle background right-clicks here
+        // Object right-clicks are handled by SceneContent's raycasting
+        if (
+          distance < 5 &&
+          !hasMoved &&
+          canvasRef.current &&
+          e.target === canvasRef.current
+        ) {
+          console.log('Background right-click detected');
+          // Show context menu at the click position
           setContextMenu({
             visible: true,
             x: e.clientX,
@@ -301,13 +331,13 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
       }
     };
 
-    // Add event listeners
+    // Add event listeners to document
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('mouseup', handleMouseUp);
     document.addEventListener('mousemove', handleMouseMove);
 
+    // Clean up event listeners
     return () => {
-      // Clean up event listeners
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('mousemove', handleMouseMove);
@@ -324,13 +354,13 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
         className='canvas-container flex-grow border border-border rounded-b-lg rounded-tl-none rounded-tr-none overflow-hidden bg-card relative'
         style={{ minWidth: 0, height: 600 }}
       >
-        <Canvas 
-          shadows 
-          camera={{ 
-            position: [5, 5, 5], 
+        <Canvas
+          shadows
+          camera={{
+            position: [5, 5, 5],
             fov: 50,
             near: 0.1,
-            far: 1000
+            far: 1000,
           }}
           onPointerMissed={() => {
             // Clear selections when clicking on empty space
@@ -349,12 +379,13 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
 
       {/* Context Menu - Positioned at the document level */}
       {contextMenu.visible && (
-        <div
+        <div 
+          className="fixed"
           style={{
-            position: 'fixed', // Use fixed instead of absolute for more reliable positioning
+            position: 'fixed',
             left: contextMenu.x,
             top: contextMenu.y,
-            zIndex: 9999, // Ensure it's above everything else
+            zIndex: 9999,
           }}
         >
           <ContextMenu
@@ -369,3 +400,5 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     </div>
   );
 }
+
+export default ThreeDCanvas;

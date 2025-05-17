@@ -127,7 +127,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
   
   // Gesture handler for dragging on XZ plane using @use-gesture/react
   // Team note: On drag end, update position in global store for consistency.
-  const bind = useDrag(({ event, xy: [clientX, clientY], first, last }) => {
+  const bind = useDrag(({ event, first, last, xy: [clientX, clientY] }) => {
     // Prevent camera movement during dragging
     if (event instanceof PointerEvent) {
       event.stopPropagation();

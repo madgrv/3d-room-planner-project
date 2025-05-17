@@ -1,10 +1,10 @@
-// Simple deployment helper script
+// Enhanced deployment helper script to work around MIME type issues
 const fs = require('fs');
 const path = require('path');
 
-// Function to copy the dist directory to a deployment-ready structure
+// Function to prepare the deployment with MIME type workaround
 function prepareForDeployment() {
-  console.log('Preparing for deployment...');
+  console.log('Preparing for deployment with MIME type workaround...');
   
   // Get the list of files in the dist/assets directory
   const assetsDir = path.join(__dirname, 'dist', 'assets');
@@ -19,7 +19,8 @@ function prepareForDeployment() {
     process.exit(1);
   }
   
-  // Create a deployment-ready index.html
+  // Create a deployment-ready index.html that avoids module MIME type issues
+  // We use a standard script tag instead of type="module" to avoid MIME type errors
   const deploymentHtml = `<!DOCTYPE html>
 <html lang="en">
   <head>
@@ -27,10 +28,20 @@ function prepareForDeployment() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>3D Room Planner</title>
     <link rel="stylesheet" href="./assets/${cssFile}">
+    <!-- Using a standard script tag to avoid MIME type errors -->
+    <script>
+      // This ensures the script loads after the page is ready
+      window.addEventListener('DOMContentLoaded', function() {
+        // Dynamically create a script element
+        var script = document.createElement('script');
+        // Use standard script type instead of module to avoid MIME type errors
+        script.src = './assets/${jsFile}';
+        document.body.appendChild(script);
+      });
+    </script>
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="./assets/${jsFile}"></script>
   </body>
 </html>`;
 

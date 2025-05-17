@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { useDragStore } from '@/store/dragStore';
 import { useViewStore } from '@/store/viewStore';
+import { useRoomStore } from '@/store/roomStore';
 
 interface FurnitureProps {
   id: string;
@@ -38,10 +39,39 @@ export const Furniture: React.FC<FurnitureProps> = ({
 
   // Access the snap value from the store
   const snapValue = useFurnitureStore((s) => s.snapValue);
+  
+  // Get room dimensions to restrict movement within boundaries
+  const roomDimensions = useRoomStore((s) => s.dimensions);
 
   // Function to snap a value to the grid
   const snapToGrid = (value: number): number => {
     return Math.round(value / snapValue) * snapValue;
+  };
+  
+  // Function to restrict a position within room boundaries
+  const restrictToRoomBoundaries = (axis: 'x' | 'y' | 'z', value: number): number => {
+    if (!snapEnabled) return value; // Only restrict when snap is enabled
+    
+    // Calculate room boundaries based on room dimensions
+    // The room is centered at origin, so boundaries are -width/2 to width/2 and -length/2 to length/2
+    const halfWidth = roomDimensions.width / 2;
+    const halfLength = roomDimensions.length / 2;
+    const roomHeight = roomDimensions.height;
+    
+    // Add a small margin to keep objects fully inside the room (0.1 units from walls)
+    const margin = 0.1;
+    
+    if (axis === 'x') {
+      // Restrict X within room width
+      return Math.min(Math.max(value, -halfWidth + margin), halfWidth - margin);
+    } else if (axis === 'y') {
+      // Restrict Y within room height (floor to ceiling)
+      // The floor is at y=0, so the range is 0 to roomHeight
+      return Math.min(Math.max(value, margin), roomHeight - margin);
+    } else {
+      // Restrict Z within room length
+      return Math.min(Math.max(value, -halfLength + margin), halfLength - margin);
+    }
   };
 
   // Get the camera and controls for raycasting
@@ -82,28 +112,30 @@ export const Furniture: React.FC<FurnitureProps> = ({
 
     // Special handling for Y-axis movement
     if (movementAxis === 'y') {
-      if (first) {
-        // On first click, store the initial mouse position and object position
-        dragStartRef.current = {
-          mousePos: [x, y],
-          objectPos: [...position],
-          cameraDirection: camera.position
-            .clone()
-            .sub(new THREE.Vector3(0, 0, 0))
-            .normalize(),
-        };
-        return new THREE.Vector3(position[0], position[1], position[2]);
-      } else if (dragStartRef.current) {
-        // Calculate vertical movement based on mouse Y delta and camera orientation
-        const deltaY = (dragStartRef.current.mousePos[1] - y) / 100; // Adjust sensitivity
-
-        // Create a new vector with the updated Y position
-        const newPos = new THREE.Vector3(
-          position[0],
-          dragStartRef.current.objectPos[1] + deltaY,
-          position[2]
+      // Create a vertical plane that passes through the object and faces the camera
+      // This allows us to use raycasting for vertical movement as well
+      
+      // Get a vector from camera to object
+      const cameraToObject = new THREE.Vector3(
+        position[0] - camera.position.x,
+        0, // Ignore Y component to keep the plane vertical
+        position[2] - camera.position.z
+      ).normalize();
+      
+      // Create a plane that's perpendicular to the camera-to-object vector
+      // This plane will be vertical (Y-up) and face the camera
+      const planeNormal = new THREE.Vector3(cameraToObject.x, 0, cameraToObject.z);
+      const verticalPlane = new THREE.Plane(planeNormal, -planeNormal.dot(new THREE.Vector3(position[0], 0, position[2])));
+      
+      // Find intersection with this vertical plane
+      const intersection = new THREE.Vector3();
+      if (raycaster.ray.intersectPlane(verticalPlane, intersection)) {
+        // Only use the Y component from the intersection
+        return new THREE.Vector3(
+          position[0], // Keep original X
+          intersection.y, // Use Y from intersection
+          position[2]  // Keep original Z
         );
-        return newPos;
       }
       return null;
     }
@@ -186,31 +218,42 @@ export const Furniture: React.FC<FurnitureProps> = ({
       switch (movementAxis) {
         case 'x':
           // Only move along X axis
-          const snappedX = snapEnabled ? snapToGrid(worldPos.x) : worldPos.x;
+          const rawX = worldPos.x;
+          // First restrict to room boundaries, then apply grid snapping
+          const boundedX = restrictToRoomBoundaries('x', rawX);
+          const snappedX = snapEnabled ? snapToGrid(boundedX) : boundedX;
           newPosition = [snappedX, position[1], position[2]];
           break;
         case 'y':
           // Only move along Y axis (up/down)
-          // Limit the Y position to prevent objects from going below the floor
           const rawY = worldPos.y;
-          const limitedY = Math.max(0, rawY); // Prevent going below floor
-          const snappedY = snapEnabled ? snapToGrid(limitedY) : limitedY;
+          // First restrict to room boundaries (floor to ceiling), then apply grid snapping
+          const boundedY = restrictToRoomBoundaries('y', rawY);
+          const snappedY = snapEnabled ? snapToGrid(boundedY) : boundedY;
           newPosition = [position[0], snappedY, position[2]];
           break;
         case 'z':
           // Only move along Z axis
-          const snappedZ = snapEnabled ? snapToGrid(worldPos.z) : worldPos.z;
+          const rawZ = worldPos.z;
+          // First restrict to room boundaries, then apply grid snapping
+          const boundedZ = restrictToRoomBoundaries('z', rawZ);
+          const snappedZ = snapEnabled ? snapToGrid(boundedZ) : boundedZ;
           newPosition = [position[0], position[1], snappedZ];
           break;
         case 'xz':
         default:
           // Move on floor plane (XZ)
+          // First restrict to room boundaries, then apply grid snapping
+          const boundedFloorX = restrictToRoomBoundaries('x', worldPos.x);
+          const boundedFloorZ = restrictToRoomBoundaries('z', worldPos.z);
+          
           const snappedFloorX = snapEnabled
-            ? snapToGrid(worldPos.x)
-            : worldPos.x;
+            ? snapToGrid(boundedFloorX)
+            : boundedFloorX;
           const snappedFloorZ = snapEnabled
-            ? snapToGrid(worldPos.z)
-            : worldPos.z;
+            ? snapToGrid(boundedFloorZ)
+            : boundedFloorZ;
+            
           newPosition = [snappedFloorX, position[1], snappedFloorZ];
           break;
       }

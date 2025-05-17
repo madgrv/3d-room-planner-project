@@ -12,8 +12,15 @@ export default defineConfig({
     },
   },
   build: {
-    // Ensure assets are properly referenced
-    assetsInlineLimit: 0,
-    emptyOutDir: true,
-  },
+    // Simplify output for more reliable deployment
+    rollupOptions: {
+      output: {
+        entryFileNames: 'assets/index.js',
+        chunkFileNames: 'assets/[name].js',
+        assetFileNames: 'assets/index.[ext]'
+      }
+    },
+    // Use the custom index.html from public directory
+    emptyOutDir: true
+  }
 })

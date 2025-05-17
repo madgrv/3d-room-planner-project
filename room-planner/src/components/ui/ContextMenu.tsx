@@ -2,7 +2,7 @@
 // Team note: All user-facing text is localised. All primitives are SHADCN components, centralised for reuse.
 
 import * as React from 'react';
-import { useLanguage } from '@/lang';
+// import { useLanguage } from '@/lang'; // Will be needed for localisation in the future
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { useViewStore } from '@/store/viewStore';
 import { useRoomElementStore, RoomElementType } from '@/store/roomElementStore';
@@ -34,12 +34,13 @@ export function ContextMenu({
   roomElement,
   onClose,
 }: ContextMenuProps) {
-  const { t } = useLanguage(); // Used for localisation in UI text
+  // const { lang } = useLanguage(); // Not currently used but kept for future localisation
   const { furniture, removeFurniture, updateFurniture } = useFurnitureStore();
   // Access the store using individual selectors to prevent infinite update loops
   // Only extract the specific values we need from the store
   const toggleVisibility = useRoomElementStore((state) => state.toggleVisibility);
   const visibility = useRoomElementStore((state) => state.visibility);
+  const setSelectedElement = useRoomElementStore((state) => state.setSelectedElement);
   const menuRef = React.useRef<HTMLDivElement>(null);
 
   // Get and set the movement axis from the store

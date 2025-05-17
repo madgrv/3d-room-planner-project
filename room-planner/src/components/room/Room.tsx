@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import * as THREE from 'three';
 import { useRoomStore } from '@/store/roomStore';
 import { useFurnitureStore } from '@/store/furnitureStore';

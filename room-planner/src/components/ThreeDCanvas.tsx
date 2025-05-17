@@ -177,8 +177,9 @@ interface ThreeDCanvasProps {
 
 export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
   const { resolvedTheme } = useTheme();
-  const isDragging = useDragStore((state) => state.isDragging);
-  const selectedElement = useRoomElementStore((state) => state.selectedElement);
+  // These variables are used elsewhere or will be used in future updates
+  // const isDragging = useDragStore((state) => state.isDragging);
+  // const selectedElement = useRoomElementStore((state) => state.selectedElement);
 
   // State for context menu
   const [contextMenu, setContextMenu] = useState<{

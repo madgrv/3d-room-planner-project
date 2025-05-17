@@ -64,7 +64,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
     // Account for furniture dimensions - half the size in each dimension
     // This ensures the entire object stays within the room, not just its center point
     const halfSizeX = size[0] / 2;
-    const halfSizeY = size[1] / 2;
+    // halfSizeY is used in maxY calculation as size[1]
     const halfSizeZ = size[2] / 2;
     
     // Define wall boundaries for each axis
@@ -180,17 +180,17 @@ export const Furniture: React.FC<FurnitureProps> = ({
   const [isDragging, setIsDragging] = useState(false);
 
   // Reference to track initial drag position and object position
-  const dragStartRef = useRef<{
+  // Keeping the commented type definition for future reference
+  /* const dragStartRef = useRef<{
     mousePos: [number, number];
     objectPos: [number, number, number];
     cameraDirection: THREE.Vector3;
-  } | null>(null);
+  } | null>(null); */
 
   // Function to convert mouse position to world position via raycasting based on movement axis
   const getWorldPosition = (
     x: number,
-    y: number,
-    first = false
+    y: number
   ): THREE.Vector3 | null => {
     // Convert mouse coordinates to normalized device coordinates (-1 to +1)
     const rect = gl.domElement.getBoundingClientRect();
@@ -302,7 +302,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
       if (!hasSignificantMovement && !isDragging) return;
 
       // Get world position from mouse coordinates
-      const worldPos = getWorldPosition(clientX, clientY, first);
+      const worldPos = getWorldPosition(clientX, clientY);
       if (!worldPos) return;
 
       // Apply grid snapping and axis constraints

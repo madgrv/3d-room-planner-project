@@ -46,16 +46,16 @@ export const RoomControls = () => {
 
   // Common input style for consistency - matches sm button height exactly
   const inputStyle =
-    'w-20 h-8 px-2 border rounded-[2px] focus:outline-none focus:ring focus:border-blue-400';
+    'w-16 h-8 px-2 border rounded-[2px] focus:outline-none focus:ring focus:border-blue-400 text-xs';
 
   return (
-    <div className='flex justify-between gap-2 room-controls p-2 bg-card text-card-foreground rounded-md border border-border'>
-      <h2 className='text-sm font-medium text-muted-foreground'>
+    <div className='flex flex-col gap-2 room-controls p-2 bg-card text-card-foreground rounded-md border border-border'>
+      <h2 className='text-xs font-medium text-muted-foreground mb-1'>
         {lang.roomControls.title}
       </h2>
-      <div className='flex items-center gap-2'>
+      <div className='flex flex-wrap items-center justify-center gap-2'>
         <div className='flex items-center gap-1'>
-          <label className='block text-sm font-medium'>
+          <label className='block text-xs font-medium'>
             {lang.roomControls.widthLabel}
           </label>
           <input
@@ -69,7 +69,7 @@ export const RoomControls = () => {
           />
         </div>
         <div className='flex items-center gap-1'>
-          <label className='block text-sm font-medium' htmlFor='room-length'>
+          <label className='block text-xs font-medium' htmlFor='room-length'>
             {lang.roomControls.lengthLabel}
           </label>
           <input
@@ -84,7 +84,7 @@ export const RoomControls = () => {
           />
         </div>
         <div className='flex items-center gap-1'>
-          <label className='block text-sm font-medium' htmlFor='room-height'>
+          <label className='block text-xs font-medium' htmlFor='room-height'>
             {lang.roomControls.heightLabel}
           </label>
           <input
@@ -102,6 +102,7 @@ export const RoomControls = () => {
         <Button
           onClick={applyChanges}
           size='sm'
+          className='h-8 text-xs px-2'
           aria-label={lang.roomControls.applyButton}
         >
           {lang.roomControls.applyButton}

@@ -8,7 +8,7 @@ import { useLanguage } from '@/lang';
 
 export function FurnitureControls() {
   const { lang } = useLanguage();
-  
+
   const FURNITURE_TYPES = [
     { value: 'chair', label: lang.furnitureControls.chair },
     { value: 'table', label: lang.furnitureControls.table },
@@ -17,8 +17,7 @@ export function FurnitureControls() {
     { value: 'wardrobe', label: lang.furnitureControls.wardrobe },
   ];
 
-
-  const { furniture, addFurniture, removeFurniture } = useFurnitureStore();
+  const { addFurniture } = useFurnitureStore();
   const [selectedType, setSelectedType] = React.useState('');
 
   const handleAdd = () => {
@@ -29,13 +28,15 @@ export function FurnitureControls() {
   };
 
   return (
-    <div className='flex justify-between gap-2 p-2 bg-card text-card-foreground rounded-md border border-border'>
-      <h2 className='text-sm font-medium text-muted-foreground'>{lang.furnitureControls.title}</h2>
-      <div className='flex gap-2'>
+    <div className='flex flex-col gap-2 p-2 bg-card text-card-foreground rounded-md border border-border'>
+      <h2 className='text-xs font-medium text-muted-foreground mb-1'>
+        {lang.furnitureControls.title}
+      </h2>
+      <div className='flex justify-center gap-2'>
         <select
           value={selectedType}
           onChange={(e) => setSelectedType(e.target.value)}
-          className='border border-input bg-background text-foreground rounded-[2px] h-8 px-2 flex-1 focus:outline-none focus:ring focus:ring-ring focus:border-ring'
+          className='border bg-background text-foreground rounded-[2px] h-8 px-2 text-xs min-w-[120px] max-w-[150px] focus:outline-none focus:ring focus:border-blue-400'
           aria-label={lang.furnitureControls.selectType}
         >
           <option value=''>{lang.furnitureControls.selectType}</option>
@@ -48,6 +49,7 @@ export function FurnitureControls() {
         <Button
           variant='default'
           size='sm'
+          className='h-8 text-xs'
           onClick={handleAdd}
           disabled={!selectedType}
           aria-label={lang.furnitureControls.addLabel}
@@ -55,26 +57,6 @@ export function FurnitureControls() {
           {lang.furnitureControls.addLabel}
         </Button>
       </div>
-      <ul>
-        {furniture.length === 0 && (
-          <li className='py-2 text-muted-foreground'>
-            {lang.furnitureControls.noFurniture}
-          </li>
-        )}
-        {furniture.map((item) => (
-          <li key={item.id} className='flex items-center justify-between py-2'>
-            <span>{lang.furnitureControls[item.type as keyof typeof lang.furnitureControls]}</span>
-            <Button
-              variant='destructive'
-              size='sm'
-              onClick={() => removeFurniture(item.id)}
-              aria-label={lang.furnitureControls.removeLabel}
-            >
-              {lang.furnitureControls.removeLabel}
-            </Button>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 }

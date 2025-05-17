@@ -8,6 +8,23 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="src/main.tsx"></script>
+    <!-- Use standard script tag during development -->
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- This script will be used in production to avoid MIME type issues -->
+    <script>
+      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        // In production, we'll use a different approach to load the script
+        document.addEventListener('DOMContentLoaded', function() {
+          // Remove the module script to prevent MIME type errors
+          const moduleScript = document.querySelector('script[type="module"]');
+          if (moduleScript) moduleScript.remove();
+          
+          // Create a new script element without the module type
+          const script = document.createElement('script');
+          script.src = '/assets/index.js';
+          document.body.appendChild(script);
+        });
+      }
+    </script>
   </body>
 </html>

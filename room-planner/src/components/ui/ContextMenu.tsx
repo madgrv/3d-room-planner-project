@@ -116,7 +116,6 @@ export function ContextMenu({
   };
 
   // Edit state and handlers removed as they are not currently used in the UI. Add back if/when inline editing is implemented.
-  };
 
   // Handle room element selection
   const handleRoomElementAction = () => {

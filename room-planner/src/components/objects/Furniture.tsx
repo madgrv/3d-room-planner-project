@@ -48,29 +48,122 @@ export const Furniture: React.FC<FurnitureProps> = ({
     return Math.round(value / snapValue) * snapValue;
   };
   
-  // Function to restrict a position within room boundaries
+  // Function to restrict a position within room boundaries, accounting for furniture dimensions
+  // Also handles wall snapping when boundaries are reached
   const restrictToRoomBoundaries = (axis: 'x' | 'y' | 'z', value: number): number => {
-    if (!snapEnabled) return value; // Only restrict when snap is enabled
-    
     // Calculate room boundaries based on room dimensions
     // The room is centered at origin, so boundaries are -width/2 to width/2 and -length/2 to length/2
     const halfWidth = roomDimensions.width / 2;
     const halfLength = roomDimensions.length / 2;
     const roomHeight = roomDimensions.height;
     
-    // Add a small margin to keep objects fully inside the room (0.1 units from walls)
-    const margin = 0.1;
+    // Add a small margin to keep objects fully inside the room (0.05 units from walls)
+    // Using a smaller margin to allow objects to be placed closer to walls
+    const margin = 0.05;
+    
+    // Account for furniture dimensions - half the size in each dimension
+    // This ensures the entire object stays within the room, not just its center point
+    const halfSizeX = size[0] / 2;
+    const halfSizeY = size[1] / 2;
+    const halfSizeZ = size[2] / 2;
+    
+    // Define wall boundaries for each axis
+    // These are the positions where the object's center should be when its sides touch the walls
+    const minX = -halfWidth + halfSizeX + margin; // Left wall
+    const maxX = halfWidth - halfSizeX - margin;  // Right wall
+    const minY = margin;                          // Floor
+    const maxY = roomHeight - size[1] - margin;   // Ceiling
+    const minZ = -halfLength + halfSizeZ + margin; // Back wall
+    const maxZ = halfLength - halfSizeZ - margin;  // Front wall
+    
+    // Define additional snap positions for each axis
+    // These are positions where the object's sides (not center) touch the walls
+    const leftWallSnap = -halfWidth + margin;  // Object's left side touches left wall
+    const rightWallSnap = halfWidth - size[0] - margin; // Object's right side touches right wall
+    const floorSnap = 0 + margin;  // Object's bottom touches floor (usually the default)
+    const ceilingSnap = roomHeight - size[1] - margin; // Object's top touches ceiling
+    const backWallSnap = -halfLength + margin;  // Object's back touches back wall
+    const frontWallSnap = halfLength - size[2] - margin; // Object's front touches front wall
+    
+    // Wall snapping threshold - how close to a wall before snapping to it
+    const wallSnapThreshold = 0.25;
     
     if (axis === 'x') {
-      // Restrict X within room width
-      return Math.min(Math.max(value, -halfWidth + margin), halfWidth - margin);
+      // Check if we're near a wall boundary
+      if (!snapEnabled) {
+        // When snap is disabled, just apply the boundary limits
+        return Math.min(Math.max(value, minX), maxX);
+      }
+      
+      // Check if we're near the left wall (center position)
+      if (Math.abs(value - minX) < wallSnapThreshold) {
+        return minX; // Snap object center to left wall boundary
+      }
+      // Check if we're near the right wall (center position)
+      else if (Math.abs(value - maxX) < wallSnapThreshold) {
+        return maxX; // Snap object center to right wall boundary
+      }
+      // Check if we're near the position where object's left side touches left wall
+      else if (Math.abs(value - leftWallSnap) < wallSnapThreshold) {
+        return leftWallSnap; // Snap so left side touches left wall
+      }
+      // Check if we're near the position where object's right side touches right wall
+      else if (Math.abs(value - rightWallSnap) < wallSnapThreshold) {
+        return rightWallSnap; // Snap so right side touches right wall
+      }
+      // Otherwise use normal grid snapping within boundaries
+      else {
+        const snappedValue = snapToGrid(value);
+        return Math.min(Math.max(snappedValue, minX), maxX);
+      }
     } else if (axis === 'y') {
-      // Restrict Y within room height (floor to ceiling)
-      // The floor is at y=0, so the range is 0 to roomHeight
-      return Math.min(Math.max(value, margin), roomHeight - margin);
-    } else {
-      // Restrict Z within room length
-      return Math.min(Math.max(value, -halfLength + margin), halfLength - margin);
+      // Check if we're near a floor or ceiling boundary
+      if (!snapEnabled) {
+        // When snap is disabled, just apply the boundary limits
+        return Math.min(Math.max(value, minY), maxY);
+      }
+      
+      // Check if we're near the floor (object bottom touches floor)
+      if (Math.abs(value - floorSnap) < wallSnapThreshold) {
+        return floorSnap; // Snap to floor
+      }
+      // Check if we're near the ceiling (object top touches ceiling)
+      else if (Math.abs(value - ceilingSnap) < wallSnapThreshold) {
+        return ceilingSnap; // Snap to ceiling
+      }
+      // Otherwise use normal grid snapping within boundaries
+      else {
+        const snappedValue = snapToGrid(value);
+        return Math.min(Math.max(snappedValue, minY), maxY);
+      }
+    } else { // z-axis
+      // Check if we're near a wall boundary
+      if (!snapEnabled) {
+        // When snap is disabled, just apply the boundary limits
+        return Math.min(Math.max(value, minZ), maxZ);
+      }
+      
+      // Check if we're near the back wall (center position)
+      if (Math.abs(value - minZ) < wallSnapThreshold) {
+        return minZ; // Snap object center to back wall boundary
+      }
+      // Check if we're near the front wall (center position)
+      else if (Math.abs(value - maxZ) < wallSnapThreshold) {
+        return maxZ; // Snap object center to front wall boundary
+      }
+      // Check if we're near the position where object's back side touches back wall
+      else if (Math.abs(value - backWallSnap) < wallSnapThreshold) {
+        return backWallSnap; // Snap so back side touches back wall
+      }
+      // Check if we're near the position where object's front side touches front wall
+      else if (Math.abs(value - frontWallSnap) < wallSnapThreshold) {
+        return frontWallSnap; // Snap so front side touches front wall
+      }
+      // Otherwise use normal grid snapping within boundaries
+      else {
+        const snappedValue = snapToGrid(value);
+        return Math.min(Math.max(snappedValue, minZ), maxZ);
+      }
     }
   };
 

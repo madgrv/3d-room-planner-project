@@ -15,7 +15,7 @@ export function TopBar({ className = '' }: TopBarProps) {
 
   return (
     <div className={`${className}`}>
-      <div className='relative flex items-center justify-between mb-6'>
+      <div className='relative flex md:flex-row flex-col items-center justify-between mb-6'>
         <div className='absolute inset-x-0 flex flex-col items-center justify-center pointer-events-none'>
           <h1 className='text-2xl font-bold'>{lang.app.title}</h1>
           <p className='text-sm text-muted-foreground'>{lang.app.subtitle}</p>
@@ -32,7 +32,7 @@ export function TopBar({ className = '' }: TopBarProps) {
 
       {/* UI Controls Panel */}
       <div className='controls-panel bg-card text-card-foreground p-2 overflow-y-auto border border-border rounded-t-lg rounded-bl-none rounded-br-none'>
-        <div className='flex gap-2'>
+        <div className='flex flex-wrap gap-3'>
           <RoomControls />
           <ViewControls />
           <FurnitureControls />

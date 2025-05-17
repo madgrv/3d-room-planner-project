@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lang'; // Team note: All user-facing text must be localised.
 import { Button } from './Button'; // Team note: Use the shared SHADCN Button for consistency.
+import { TopViewIcon, FrontViewIcon, SideViewIcon, CornerViewIcon } from './ViewIcons';
 
 type ViewPreset = 'top' | 'front' | 'side' | 'corner';
 
@@ -23,11 +24,27 @@ export const ViewControls = () => {
     }
   };
 
-  const views: { id: ViewPreset; label: string }[] = [
-    { id: 'corner', label: lang.viewControls.cornerView },
-    { id: 'top', label: lang.viewControls.topView },
-    { id: 'front', label: lang.viewControls.frontView },
-    { id: 'side', label: lang.viewControls.sideView },
+  const views: { id: ViewPreset; label: string; icon: React.ReactNode }[] = [
+    { 
+      id: 'corner', 
+      label: lang.viewControls.cornerView,
+      icon: <CornerViewIcon className="w-4 h-4" />
+    },
+    { 
+      id: 'top', 
+      label: lang.viewControls.topView,
+      icon: <TopViewIcon className="w-4 h-4" />
+    },
+    { 
+      id: 'front', 
+      label: lang.viewControls.frontView,
+      icon: <FrontViewIcon className="w-4 h-4" />
+    },
+    { 
+      id: 'side', 
+      label: lang.viewControls.sideView,
+      icon: <SideViewIcon className="w-4 h-4" />
+    },
   ];
 
   // Don't render with theme values until mounted to prevent hydration mismatch
@@ -37,18 +54,19 @@ export const ViewControls = () => {
 
   // Team note: Styled with SHADCN/Tailwind for modern, accessible UI. All text is localised.
   return (
-    <div className='flex justify-between gap-2 p-2 bg-card text-card-foreground rounded-md border border-border'>
-      <h2 className='text-sm font-medium text-muted-foreground'>{lang.viewControls.title}</h2>
-      <div className='flex gap-2'>
+    <div className='flex flex-col gap-2 p-2 bg-card text-card-foreground rounded-md border border-border'>
+      <h2 className='text-xs font-medium text-muted-foreground mb-1'>{lang.viewControls.title}</h2>
+      <div className='flex justify-center gap-1'>
         {views.map((view) => (
           <Button
             key={view.id}
             size='icon'
+            className='w-8 h-8'
             onClick={() => handleViewChange(view.id)}
             variant={activeView === view.id ? 'default' : 'outline'}
             aria-label={view.label}
           >
-            {view.label}
+            {view.icon}
           </Button>
         ))}
       </div>

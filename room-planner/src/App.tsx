@@ -15,7 +15,7 @@ function App() {
   const snapEnabled = useFurnitureStore((state) => state.snapEnabled);
 
   return (
-    <div className='h-screen flex flex-col p-6 bg-background text-foreground'>
+    <div className='h-screen flex flex-col px-6 py-3 py-2 bg-background text-foreground'>
       <TopBar />
       <ThreeDCanvas snapEnabled={snapEnabled} />
       <div className='mt-3'>

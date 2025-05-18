@@ -52,9 +52,9 @@ export function StatusBar({
   };
 
   return (
-    <div className="flex items-center justify-between px-3 py-1 bg-card text-card-foreground border-t border-border text-xs">
+    <div className="flex flex-wrap items-center justify-between gap-y-2 px-3 py-2 bg-card text-card-foreground border-t border-border text-xs">
       {/* Left section: Selected object info */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-1 sm:mb-0">
         <div className="flex items-center gap-1">
           <span className="text-muted-foreground">{lang.statusBar.selectedObject}</span>
           <span>
@@ -79,7 +79,7 @@ export function StatusBar({
       </div>
       
       {/* Right section: Mode and snap controls */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <div className="flex items-center gap-1">
           <span className="text-muted-foreground">{lang.statusBar.mode}</span>
           <div className="flex bg-background rounded border border-border">

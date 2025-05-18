@@ -360,8 +360,8 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
       onContextMenu={handleNativeContextMenu}
     >
       <div
-        className='canvas-container flex-grow border border-border rounded-b-lg rounded-tl-none rounded-tr-none overflow-hidden bg-card relative'
-        style={{ minWidth: 0, height: 700 }}
+        className='canvas-container flex-grow border border-border rounded-b-lg rounded-tl-none rounded-tr-none overflow-hidden bg-card relative h-[450px] md:h-[670px]'
+        style={{ minWidth: 0 }}
       >
         <Canvas
           shadows

@@ -445,7 +445,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
       )}
 
       {/* Tile Settings Panel - appears when a room element is selected */}
-      <div className='absolute top-0 right-0 z-10'>
+      <div className='absolute bottom-0 left-0 z-10'>
         <TileSettingsPanel />
       </div>
     </div>

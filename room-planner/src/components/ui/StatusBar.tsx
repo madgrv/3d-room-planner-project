@@ -12,11 +12,16 @@ import {
   MoveIcon, 
   ChevronDownIcon,
   ReloadIcon,
-  UpdateIcon
+  UpdateIcon,
+  BoxIcon,
+  GridIcon
 } from '@radix-ui/react-icons';
 import { useViewStore, RotationAmount } from '@/store/viewStore';
+import { useRoomElementStore, RoomElementType } from '@/store/roomElementStore';
+import { useTileStore } from '@/store/tileStore';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Slider } from './slider';
+import { Switch } from './Switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 
 interface StatusBarProps {
@@ -27,6 +32,7 @@ interface StatusBarProps {
   onChangeMode?: (mode: 'select' | 'move' | 'rotate') => void;
   snapValue?: number;
   onSnapValueChange?: (value: number) => void;
+  // No need to pass selectedRoomElement as a prop since we'll get it from the store
 }
 
 export function StatusBar({
@@ -49,7 +55,11 @@ export function StatusBar({
   const rotationAmount = useViewStore((state) => state.rotationAmount);
   const setRotationAmount = useViewStore((state) => state.setRotationAmount);
 
-  // Get the selected item
+  // Get the selected room element from the store
+  const selectedRoomElement = useRoomElementStore((state) => state.selectedElement);
+  const roomElementVisibility = useRoomElementStore((state) => state.visibility);
+
+  // Get the selected furniture item
   const selectedItem = React.useMemo(() => {
     if (!selectedItemId) return null;
     return furniture.find(item => item.id === selectedItemId) || null;
@@ -62,7 +72,22 @@ export function StatusBar({
 
   // Format rotation as a string with 2 decimal places
   const formatRotation = (rotation: number) => {
-    return `${rotation.toFixed(2)}°`;
+    // Convert radians to degrees for display
+    const degrees = (rotation * 180 / Math.PI) % 360;
+    return `${degrees.toFixed(0)}°`;
+  };
+  
+  // Format room element name for display
+  const formatRoomElementName = (element: NonNullable<RoomElementType>) => {
+    switch(element) {
+      case 'floor': return 'Floor';
+      case 'ceiling': return 'Ceiling';
+      case 'wall-front': return 'Front Wall';
+      case 'wall-back': return 'Back Wall';
+      case 'wall-left': return 'Left Wall';
+      case 'wall-right': return 'Right Wall';
+      default: return element;
+    }
   };
 
   return (
@@ -74,10 +99,16 @@ export function StatusBar({
           <span>
             {selectedItem
               ? lang.furnitureControls[selectedItem.type as keyof typeof lang.furnitureControls] || selectedItem.type
-              : lang.statusBar.noSelection}
+              : selectedRoomElement
+                ? formatRoomElementName(selectedRoomElement)
+                : lang.statusBar.noSelection}
           </span>
+          {/* Show an icon to indicate the type of selection */}
+          {selectedItem && <MoveIcon className="h-3 w-3 ml-1 text-muted-foreground" />}
+          {selectedRoomElement && <BoxIcon className="h-3 w-3 ml-1 text-muted-foreground" />}
         </div>
         
+        {/* Show furniture properties */}
         {selectedItem && (
           <>
             <div className="flex items-center gap-1">
@@ -87,6 +118,20 @@ export function StatusBar({
             <div className="flex items-center gap-1">
               <span className="text-muted-foreground">{lang.statusBar.rotation}</span>
               <span>{formatRotation(selectedItem.rotation)}</span>
+            </div>
+          </>
+        )}
+        
+        {/* Show room element properties */}
+        {selectedRoomElement && (
+          <>
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground">Type:</span>
+              <span>{formatRoomElementName(selectedRoomElement)}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground">Visible:</span>
+              <span>{roomElementVisibility[selectedRoomElement] ? 'Yes' : 'No'}</span>
             </div>
           </>
         )}
@@ -318,6 +363,32 @@ export function StatusBar({
                 </TooltipProvider>
               </div>
             </div>
+          </div>
+        )}
+        
+        {/* Tile controls - only show when a room element is selected */}
+        {selectedRoomElement && (
+          <div className="flex items-center gap-3">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">Tiles:</span>
+                    <Switch
+                      checked={useTileStore.getState().elementTilingEnabled[selectedRoomElement] || false}
+                      onCheckedChange={(checked) => {
+                        useTileStore.getState().setTilingEnabled(selectedRoomElement, checked);
+                      }}
+                      aria-label="Toggle tiling"
+                    />
+                    <GridIcon className="h-3 w-3 text-muted-foreground" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Toggle tiling for {formatRoomElementName(selectedRoomElement)}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         )}
       </div>

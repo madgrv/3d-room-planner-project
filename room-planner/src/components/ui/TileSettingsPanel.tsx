@@ -21,12 +21,14 @@ export function TileSettingsPanel() {
   const setTileSettings = useTileStore((state) => state.setTileSettings);
   const setTilingEnabled = useTileStore((state) => state.setTilingEnabled);
 
-  // Position the panel below the toolbar
+  // Position the panel at the bottom left corner of the canvas
   useEffect(() => {
     if (panelRef.current && selectedElement) {
-      // Position the panel at the top right, below the toolbar
-      panelRef.current.style.right = '0';
-      panelRef.current.style.top = '0';
+      // Position the panel at the bottom left
+      panelRef.current.style.left = '0';
+      panelRef.current.style.bottom = '0';
+      panelRef.current.style.right = 'auto';
+      panelRef.current.style.top = 'auto';
     }
   }, [selectedElement]);
 

@@ -569,12 +569,12 @@ export const Furniture: React.FC<FurnitureProps> = ({
           <meshStandardMaterial color={color} roughness={0.7} metalness={0.1} />
         </mesh>
         {/* Door handles */}
-        <mesh position={[-0.2, 1, 0.26]}>
-          <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} rotation={[Math.PI/2, 0, 0]} />
+        <mesh position={[-0.2, 1, 0.26]} rotation={[Math.PI/2, 0, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} />
           <meshStandardMaterial color='#C0C0C0' roughness={0.3} metalness={0.8} />
         </mesh>
-        <mesh position={[0.2, 1, 0.26]}>
-          <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} rotation={[Math.PI/2, 0, 0]} />
+        <mesh position={[0.2, 1, 0.26]} rotation={[Math.PI/2, 0, 0]}>
+          <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} />
           <meshStandardMaterial color='#C0C0C0' roughness={0.3} metalness={0.8} />
         </mesh>
         {/* Door seam */}

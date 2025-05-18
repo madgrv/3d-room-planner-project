@@ -11,17 +11,17 @@ export function TileSettingsPanel() {
   const { lang } = useLanguage();
   const selectedElement = useRoomElementStore((state) => state.selectedElement);
   const panelRef = useRef<HTMLDivElement>(null);
-  
+
   // Get tile settings and functions from the tile store
-  const tileSettings = useTileStore((state) => 
+  const tileSettings = useTileStore((state) =>
     selectedElement ? state.elementTileSettings[selectedElement] : null
   );
-  const tilingEnabled = useTileStore((state) => 
+  const tilingEnabled = useTileStore((state) =>
     selectedElement ? state.elementTilingEnabled[selectedElement] : false
   );
   const setTileSettings = useTileStore((state) => state.setTileSettings);
   const setTilingEnabled = useTileStore((state) => state.setTilingEnabled);
-  
+
   // Position the panel below the toolbar
   useEffect(() => {
     if (panelRef.current && selectedElement) {
@@ -30,16 +30,16 @@ export function TileSettingsPanel() {
       panelRef.current.style.top = '0';
     }
   }, [selectedElement]);
-  
+
   // Only show panel when a room element is selected
   if (!selectedElement) {
     return null;
   }
-  
+
   // Common styles for consistency
   const radioLabelStyle = 'text-xs font-medium';
   const radioGroupStyle = 'flex flex-wrap gap-2 mt-1';
-  
+
   // Get readable name for the selected element
   const getElementName = (element: string) => {
     switch (element) {
@@ -59,43 +59,43 @@ export function TileSettingsPanel() {
         return element;
     }
   };
-  
+
   // Handle tile size change
   const handleTileSizeChange = (value: string): void => {
     if (selectedElement) {
       setTileSettings(selectedElement, {
-        ...tileSettings || { size: 'medium', texture: 'ceramic' },
-        size: value as TileSize
+        ...(tileSettings || { size: 'medium', texture: 'ceramic' }),
+        size: value as TileSize,
       });
     }
   };
-  
+
   // Handle tile texture change
   const handleTextureChange = (value: string): void => {
     if (selectedElement) {
       setTileSettings(selectedElement, {
-        ...tileSettings || { size: 'medium', texture: 'ceramic' },
-        texture: value as TileTexture
+        ...(tileSettings || { size: 'medium', texture: 'ceramic' }),
+        texture: value as TileTexture,
       });
     }
   };
-  
+
   // Handle tiling toggle
   const handleTilingToggle = (enabled: boolean) => {
     if (selectedElement) {
       setTilingEnabled(selectedElement, enabled);
     }
   };
-  
+
   return (
-    <div 
+    <div
       ref={panelRef}
       className='absolute right-0 top-0 z-30 tile-controls-floating'
       style={{ marginTop: '-1px' }} // Connect seamlessly with the toolbar
     >
-      <Card className="w-64 rounded-t-none rounded-br-lg rounded-bl-lg border-t-0 [box-shadow:var(--shadow-md)]">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm">
+      <Card className='w-64 rounded-t-none rounded-br-none rounded-bl-md border-t-0 [box-shadow:var(--shadow-md)]'>
+        <CardHeader className='pb-3'>
+          <CardTitle className='text-sm'>
             {lang.tileSettings.title}: {getElementName(selectedElement)}
           </CardTitle>
         </CardHeader>
@@ -105,70 +105,70 @@ export function TileSettingsPanel() {
               {lang.tileSettings.enableTiling}
             </label>
             <Switch
-              id="tiling-toggle"
+              id='tiling-toggle'
               checked={tilingEnabled}
               onCheckedChange={handleTilingToggle}
-              className="ml-2"
+              className='ml-2'
             />
           </div>
-          
+
           {tilingEnabled && tileSettings && (
             <div className='flex flex-col gap-3'>
               <div>
                 <label className={radioLabelStyle}>
                   {lang.tileSettings.tileSize}
                 </label>
-                <RadioGroup 
-                  value={tileSettings.size} 
+                <RadioGroup
+                  value={tileSettings.size}
                   onValueChange={(value: string) => handleTileSizeChange(value)}
                   className={radioGroupStyle}
                 >
-                  <div className="flex items-center gap-1">
-                    <RadioGroupItem value="small" id="size-small" />
-                    <label htmlFor="size-small" className="text-xs">
+                  <div className='flex items-center gap-1'>
+                    <RadioGroupItem value='small' id='size-small' />
+                    <label htmlFor='size-small' className='text-xs'>
                       {lang.tileSettings.small} (25cm)
                     </label>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <RadioGroupItem value="medium" id="size-medium" />
-                    <label htmlFor="size-medium" className="text-xs">
+                  <div className='flex items-center gap-1'>
+                    <RadioGroupItem value='medium' id='size-medium' />
+                    <label htmlFor='size-medium' className='text-xs'>
                       {lang.tileSettings.medium} (50cm)
                     </label>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <RadioGroupItem value="large" id="size-large" />
-                    <label htmlFor="size-large" className="text-xs">
+                  <div className='flex items-center gap-1'>
+                    <RadioGroupItem value='large' id='size-large' />
+                    <label htmlFor='size-large' className='text-xs'>
                       {lang.tileSettings.large} (75cm)
                     </label>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <RadioGroupItem value="extraLarge" id="size-xl" />
-                    <label htmlFor="size-xl" className="text-xs">
+                  <div className='flex items-center gap-1'>
+                    <RadioGroupItem value='extraLarge' id='size-xl' />
+                    <label htmlFor='size-xl' className='text-xs'>
                       {lang.tileSettings.extraLarge} (100cm)
                     </label>
                   </div>
                 </RadioGroup>
               </div>
-              
+
               <div>
                 <label className={radioLabelStyle}>
                   {lang.tileSettings.tileTexture}
                 </label>
-                <RadioGroup 
-                  value={tileSettings.texture} 
+                <RadioGroup
+                  value={tileSettings.texture}
                   onValueChange={(value: string) => handleTextureChange(value)}
                   className={radioGroupStyle}
                 >
-                  <div className="flex items-center gap-1">
-                    <RadioGroupItem value="ceramic" id="texture-ceramic" />
-                    <label htmlFor="texture-ceramic" className="text-xs">
+                  <div className='flex items-center gap-1'>
+                    <RadioGroupItem value='ceramic' id='texture-ceramic' />
+                    <label htmlFor='texture-ceramic' className='text-xs'>
                       {lang.tileSettings.ceramic}
                     </label>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <RadioGroupItem value="marble" id="texture-floreal" />
-                    <label htmlFor="texture-floreal" className="text-xs">
-                      {lang.tileSettings.floreal || "Floreal"}
+                  <div className='flex items-center gap-1'>
+                    <RadioGroupItem value='marble' id='texture-floreal' />
+                    <label htmlFor='texture-floreal' className='text-xs'>
+                      {lang.tileSettings.floreal || 'Floreal'}
                     </label>
                   </div>
                 </RadioGroup>

@@ -126,11 +126,11 @@ export function StatusBar({
         {selectedRoomElement && (
           <>
             <div className="flex items-center gap-1">
-              <span className="text-muted-foreground">Type:</span>
+              <span className="text-muted-foreground">{lang.statusBar.type}</span>
               <span>{formatRoomElementName(selectedRoomElement)}</span>
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-muted-foreground">Visible:</span>
+              <span className="text-muted-foreground">{lang.statusBar.visible}</span>
               <span>{roomElementVisibility[selectedRoomElement] ? 'Yes' : 'No'}</span>
             </div>
           </>
@@ -177,14 +177,14 @@ export function StatusBar({
             <Popover>
               <PopoverTrigger asChild>
                 <button className="flex items-center gap-1 text-xs px-1 py-0.5 rounded border border-border">
-                  <span>Grid: {snapValue}</span>
+                  <span>{lang.statusBar.grid} {snapValue}</span>
                   <ChevronDownIcon className="h-3 w-3" />
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-56 p-3">
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-xs font-medium">Snap Value</span>
+                    <span className="text-xs font-medium">{lang.statusBar.snapValue}</span>
                     <span className="text-xs">{snapValue}</span>
                   </div>
                   <Slider
@@ -207,7 +207,7 @@ export function StatusBar({
         {/* Movement axis selector - only show in move mode */}
         {mode === 'move' && (
           <div className="flex items-center gap-1">
-            <span className="text-muted-foreground">Axis:</span>
+            <span className="text-muted-foreground">{lang.statusBar.axis}</span>
             <div className="flex bg-background rounded border border-border">
               <TooltipProvider>
                 <Tooltip>
@@ -285,7 +285,7 @@ export function StatusBar({
           <div className="flex items-center gap-3">
             {/* Rotation amount selector */}
             <div className="flex items-center gap-1">
-              <span className="text-muted-foreground">Increment:</span>
+              <span className="text-muted-foreground">{lang.statusBar.increment}</span>
               <div className="flex bg-background rounded border border-border">
                 {[90, 45, 15, 5].map((amount) => (
                   <TooltipProvider key={`rotation-${amount}`}>
@@ -300,7 +300,7 @@ export function StatusBar({
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Rotate by {amount} degrees</p>
+                        <p>{lang.statusBar.rotateBy.replace('{amount}', amount.toString())}</p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -310,7 +310,7 @@ export function StatusBar({
             
             {/* Rotation direction buttons */}
             <div className="flex items-center gap-1">
-              <span className="text-muted-foreground">Rotate:</span>
+              <span className="text-muted-foreground">{lang.statusBar.rotate}</span>
               <div className="flex bg-background rounded border border-border">
                 <TooltipProvider>
                   <Tooltip>
@@ -332,7 +332,7 @@ export function StatusBar({
                       </button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Rotate counter-clockwise by {rotationAmount}°</p>
+                      <p>{lang.statusBar.rotateCounterClockwise.replace('{amount}', rotationAmount.toString())}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -357,7 +357,7 @@ export function StatusBar({
                       </button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Rotate clockwise by {rotationAmount}°</p>
+                      <p>{lang.statusBar.rotateClockwise.replace('{amount}', rotationAmount.toString())}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -373,7 +373,7 @@ export function StatusBar({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground">Tiles:</span>
+                    <span className="text-muted-foreground">{lang.statusBar.tiles}</span>
                     <Switch
                       checked={useTileStore.getState().elementTilingEnabled[selectedRoomElement] || false}
                       onCheckedChange={(checked) => {
@@ -385,7 +385,7 @@ export function StatusBar({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>Toggle tiling for {formatRoomElementName(selectedRoomElement)}</p>
+                  <p>{lang.statusBar.toggleTiling.replace('{element}', formatRoomElementName(selectedRoomElement))}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

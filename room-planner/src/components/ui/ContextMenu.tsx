@@ -2,7 +2,7 @@
 // Team note: All user-facing text is localised. All primitives are SHADCN components, centralised for reuse.
 
 import * as React from 'react';
-// import { useLanguage } from '@/lang'; // Will be needed for localisation in the future
+import { useLanguage } from '@/lang';
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { useViewStore } from '@/store/viewStore';
 import { useRoomElementStore, RoomElementType } from '@/store/roomElementStore';
@@ -36,7 +36,7 @@ export function ContextMenu({
   roomElement,
   onClose,
 }: ContextMenuProps) {
-  // const { lang } = useLanguage(); // Not currently used but kept for future localisation
+  const { lang } = useLanguage();
   const { furniture, removeFurniture, updateFurniture } = useFurnitureStore();
   // Access the store using individual selectors to prevent infinite update loops
   // Only extract the specific values we need from the store
@@ -150,19 +150,37 @@ export function ContextMenu({
 
     switch (element) {
       case 'floor':
-        return 'Floor';
+        return lang.contextMenu.floor;
       case 'wall-front':
-        return 'Front Wall';
+        return lang.contextMenu.wallFront;
       case 'wall-back':
-        return 'Back Wall';
+        return lang.contextMenu.wallBack;
       case 'wall-left':
-        return 'Left Wall';
+        return lang.contextMenu.wallLeft;
       case 'wall-right':
-        return 'Right Wall';
+        return lang.contextMenu.wallRight;
       case 'ceiling':
-        return 'Ceiling';
+        return lang.contextMenu.ceiling;
       default:
-        return 'Room Element';
+        return lang.contextMenu.roomElement;
+    }
+  };
+  
+  // Get translated furniture type name
+  const getFurnitureTypeName = (type: string): string => {
+    switch (type) {
+      case 'chair':
+        return lang.furnitureControls.chair;
+      case 'table':
+        return lang.furnitureControls.table;
+      case 'sofa':
+        return lang.furnitureControls.sofa;
+      case 'bed':
+        return lang.furnitureControls.bed;
+      case 'wardrobe':
+        return lang.furnitureControls.wardrobe;
+      default:
+        return type;
     }
   };
 
@@ -224,13 +242,13 @@ export function ContextMenu({
           // Furniture menu
           <>
             <div className='p-2 border-b border-border font-medium'>
-              {selectedItem.type}
+              {getFurnitureTypeName(selectedItem.type)}
             </div>
 
             {/* Movement axis selection */}
             <div className='p-1'>
               <div className='px-2 py-1 text-xs text-muted-foreground'>
-                Movement Axis
+                {lang.contextMenu.movementAxis}
               </div>
               <button
                 className={`w-full text-left px-2 py-1 text-xs ${
@@ -242,7 +260,7 @@ export function ContextMenu({
                 }}
               >
                 <MoveIcon className='h-3 w-3' />
-                Floor Plane (XZ)
+                {lang.contextMenu.floorPlane}
               </button>
               <button
                 className={`w-full text-left px-2 py-1 text-xs ${
@@ -253,7 +271,7 @@ export function ContextMenu({
                   onClose();
                 }}
               >
-                <ArrowRightIcon className='h-3 w-3' />X Axis
+                <ArrowRightIcon className='h-3 w-3' />{lang.contextMenu.xAxis}
               </button>
               <button
                 className={`w-full text-left px-2 py-1 text-xs ${
@@ -264,7 +282,7 @@ export function ContextMenu({
                   onClose();
                 }}
               >
-                <ArrowUpIcon className='h-3 w-3' />Y Axis (Up/Down)
+                <ArrowUpIcon className='h-3 w-3' />{lang.contextMenu.yAxis}
               </button>
               <button
                 className={`w-full text-left px-2 py-1 text-xs ${
@@ -275,19 +293,19 @@ export function ContextMenu({
                   onClose();
                 }}
               >
-                <ArrowDownIcon className='h-3 w-3' />Z Axis
+                <ArrowDownIcon className='h-3 w-3' />{lang.contextMenu.zAxis}
               </button>
             </div>
 
             {/* Item operations */}
             <div className='p-1 border-t border-border'>
               <div className='px-2 py-1 text-xs text-muted-foreground'>
-                Operations
+                {lang.contextMenu.operations}
               </div>
               {/* Rotation controls */}
               <div className='p-1'>
                 <div className='px-2 py-1 text-xs text-muted-foreground'>
-                  Rotation
+                  {lang.contextMenu.rotation}
                 </div>
                 <div className='flex justify-between px-2'>
                   <button
@@ -302,7 +320,7 @@ export function ContextMenu({
                     }}
                   >
                     <ReloadIcon className='h-4 w-4' />
-                    -90°
+                    {lang.contextMenu.rotateCounterClockwise}
                   </button>
                   <button
                     className='text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
@@ -316,7 +334,7 @@ export function ContextMenu({
                     }}
                   >
                     <UpdateIcon className='h-4 w-4' />
-                    +90°
+                    {lang.contextMenu.rotateClockwise}
                   </button>
                 </div>
               </div>
@@ -327,7 +345,7 @@ export function ContextMenu({
                 onClick={handleDuplicate}
               >
                 <CopyIcon className='h-3 w-3' />
-                Duplicate
+                {lang.contextMenu.duplicate}
               </button>
 
               {/* Delete */}
@@ -336,7 +354,7 @@ export function ContextMenu({
                 onClick={handleDelete}
               >
                 <TrashIcon className='h-3 w-3' />
-                Delete
+                {lang.contextMenu.delete}
               </button>
               <button
                 className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
@@ -345,12 +363,12 @@ export function ContextMenu({
                 {selectedItem.visible === false ? (
                   <>
                     <EyeOpenIcon className='h-3 w-3' />
-                    Show
+                    {lang.contextMenu.show}
                   </>
                 ) : (
                   <>
                     <EyeClosedIcon className='h-3 w-3' />
-                    Hide
+                    {lang.contextMenu.hide}
                   </>
                 )}
               </button>
@@ -359,14 +377,14 @@ export function ContextMenu({
                 onClick={handleToggleSnap}
               >
                 <ArrowDownIcon className='h-3 w-3' />
-                {snapEnabled ? 'Snap: On' : 'Snap: Off'}
+                {snapEnabled ? lang.contextMenu.snapOn : lang.contextMenu.snapOff}
               </button>
               <button
                 className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
                 onClick={handleSnapToFloor}
               >
                 <ArrowDownIcon className='h-3 w-3' />
-                Place on Floor
+                {lang.contextMenu.placeOnFloor}
               </button>
             </div>
           </>
@@ -385,12 +403,12 @@ export function ContextMenu({
               {isRoomElementVisible ? (
                 <>
                   <EyeClosedIcon className='h-3 w-3' />
-                  Hide {getRoomElementName(roomElement).toLowerCase()}
+                  {lang.contextMenu.hideElement.replace('{element}', getRoomElementName(roomElement).toLowerCase())}
                 </>
               ) : (
                 <>
                   <EyeOpenIcon className='h-3 w-3' />
-                  Show {getRoomElementName(roomElement).toLowerCase()}
+                  {lang.contextMenu.showElement.replace('{element}', getRoomElementName(roomElement).toLowerCase())}
                 </>
               )}
             </button>
@@ -401,7 +419,7 @@ export function ContextMenu({
               onClick={handleRoomElementAction}
             >
               <Pencil1Icon className='h-3 w-3' />
-              Select {getRoomElementName(roomElement)}
+              {lang.contextMenu.selectElement.replace('{element}', getRoomElementName(roomElement))}
             </button>
 
             {/* Add texture/color option */}
@@ -409,19 +427,19 @@ export function ContextMenu({
               className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
               onClick={() => {
                 alert(
-                  'Texture/color change would be implemented in a future update'
+                  lang.contextMenu.textureChangeMessage
                 );
                 onClose();
               }}
             >
               <Pencil1Icon className='h-3 w-3' />
-              Change Texture
+              {lang.contextMenu.changeTexture}
             </button>
           </>
         ) : (
           // Empty space menu
           <div className='p-2 text-center text-muted-foreground'>
-            No item selected
+            {lang.contextMenu.noItemSelected}
           </div>
         )}
       </div>

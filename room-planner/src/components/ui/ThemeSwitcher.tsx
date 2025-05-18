@@ -4,7 +4,7 @@
 import { useTheme } from 'next-themes';
 import { Switch } from './Switch';
 import { useEffect, useState } from 'react';
-import lang from '@/lang/en';
+import { useLanguage } from '@/lang';
 
 // Simple SVG icons for sun and moon
 const SunIcon = () => (
@@ -50,8 +50,12 @@ const MoonIcon = () => (
 );
 
 export function ThemeSwitcher({ className }: { className?: string }) {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, systemTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { lang } = useLanguage();
+  
+  // Determine the current theme, accounting for 'system' preference
+  const currentTheme = theme === 'system' ? systemTheme : theme;
 
   // After mounting, we can safely show the UI
   useEffect(() => {
@@ -60,7 +64,7 @@ export function ThemeSwitcher({ className }: { className?: string }) {
 
   // Toggle between 'light' and 'dark' themes
   const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
+    setTheme(currentTheme === 'dark' ? 'light' : 'dark');
   };
 
   // Don't render anything until mounted to prevent hydration mismatch
@@ -71,14 +75,14 @@ export function ThemeSwitcher({ className }: { className?: string }) {
       <SunIcon />
       <Switch
         id='theme-mode'
-        checked={theme === 'dark'}
+        checked={currentTheme === 'dark'}
         onCheckedChange={toggleTheme}
         aria-label={lang.themeSwitcher.toggleLabel}
         className="data-[state=checked]:bg-[hsl(29.57_100%_59.02%)] data-[state=unchecked]:bg-[hsl(15.88_30.91%_21.57%)]"
       />
       <MoonIcon />
       <span className='text-sm font-medium transition-colors font-sans'>
-        {theme === 'dark'
+        {currentTheme === 'dark'
           ? lang.themeSwitcher.darkMode
           : lang.themeSwitcher.lightMode}
       </span>

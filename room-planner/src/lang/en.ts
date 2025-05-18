@@ -16,6 +16,8 @@ const en = {
   languageSelector: {
     selectLanguage: 'Select language',
     english: 'English',
+    italian: 'Italian',
+    french: 'French',
     spanish: 'Spanish',
   },
   roomControls: {

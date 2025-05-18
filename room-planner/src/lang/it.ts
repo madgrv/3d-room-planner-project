@@ -18,6 +18,8 @@ const it: typeof en = {
   languageSelector: {
     selectLanguage: 'Seleziona lingua',
     english: 'Inglese',
+    italian: 'Italiano',
+    french: 'Francese',
     spanish: 'Spagnolo',
   },
   roomControls: {

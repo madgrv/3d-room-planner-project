@@ -1,5 +1,5 @@
 // Language selector component for switching between available languages
-// This component allows users to toggle between English and Italian
+// This component allows users to toggle between English, Italian, French and Spanish
 
 import { useLanguage } from '@/lang';
 import {
@@ -27,7 +27,9 @@ export function LanguageSelector({ className = '' }: LanguageSelectorProps) {
   // This ensures all user-facing text is properly localised
   const languageNames: Record<string, string> = {
     en: lang.languageSelector?.english || 'English',
-    it: 'Italiano', // Will be added to language file when Italian support is implemented
+    it: 'Italiano',
+    fr: 'Français',
+    es: 'Español',
   };
 
   return (

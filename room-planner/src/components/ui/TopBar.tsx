@@ -15,7 +15,7 @@ export function TopBar({ className = '' }: TopBarProps) {
 
   return (
     <div className={`${className}`}>
-      <div className='relative flex md:flex-row flex-col items-center justify-between mb-6'>
+      <div className='relative flex md:flex-row flex-col items-center justify-between mb-4'>
         <div className='absolute inset-x-0 flex flex-col items-center justify-center pointer-events-none'>
           <h1 className='text-2xl font-bold'>{lang.app.title}</h1>
           <p className='text-sm text-muted-foreground'>{lang.app.subtitle}</p>

@@ -1,12 +1,21 @@
 import { useRoomStore } from '@/store/roomStore';
 import { Grid as DreiGrid } from '@react-three/drei';
+import { useTileStore } from '@/store/tileStore';
 
 export const Grid = () => {
   const { dimensions } = useRoomStore();
   const { width, length } = dimensions;
   
+  // Get the floor tiling state to determine whether to show the grid
+  const floorTilingEnabled = useTileStore((state) => state.elementTilingEnabled['floor']);
+  
   // Calculate grid size based on room dimensions
   const gridSize = Math.max(width, length) * 2;
+  
+  // Don't render the grid if floor tiling is enabled
+  if (floorTilingEnabled) {
+    return null;
+  }
   
   return (
     <DreiGrid

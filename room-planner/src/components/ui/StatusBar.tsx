@@ -4,8 +4,17 @@
 import * as React from 'react';
 import { useLanguage } from '@/lang';
 import { useFurnitureStore } from '@/store/furnitureStore';
-import { MagnifyingGlassIcon, ArrowRightIcon, ArrowUpIcon, ArrowDownIcon, MoveIcon, ChevronDownIcon } from '@radix-ui/react-icons';
-import { useViewStore } from '@/store/viewStore';
+import { 
+  MagnifyingGlassIcon, 
+  ArrowRightIcon, 
+  ArrowUpIcon, 
+  ArrowDownIcon, 
+  MoveIcon, 
+  ChevronDownIcon,
+  ReloadIcon,
+  UpdateIcon
+} from '@radix-ui/react-icons';
+import { useViewStore, RotationAmount } from '@/store/viewStore';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Slider } from './slider';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
@@ -35,6 +44,10 @@ export function StatusBar({
   // Get and set the movement axis from the store
   const movementAxis = useViewStore((state) => state.movementAxis);
   const setMovementAxis = useViewStore((state) => state.setMovementAxis);
+  
+  // Get and set the rotation amount from the store
+  const rotationAmount = useViewStore((state) => state.rotationAmount);
+  const setRotationAmount = useViewStore((state) => state.setRotationAmount);
 
   // Get the selected item
   const selectedItem = React.useMemo(() => {
@@ -218,6 +231,92 @@ export function StatusBar({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+            </div>
+          </div>
+        )}
+        
+        {/* Rotation controls - only show in rotate mode */}
+        {mode === 'rotate' && selectedItem && (
+          <div className="flex items-center gap-3">
+            {/* Rotation amount selector */}
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground">Increment:</span>
+              <div className="flex bg-background rounded border border-border">
+                {[90, 45, 15, 5].map((amount) => (
+                  <TooltipProvider key={`rotation-${amount}`}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={`px-2 py-0.5 text-xs ${amount !== 90 ? 'border-l border-border' : ''} ${rotationAmount === amount ? 'bg-accent' : ''}`}
+                          onClick={() => setRotationAmount(amount as RotationAmount)}
+                          aria-label={`Rotate by ${amount} degrees`}
+                        >
+                          {amount}°
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Rotate by {amount} degrees</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ))}
+              </div>
+            </div>
+            
+            {/* Rotation direction buttons */}
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground">Rotate:</span>
+              <div className="flex bg-background rounded border border-border">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        className="px-2 py-0.5 text-xs"
+                        onClick={() => {
+                          if (selectedItem) {
+                            // Convert degrees to radians
+                            const radians = (rotationAmount * Math.PI) / 180;
+                            // Rotate counter-clockwise
+                            const newRotation = (selectedItem.rotation - radians) % (Math.PI * 2);
+                            useFurnitureStore.getState().updateFurniture(selectedItem.id, { rotation: newRotation });
+                          }
+                        }}
+                        aria-label="Rotate counter-clockwise"
+                      >
+                        <ReloadIcon className="h-3 w-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Rotate counter-clockwise by {rotationAmount}°</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        className="px-2 py-0.5 text-xs border-l border-border"
+                        onClick={() => {
+                          if (selectedItem) {
+                            // Convert degrees to radians
+                            const radians = (rotationAmount * Math.PI) / 180;
+                            // Rotate clockwise
+                            const newRotation = (selectedItem.rotation + radians) % (Math.PI * 2);
+                            useFurnitureStore.getState().updateFurniture(selectedItem.id, { rotation: newRotation });
+                          }
+                        }}
+                        aria-label="Rotate clockwise"
+                      >
+                        <UpdateIcon className="h-3 w-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Rotate clockwise by {rotationAmount}°</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
             </div>
           </div>
         )}

@@ -468,6 +468,14 @@ export const Furniture: React.FC<FurnitureProps> = ({
   if (type === 'bed') geometry = <boxGeometry args={[2, 0.3, 1]} />;
   if (type === 'wardrobe') geometry = <boxGeometry args={[1, 2, 0.5]} />;
 
+  // Set userData for raycasting when the mesh reference is available
+  useEffect(() => {
+    if (meshRef.current) {
+      // Add userData to the mesh for raycasting identification
+      meshRef.current.userData = { furnitureId: id, type };
+    }
+  }, [id, type]);
+
   return (
     <mesh
       ref={meshRef}

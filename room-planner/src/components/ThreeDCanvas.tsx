@@ -60,33 +60,54 @@ const SceneContent = ({
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(scene.children, true);
 
-      // Find the first intersected object that has userData.furnitureId or userData.roomElement
-      let clickedItemId: string | null = null;
-      let roomElement: RoomElementType = null;
+      // Find all intersected objects with userData
+      const furnitureIntersects: { itemId: string; distance: number }[] = [];
+      const roomElementIntersects: { element: RoomElementType; distance: number }[] = [];
 
+      // First pass: collect all intersections
       for (const intersect of intersects) {
         // Walk up the parent chain to find the furniture object or room element
         let obj: THREE.Object3D | null = intersect.object;
+        const distance = intersect.distance; // Store the distance for sorting
 
         while (obj) {
           // Check for furniture item
           if (obj.userData && obj.userData.furnitureId) {
-            clickedItemId = obj.userData.furnitureId;
-            roomElement = null; // Reset room element if we found furniture
+            furnitureIntersects.push({
+              itemId: obj.userData.furnitureId,
+              distance: distance
+            });
             break;
           }
 
           // Check for room element
           if (obj.userData && obj.userData.roomElement) {
-            roomElement = obj.userData.roomElement as RoomElementType;
-            clickedItemId = null; // Reset furniture ID if we found a room element
+            roomElementIntersects.push({
+              element: obj.userData.roomElement as RoomElementType,
+              distance: distance
+            });
             break;
           }
 
           obj = obj.parent;
         }
+      }
 
-        if (clickedItemId || roomElement) break;
+      // Prioritize furniture over room elements
+      let clickedItemId: string | null = null;
+      let roomElement: RoomElementType = null;
+
+      // If we have furniture intersections, use the closest one
+      if (furnitureIntersects.length > 0) {
+        // Sort by distance and take the closest
+        furnitureIntersects.sort((a, b) => a.distance - b.distance);
+        clickedItemId = furnitureIntersects[0].itemId;
+      } 
+      // Otherwise, if we have room element intersections, use the closest one
+      else if (roomElementIntersects.length > 0) {
+        // Sort by distance and take the closest
+        roomElementIntersects.sort((a, b) => a.distance - b.distance);
+        roomElement = roomElementIntersects[0].element;
       }
 
       console.log(

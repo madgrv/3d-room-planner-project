@@ -23,10 +23,11 @@ export function LanguageSelector({ className = '' }: LanguageSelectorProps) {
     return null;
   }
 
-  // Map language codes to their native names
+  // Use localised language names from the language file with fallbacks
+  // This ensures all user-facing text is properly localised
   const languageNames: Record<string, string> = {
-    en: 'English',
-    it: 'Italiano',
+    en: lang.languageSelector?.english || 'English',
+    it: 'Italiano', // Will be added to language file when Italian support is implemented
   };
 
   return (
@@ -37,7 +38,7 @@ export function LanguageSelector({ className = '' }: LanguageSelectorProps) {
             variant='outline'
             size='sm'
             className='h-8 text-xs flex items-center gap-2'
-            aria-label='Select language'
+            aria-label={lang.languageSelector?.selectLanguage || 'Select language'}
           >
             <Globe className='h-4 w-4' />
             {languageNames[lang.code] || lang.code}

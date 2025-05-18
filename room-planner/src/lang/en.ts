@@ -13,6 +13,11 @@ const en = {
     lightMode: 'Light Mode',
     darkMode: 'Dark Mode',
   },
+  languageSelector: {
+    selectLanguage: 'Select language',
+    english: 'English',
+    spanish: 'Spanish',
+  },
   roomControls: {
     title: 'Room Settings',
     widthLabel: 'Width',
@@ -76,6 +81,10 @@ const en = {
     selectMode: 'Select',
     moveMode: 'Move',
     rotateMode: 'Rotate',
+    moveFloorPlane: 'Move on floor plane (XZ)',
+    moveXAxis: 'Move along X axis',
+    moveYAxis: 'Move along Y axis (up/down)',
+    moveZAxis: 'Move along Z axis',
   },
   tileSettings: {
     title: 'Tile Settings',

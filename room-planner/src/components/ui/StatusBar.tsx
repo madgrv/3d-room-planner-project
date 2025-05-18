@@ -8,6 +8,7 @@ import { MagnifyingGlassIcon, ArrowRightIcon, ArrowUpIcon, ArrowDownIcon, MoveIc
 import { useViewStore } from '@/store/viewStore';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Slider } from './slider';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 
 interface StatusBarProps {
   selectedItemId: string | null;
@@ -150,34 +151,73 @@ export function StatusBar({
           <div className="flex items-center gap-1">
             <span className="text-muted-foreground">Axis:</span>
             <div className="flex bg-background rounded border border-border">
-              <button
-                className={`px-2 py-0.5 text-xs ${movementAxis === 'xz' ? 'bg-accent' : ''}`}
-                onClick={() => setMovementAxis('xz')}
-                title="Move on floor plane (XZ)"
-              >
-                <MoveIcon className="h-3 w-3" />
-              </button>
-              <button
-                className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'x' ? 'bg-accent' : ''}`}
-                onClick={() => setMovementAxis('x')}
-                title="Move along X axis"
-              >
-                <ArrowRightIcon className="h-3 w-3" />
-              </button>
-              <button
-                className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'y' ? 'bg-accent' : ''}`}
-                onClick={() => setMovementAxis('y')}
-                title="Move along Y axis (up/down)"
-              >
-                <ArrowUpIcon className="h-3 w-3" />
-              </button>
-              <button
-                className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'z' ? 'bg-accent' : ''}`}
-                onClick={() => setMovementAxis('z')}
-                title="Move along Z axis"
-              >
-                <ArrowDownIcon className="h-3 w-3" />
-              </button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className={`px-2 py-0.5 text-xs ${movementAxis === 'xz' ? 'bg-accent' : ''}`}
+                      onClick={() => setMovementAxis('xz')}
+                      aria-label={lang.statusBar?.moveFloorPlane || 'Move on floor plane (XZ)'}
+                    >
+                      <MoveIcon className="h-3 w-3" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{lang.statusBar.moveFloorPlane}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'x' ? 'bg-accent' : ''}`}
+                      onClick={() => setMovementAxis('x')}
+                      aria-label={lang.statusBar?.moveXAxis || 'Move along X axis'}
+                    >
+                      <ArrowRightIcon className="h-3 w-3" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{lang.statusBar.moveXAxis}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'y' ? 'bg-accent' : ''}`}
+                      onClick={() => setMovementAxis('y')}
+                      aria-label={lang.statusBar?.moveYAxis || 'Move along Y axis (up/down)'}
+                    >
+                      <ArrowUpIcon className="h-3 w-3" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{lang.statusBar.moveYAxis}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'z' ? 'bg-accent' : ''}`}
+                      onClick={() => setMovementAxis('z')}
+                      aria-label={lang.statusBar?.moveZAxis || 'Move along Z axis'}
+                    >
+                      <ArrowDownIcon className="h-3 w-3" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{lang.statusBar.moveZAxis}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
           </div>
         )}

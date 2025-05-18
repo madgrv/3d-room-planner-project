@@ -121,7 +121,7 @@ export const TiledFloor = ({
       // hide grid under the floor
       opacity: 1,
     });
-  }, [theme, tilesX, tilesZ]);
+  }, [theme, length, tileSize, width]);
 
   return (
     <mesh

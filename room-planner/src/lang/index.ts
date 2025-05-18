@@ -129,6 +129,12 @@ export function useLanguage() {
     const newLang = setLanguage(langCode);
     if (newLang) {
       setCurrentLang(newLang);
+      
+      // Force a re-render by updating the document language attribute
+      document.documentElement.lang = langCode;
+      
+      // Force a refresh of all components that use the language
+      window.location.reload();
     }
   };
   

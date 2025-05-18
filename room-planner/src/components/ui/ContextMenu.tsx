@@ -214,7 +214,7 @@ export function ContextMenu({
   return (
     <div
       ref={menuRef}
-      className='absolute z-50 bg-card text-card-foreground shadow-lg rounded-sm border border-border overflow-hidden w-48'
+      className='fixed z-50 bg-card text-card-foreground shadow-lg rounded-sm border border-border overflow-hidden w-48'
       style={{ left: x, top: y }}
     >
       <div className='p-1 flex flex-col text-sm'>

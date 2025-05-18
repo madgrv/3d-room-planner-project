@@ -124,25 +124,37 @@ export function TileSettingsPanel() {
                 >
                   <div className='flex items-center gap-1'>
                     <RadioGroupItem value='small' id='size-small' />
-                    <label htmlFor='size-small' className='text-xs whitespace-nowrap'>
+                    <label
+                      htmlFor='size-small'
+                      className='text-xs whitespace-nowrap'
+                    >
                       {lang.tileSettings.small} (25cm)
                     </label>
                   </div>
                   <div className='flex items-center gap-1'>
                     <RadioGroupItem value='medium' id='size-medium' />
-                    <label htmlFor='size-medium' className='text-xs whitespace-nowrap'>
+                    <label
+                      htmlFor='size-medium'
+                      className='text-xs whitespace-nowrap'
+                    >
                       {lang.tileSettings.medium} (50cm)
                     </label>
                   </div>
                   <div className='flex items-center gap-1'>
                     <RadioGroupItem value='large' id='size-large' />
-                    <label htmlFor='size-large' className='text-xs whitespace-nowrap'>
+                    <label
+                      htmlFor='size-large'
+                      className='text-xs whitespace-nowrap'
+                    >
                       {lang.tileSettings.large} (75cm)
                     </label>
                   </div>
                   <div className='flex items-center gap-1'>
                     <RadioGroupItem value='extraLarge' id='size-xl' />
-                    <label htmlFor='size-xl' className='text-xs whitespace-nowrap'>
+                    <label
+                      htmlFor='size-xl'
+                      className='text-xs whitespace-nowrap'
+                    >
                       {lang.tileSettings.extraLarge} (100cm)
                     </label>
                   </div>

@@ -226,6 +226,9 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     }
   }, [resolvedTheme, mounted]);
 
+  // Create a ref for the canvas container
+  const canvasContainerRef = useRef<HTMLDivElement>(null);
+
   // Handle right-click on canvas
   const handleRightClick = useCallback(
     (e: MouseEvent, itemId: string | null, roomElement: RoomElementType) => {
@@ -234,14 +237,40 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
 
       console.log('Right-click detected:', { itemId, roomElement });
 
-      // Show context menu at mouse position
-      setContextMenu({
-        visible: true,
-        x: e.clientX,
-        y: e.clientY,
-        itemId,
-        roomElement,
-      });
+      // Get the canvas container's position
+      const canvasRect = canvasContainerRef.current?.getBoundingClientRect();
+      
+      if (canvasRect) {
+        // Calculate position relative to the viewport
+        const x = e.clientX;
+        const y = e.clientY;
+        
+        // Ensure the menu stays within the viewport
+        const menuWidth = 200; // Approximate width of the context menu
+        const menuHeight = 300; // Approximate height of the context menu
+        
+        // Adjust position if it would go off-screen
+        const adjustedX = Math.min(x, window.innerWidth - menuWidth);
+        const adjustedY = Math.min(y, window.innerHeight - menuHeight);
+        
+        // Show context menu at adjusted position
+        setContextMenu({
+          visible: true,
+          x: adjustedX,
+          y: adjustedY,
+          itemId,
+          roomElement,
+        });
+      } else {
+        // Fallback if we can't get the canvas position
+        setContextMenu({
+          visible: true,
+          x: e.clientX,
+          y: e.clientY,
+          itemId,
+          roomElement,
+        });
+      }
 
       // Prevent default context menu
       e.preventDefault();
@@ -255,19 +284,6 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
   };
 
   // Handle native right-click event
-  const handleNativeContextMenu = (e: React.MouseEvent) => {
-    // Prevent default browser context menu
-    e.preventDefault();
-
-    // Show our custom context menu
-    setContextMenu({
-      visible: true,
-      x: e.clientX,
-      y: e.clientY,
-      itemId: null,
-      roomElement: null,
-    });
-  };
 
   // Create a ref to store the canvas element
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -357,11 +373,11 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     <div
       className='relative'
       style={{ userSelect: 'none', position: 'relative' }}
-      onContextMenu={handleNativeContextMenu}
     >
       <div
         className='canvas-container flex-grow border border-border rounded-b-lg rounded-tl-none rounded-tr-none overflow-hidden bg-card relative h-[450px] md:h-[670px]'
         style={{ minWidth: 0 }}
+        ref={canvasContainerRef}
       >
         <Canvas
           shadows

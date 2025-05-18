@@ -216,7 +216,7 @@ export function ContextMenu({
   return (
     <div
       ref={menuRef}
-      className='fixed z-50 bg-card text-card-foreground shadow-lg rounded-sm border border-border overflow-hidden w-48'
+      className='fixed z-50 bg-card text-card-foreground rounded-md border border-border overflow-hidden w-48 [box-shadow:var(--shadow-md)]'
       style={{ left: x, top: y }}
     >
       <div className='p-1 flex flex-col text-sm'>
@@ -294,8 +294,11 @@ export function ContextMenu({
                     className='text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
                     onClick={() => {
                       // Rotate counter-clockwise by 90 degrees (π/2 radians)
-                      const newRotation = (selectedItem.rotation - Math.PI / 2) % (Math.PI * 2);
-                      updateFurniture(selectedItem.id, { rotation: newRotation });
+                      const newRotation =
+                        (selectedItem.rotation - Math.PI / 2) % (Math.PI * 2);
+                      updateFurniture(selectedItem.id, {
+                        rotation: newRotation,
+                      });
                     }}
                   >
                     <ReloadIcon className='h-4 w-4' />
@@ -305,8 +308,11 @@ export function ContextMenu({
                     className='text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
                     onClick={() => {
                       // Rotate clockwise by 90 degrees (π/2 radians)
-                      const newRotation = (selectedItem.rotation + Math.PI / 2) % (Math.PI * 2);
-                      updateFurniture(selectedItem.id, { rotation: newRotation });
+                      const newRotation =
+                        (selectedItem.rotation + Math.PI / 2) % (Math.PI * 2);
+                      updateFurniture(selectedItem.id, {
+                        rotation: newRotation,
+                      });
                     }}
                   >
                     <UpdateIcon className='h-4 w-4' />

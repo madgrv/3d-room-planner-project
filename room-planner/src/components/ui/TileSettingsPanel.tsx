@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './card';
+import { Card, CardContent, CardHeader, CardTitle } from './Card';
 import { Switch } from './Switch';
 import { RadioGroup, RadioGroupItem } from './radio-group';
 import { useRoomElementStore } from '@/store/roomElementStore';

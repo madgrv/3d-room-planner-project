@@ -425,23 +425,13 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
 
       {/* Context Menu - Positioned at the document level */}
       {contextMenu.visible && (
-        <div
-          className='fixed'
-          style={{
-            position: 'fixed',
-            left: contextMenu.x,
-            top: contextMenu.y,
-            zIndex: 9999,
-          }}
-        >
-          <ContextMenu
-            x={contextMenu.x}
-            y={contextMenu.y}
-            itemId={contextMenu.itemId}
-            roomElement={contextMenu.roomElement}
-            onClose={handleCloseContextMenu}
-          />
-        </div>
+        <ContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          itemId={contextMenu.itemId}
+          roomElement={contextMenu.roomElement}
+          onClose={handleCloseContextMenu}
+        />
       )}
 
       {/* Tile Settings Panel - appears when a room element is selected */}

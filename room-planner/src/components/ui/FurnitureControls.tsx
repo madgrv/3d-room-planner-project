@@ -5,6 +5,13 @@ import * as React from 'react';
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { Button } from './Button';
 import { useLanguage } from '@/lang';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './dropdown-menu';
+import { ChevronDown } from 'lucide-react';
 
 export function FurnitureControls() {
   const { lang } = useLanguage();
@@ -33,19 +40,30 @@ export function FurnitureControls() {
         {lang.furnitureControls.title}
       </h2>
       <div className='flex justify-center gap-2'>
-        <select
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
-          className='border bg-background text-foreground rounded-[2px] h-8 px-2 text-xs min-w-[120px] max-w-[150px] focus:outline-none focus:ring focus:border-blue-400'
-          aria-label={lang.furnitureControls.selectType}
-        >
-          <option value=''>{lang.furnitureControls.selectType}</option>
-          {FURNITURE_TYPES.map((type) => (
-            <option key={type.value} value={type.value}>
-              {type.label}
-            </option>
-          ))}
-        </select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant='outline'
+              size='sm'
+              className='h-8 text-xs min-w-[120px] max-w-[150px] flex justify-between items-center'
+              aria-label={lang.furnitureControls.selectType}
+            >
+              {selectedType ? FURNITURE_TYPES.find(type => type.value === selectedType)?.label : lang.furnitureControls.selectType}
+              <ChevronDown className='ml-2 h-4 w-4 opacity-50' />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className='min-w-[120px]'>
+            {FURNITURE_TYPES.map((type) => (
+              <DropdownMenuItem
+                key={type.value}
+                onClick={() => setSelectedType(type.value)}
+                className='text-xs'
+              >
+                {type.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button
           variant='default'
           size='sm'

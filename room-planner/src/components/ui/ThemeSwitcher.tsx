@@ -10,15 +10,15 @@ import lang from '@/lang/en';
 const SunIcon = () => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
-    width='16'
-    height='16'
+    width='18'
+    height='18'
     viewBox='0 0 24 24'
     fill='none'
     stroke='currentColor'
     strokeWidth='2'
     strokeLinecap='round'
     strokeLinejoin='round'
-    className='text-yellow-500'
+    className='text-[hsl(29.57_100%_59.02%)] dark:text-[hsl(29.57_100%_59.02%)]'
   >
     <circle cx='12' cy='12' r='5' />
     <line x1='12' y1='1' x2='12' y2='3' />
@@ -35,15 +35,15 @@ const SunIcon = () => (
 const MoonIcon = () => (
   <svg
     xmlns='http://www.w3.org/2000/svg'
-    width='16'
-    height='16'
+    width='18'
+    height='18'
     viewBox='0 0 24 24'
     fill='none'
     stroke='currentColor'
     strokeWidth='2'
     strokeLinecap='round'
     strokeLinejoin='round'
-    className='text-blue-400'
+    className='text-[hsl(240_6.59%_64.31%)] dark:text-[hsl(240_6.59%_64.31%)]'
   >
     <path d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z' />
   </svg>
@@ -67,16 +67,17 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   if (!mounted) return null;
 
   return (
-    <div className={`flex items-center space-x-3 ${className}`}>
+    <div className={`flex items-center space-x-3 p-2 rounded-lg transition-colors shadow-sm ${className}`}>
       <SunIcon />
       <Switch
         id='theme-mode'
         checked={theme === 'dark'}
         onCheckedChange={toggleTheme}
         aria-label={lang.themeSwitcher.toggleLabel}
+        className="data-[state=checked]:bg-[hsl(29.57_100%_59.02%)] data-[state=unchecked]:bg-[hsl(15.88_30.91%_21.57%)]"
       />
       <MoonIcon />
-      <span className='text-sm font-medium'>
+      <span className='text-sm font-medium transition-colors font-sans'>
         {theme === 'dark'
           ? lang.themeSwitcher.darkMode
           : lang.themeSwitcher.lightMode}

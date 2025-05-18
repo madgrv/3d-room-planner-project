@@ -2,6 +2,14 @@
 // This component allows users to toggle between English and Italian
 
 import { useLanguage } from '@/lang';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './dropdown-menu';
+import { Button } from './Button';
+import { Globe } from 'lucide-react';
 
 interface LanguageSelectorProps {
   className?: string;
@@ -23,18 +31,30 @@ export function LanguageSelector({ className = '' }: LanguageSelectorProps) {
 
   return (
     <div className={`flex items-center space-x-2 ${className}`}>
-      <select
-        value={lang.code}
-        onChange={(e) => changeLanguage(e.target.value)}
-        className='border border-input bg-background text-foreground rounded p-1 text-sm focus:outline-none focus:ring focus:ring-ring focus:border-ring'
-        aria-label='Select language'
-      >
-        {availableLanguages.map((code) => (
-          <option key={code} value={code}>
-            {languageNames[code] || code}
-          </option>
-        ))}
-      </select>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant='outline'
+            size='sm'
+            className='h-8 text-xs flex items-center gap-2'
+            aria-label='Select language'
+          >
+            <Globe className='h-4 w-4' />
+            {languageNames[lang.code] || lang.code}
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align='end'>
+          {availableLanguages.map((code) => (
+            <DropdownMenuItem
+              key={code}
+              onClick={() => changeLanguage(code)}
+              className='text-xs cursor-pointer'
+            >
+              {languageNames[code] || code}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }

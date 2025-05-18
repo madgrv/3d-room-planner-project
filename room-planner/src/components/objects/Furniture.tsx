@@ -424,8 +424,10 @@ export const Furniture: React.FC<FurnitureProps> = ({
 
   // Team note: Use different geometry for each furniture type for clarity and future extensibility.
   let geometry = <boxGeometry args={size} />;
-  if (type === 'chair')
-    geometry = <cylinderGeometry args={[0.4, 0.4, 1, 16]} />;
+  // A typical chair seat is lower and wider for realistic proportions.
+// Using radius 0.3 (diameter 0.6) and height 0.45 to better match standard seating dimensions.
+if (type === 'chair')
+    geometry = <cylinderGeometry args={[0.3, 0.3, 0.45, 16]} />;
   if (type === 'table') geometry = <boxGeometry args={[1.2, 0.1, 0.8]} />;
   if (type === 'sofa') geometry = <boxGeometry args={[1.5, 0.6, 0.7]} />;
   if (type === 'bed') geometry = <boxGeometry args={[2, 0.3, 1]} />;

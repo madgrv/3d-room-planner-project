@@ -47,7 +47,7 @@ export const useFurnitureStore = create<FurnitureState>((set) => ({
       // Adjust Y position based on furniture type to place bottom at floor level
       switch (item.type) {
         case 'chair':
-          yOffset = 0.5; // Half height of cylinder (1/2)
+          yOffset = 0.225; // Half height of chair geometry (0.45/2) to ensure the chair sits on the floor
           break;
         case 'table':
           yOffset = 0.05; // Half height of table (0.1/2)

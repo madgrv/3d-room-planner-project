@@ -38,9 +38,13 @@ export function ContextMenu({
   const { furniture, removeFurniture, updateFurniture } = useFurnitureStore();
   // Access the store using individual selectors to prevent infinite update loops
   // Only extract the specific values we need from the store
-  const toggleVisibility = useRoomElementStore((state) => state.toggleVisibility);
+  const toggleVisibility = useRoomElementStore(
+    (state) => state.toggleVisibility
+  );
   const visibility = useRoomElementStore((state) => state.visibility);
-  const setSelectedElement = useRoomElementStore((state) => state.setSelectedElement);
+  const setSelectedElement = useRoomElementStore(
+    (state) => state.setSelectedElement
+  );
   const menuRef = React.useRef<HTMLDivElement>(null);
 
   // Get and set the movement axis from the store
@@ -210,7 +214,7 @@ export function ContextMenu({
   return (
     <div
       ref={menuRef}
-      className='absolute z-50 bg-card text-card-foreground shadow-lg rounded-md border border-border overflow-hidden w-48'
+      className='absolute z-50 bg-card text-card-foreground shadow-lg rounded-sm border border-border overflow-hidden w-48'
       style={{ left: x, top: y }}
     >
       <div className='p-1 flex flex-col text-sm'>
@@ -362,7 +366,9 @@ export function ContextMenu({
             <button
               className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
               onClick={() => {
-                alert('Texture/color change would be implemented in a future update');
+                alert(
+                  'Texture/color change would be implemented in a future update'
+                );
                 onClose();
               }}
             >

@@ -8,6 +8,7 @@ import { useTheme } from 'next-themes';
 import { useDragStore } from '@/store/dragStore';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ContextMenu } from './ui/ContextMenu';
+import { TileSettingsPanel } from './ui/TileSettingsPanel';
 import { useRoomElementStore, RoomElementType } from '@/store/roomElementStore';
 import { useFurnitureStore } from '@/store/furnitureStore';
 
@@ -398,6 +399,11 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
           />
         </div>
       )}
+      
+      {/* Tile Settings Panel - appears when a room element is selected */}
+      <div className="absolute top-0 right-0 z-10">
+        <TileSettingsPanel />
+      </div>
     </div>
   );
 }

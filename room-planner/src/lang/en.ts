@@ -77,6 +77,25 @@ const en = {
     moveMode: 'Move',
     rotateMode: 'Rotate',
   },
+  tileSettings: {
+    title: 'Tile Settings',
+    enableTiling: 'Enable Tiling',
+    tileSize: 'Tile Size',
+    tileTexture: 'Tile Texture',
+    small: 'Small',
+    medium: 'Medium',
+    large: 'Large',
+    extraLarge: 'Extra Large',
+    ceramic: 'Ceramic',
+    marble: 'Marble',
+    floreal: 'Floreal',
+    floor: 'Floor',
+    wallFront: 'Front Wall',
+    wallBack: 'Back Wall',
+    wallLeft: 'Left Wall',
+    wallRight: 'Right Wall',
+    ceiling: 'Ceiling',
+  },
 };
 
 export default en;

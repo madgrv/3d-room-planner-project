@@ -3,8 +3,9 @@ import * as THREE from 'three';
 import { useRoomStore } from '@/store/roomStore';
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { useRoomElementStore } from '@/store/roomElementStore';
+import { useTileStore } from '@/store/tileStore';
 import { Furniture } from '../objects/Furniture';
-import { TiledFloor } from './TiledFloor';
+import { TiledSurface } from './TiledSurface';
 
 interface RoomProps {
   snapEnabled?: boolean;
@@ -27,6 +28,10 @@ export const Room = ({ snapEnabled = false }: RoomProps) => {
   const selectedElement = useRoomElementStore((state) => state.selectedElement);
   const visibility = useRoomElementStore((state) => state.visibility);
   
+  // Get tile settings from store
+  const tileSettings = useTileStore((state) => state.elementTileSettings);
+  const tilingEnabled = useTileStore((state) => state.elementTilingEnabled);
+  
   // Auto-rotation disabled: Only enable if a rotation button is toggled by the user.
   // useFrame(() => {
   //   if (roomRef.current && rotationEnabled) {
@@ -43,106 +48,180 @@ export const Room = ({ snapEnabled = false }: RoomProps) => {
 
   return (
     <group ref={roomRef}>
-      {/* Floor with tiled pattern - grouped together to ensure proper visibility */}
+      {/* Floor - with optional tiling */}
       {visibility['floor'] && (
         <group>
-          {/* Base floor - Selectable */}
-          <mesh 
-            ref={floorRef} 
-            position={[0, 0, 0]} 
-            rotation={[-Math.PI / 2, 0, 0]}
-            userData={{ roomElement: 'floor' }}
-          >
-            <planeGeometry args={[width, length]} />
-            <meshStandardMaterial 
-              color={selectedElement === 'floor' ? '#a8e6cf' : '#f5f5f5'} 
-              side={THREE.DoubleSide} 
+          {tilingEnabled['floor'] ? (
+            <TiledSurface 
+              width={width} 
+              length={length} 
+              tileSize={tileSettings['floor'].size}
+              texture={tileSettings['floor'].texture}
+              rotation={[-Math.PI / 2, 0, 0]}
+              position={[0, 0, 0]}
+              isSelected={selectedElement === 'floor'}
+              elementType="floor"
             />
-          </mesh>
-          
-          {/* Decorative tiled floor pattern */}
-          <TiledFloor width={width} length={length} tileSize={0.5} />
+          ) : (
+            <mesh 
+              ref={floorRef} 
+              position={[0, 0, 0]} 
+              rotation={[-Math.PI / 2, 0, 0]}
+              userData={{ roomElement: 'floor' }}
+            >
+              <planeGeometry args={[width, length]} />
+              <meshStandardMaterial 
+                color={selectedElement === 'floor' ? '#a8e6cf' : '#f5f5f5'} 
+                side={THREE.DoubleSide} 
+              />
+            </mesh>
+          )}
         </group>
       )}
       
       {/* Walls */}
       {/* Back wall - Selectable */}
       {visibility['wall-back'] && (
-        <mesh 
-          ref={wallBackRef}
-          position={[0, height / 2, -length / 2]}
-          userData={{ roomElement: 'wall-back' }}
-        >
-          <planeGeometry args={[width, height]} />
-          <meshStandardMaterial 
-            color={selectedElement === 'wall-back' ? '#a8e6cf' : '#e0e0e0'} 
-            side={THREE.DoubleSide} 
+        tilingEnabled['wall-back'] ? (
+          <TiledSurface 
+            width={width} 
+            length={height}
+            tileSize={tileSettings['wall-back'].size}
+            texture={tileSettings['wall-back'].texture}
+            position={[0, height / 2, -length / 2]}
+            rotation={[0, 0, 0]}
+            isSelected={selectedElement === 'wall-back'}
+            elementType="wall-back"
           />
-        </mesh>
+        ) : (
+          <mesh 
+            ref={wallBackRef}
+            position={[0, height / 2, -length / 2]}
+            userData={{ roomElement: 'wall-back' }}
+          >
+            <planeGeometry args={[width, height]} />
+            <meshStandardMaterial 
+              color={selectedElement === 'wall-back' ? '#a8e6cf' : '#e0e0e0'} 
+              side={THREE.DoubleSide} 
+            />
+          </mesh>
+        )
       )}
       
       {/* Front wall - Selectable */}
       {visibility['wall-front'] && (
-        <mesh 
-          ref={wallFrontRef}
-          position={[0, height / 2, length / 2]} 
-          rotation={[0, Math.PI, 0]}
-          userData={{ roomElement: 'wall-front' }}
-        >
-          <planeGeometry args={[width, height]} />
-          <meshStandardMaterial 
-            color={selectedElement === 'wall-front' ? '#a8e6cf' : '#e0e0e0'} 
-            side={THREE.DoubleSide} 
+        tilingEnabled['wall-front'] ? (
+          <TiledSurface 
+            width={width} 
+            length={height}
+            tileSize={tileSettings['wall-front'].size}
+            texture={tileSettings['wall-front'].texture}
+            position={[0, height / 2, length / 2]}
+            rotation={[0, Math.PI, 0]}
+            isSelected={selectedElement === 'wall-front'}
+            elementType="wall-front"
           />
-        </mesh>
+        ) : (
+          <mesh 
+            ref={wallFrontRef}
+            position={[0, height / 2, length / 2]} 
+            rotation={[0, Math.PI, 0]}
+            userData={{ roomElement: 'wall-front' }}
+          >
+            <planeGeometry args={[width, height]} />
+            <meshStandardMaterial 
+              color={selectedElement === 'wall-front' ? '#a8e6cf' : '#e0e0e0'} 
+              side={THREE.DoubleSide} 
+            />
+          </mesh>
+        )
       )}
       
       {/* Left wall - Selectable */}
       {visibility['wall-left'] && (
-        <mesh 
-          ref={wallLeftRef}
-          position={[-width / 2, height / 2, 0]} 
-          rotation={[0, Math.PI / 2, 0]}
-          userData={{ roomElement: 'wall-left' }}
-        >
-          <planeGeometry args={[length, height]} />
-          <meshStandardMaterial 
-            color={selectedElement === 'wall-left' ? '#a8e6cf' : '#d0d0d0'} 
-            side={THREE.DoubleSide} 
+        tilingEnabled['wall-left'] ? (
+          <TiledSurface 
+            width={length} 
+            length={height}
+            tileSize={tileSettings['wall-left'].size}
+            texture={tileSettings['wall-left'].texture}
+            position={[-width / 2, height / 2, 0]}
+            rotation={[0, Math.PI / 2, 0]}
+            isSelected={selectedElement === 'wall-left'}
+            elementType="wall-left"
           />
-        </mesh>
+        ) : (
+          <mesh 
+            ref={wallLeftRef}
+            position={[-width / 2, height / 2, 0]} 
+            rotation={[0, Math.PI / 2, 0]}
+            userData={{ roomElement: 'wall-left' }}
+          >
+            <planeGeometry args={[length, height]} />
+            <meshStandardMaterial 
+              color={selectedElement === 'wall-left' ? '#a8e6cf' : '#d0d0d0'} 
+              side={THREE.DoubleSide} 
+            />
+          </mesh>
+        )
       )}
       
       {/* Right wall - Selectable */}
       {visibility['wall-right'] && (
-        <mesh 
-          ref={wallRightRef}
-          position={[width / 2, height / 2, 0]} 
-          rotation={[0, -Math.PI / 2, 0]}
-          userData={{ roomElement: 'wall-right' }}
-        >
-          <planeGeometry args={[length, height]} />
-          <meshStandardMaterial 
-            color={selectedElement === 'wall-right' ? '#a8e6cf' : '#d0d0d0'} 
-            side={THREE.DoubleSide} 
+        tilingEnabled['wall-right'] ? (
+          <TiledSurface 
+            width={length} 
+            length={height}
+            tileSize={tileSettings['wall-right'].size}
+            texture={tileSettings['wall-right'].texture}
+            position={[width / 2, height / 2, 0]}
+            rotation={[0, -Math.PI / 2, 0]}
+            isSelected={selectedElement === 'wall-right'}
+            elementType="wall-right"
           />
-        </mesh>
+        ) : (
+          <mesh 
+            ref={wallRightRef}
+            position={[width / 2, height / 2, 0]} 
+            rotation={[0, -Math.PI / 2, 0]}
+            userData={{ roomElement: 'wall-right' }}
+          >
+            <planeGeometry args={[length, height]} />
+            <meshStandardMaterial 
+              color={selectedElement === 'wall-right' ? '#a8e6cf' : '#d0d0d0'} 
+              side={THREE.DoubleSide} 
+            />
+          </mesh>
+        )
       )}
       
       {/* Ceiling - Selectable */}
       {visibility['ceiling'] && (
-        <mesh 
-          ref={ceilingRef}
-          position={[0, height, 0]} 
-          rotation={[Math.PI / 2, 0, 0]}
-          userData={{ roomElement: 'ceiling' }}
-        >
-          <planeGeometry args={[width, length]} />
-          <meshStandardMaterial 
-            color={selectedElement === 'ceiling' ? '#a8e6cf' : '#f8f8f8'} 
-            side={THREE.DoubleSide} 
+        tilingEnabled['ceiling'] ? (
+          <TiledSurface 
+            width={width} 
+            length={length}
+            tileSize={tileSettings['ceiling'].size}
+            texture={tileSettings['ceiling'].texture}
+            position={[0, height, 0]}
+            rotation={[Math.PI / 2, 0, 0]}
+            isSelected={selectedElement === 'ceiling'}
+            elementType="ceiling"
           />
-        </mesh>
+        ) : (
+          <mesh 
+            ref={ceilingRef}
+            position={[0, height, 0]} 
+            rotation={[Math.PI / 2, 0, 0]}
+            userData={{ roomElement: 'ceiling' }}
+          >
+            <planeGeometry args={[width, length]} />
+            <meshStandardMaterial 
+              color={selectedElement === 'ceiling' ? '#a8e6cf' : '#f8f8f8'} 
+              side={THREE.DoubleSide} 
+            />
+          </mesh>
+        )
       )}
 
       {/* Furniture from store - only render visible items */}

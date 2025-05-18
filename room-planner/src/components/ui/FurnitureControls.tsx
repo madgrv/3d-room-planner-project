@@ -45,10 +45,12 @@ export function FurnitureControls() {
             <Button
               variant='outline'
               size='sm'
-              className='h-8 text-xs min-w-[120px] max-w-[150px] flex justify-between items-center'
+              className='h-8 text-xs min-w-[140px] flex-1 flex justify-between items-center truncate'
               aria-label={lang.furnitureControls.selectType}
             >
-              {selectedType ? FURNITURE_TYPES.find(type => type.value === selectedType)?.label : lang.furnitureControls.selectType}
+              <span className="truncate">
+                {selectedType ? FURNITURE_TYPES.find(type => type.value === selectedType)?.label : lang.furnitureControls.selectType}
+              </span>
               <ChevronDown className='ml-2 h-4 w-4 opacity-50' />
             </Button>
           </DropdownMenuTrigger>

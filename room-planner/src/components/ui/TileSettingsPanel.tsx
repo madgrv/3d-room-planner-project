@@ -38,7 +38,7 @@ export function TileSettingsPanel() {
 
   // Common styles for consistency
   const radioLabelStyle = 'text-xs font-medium';
-  const radioGroupStyle = 'flex flex-wrap gap-2 mt-1';
+  const radioGroupStyle = 'flex flex-col gap-1.5 mt-1';
 
   // Get readable name for the selected element
   const getElementName = (element: string) => {
@@ -125,25 +125,25 @@ export function TileSettingsPanel() {
                 >
                   <div className='flex items-center gap-1'>
                     <RadioGroupItem value='small' id='size-small' />
-                    <label htmlFor='size-small' className='text-xs'>
+                    <label htmlFor='size-small' className='text-xs whitespace-nowrap'>
                       {lang.tileSettings.small} (25cm)
                     </label>
                   </div>
                   <div className='flex items-center gap-1'>
                     <RadioGroupItem value='medium' id='size-medium' />
-                    <label htmlFor='size-medium' className='text-xs'>
+                    <label htmlFor='size-medium' className='text-xs whitespace-nowrap'>
                       {lang.tileSettings.medium} (50cm)
                     </label>
                   </div>
                   <div className='flex items-center gap-1'>
                     <RadioGroupItem value='large' id='size-large' />
-                    <label htmlFor='size-large' className='text-xs'>
+                    <label htmlFor='size-large' className='text-xs whitespace-nowrap'>
                       {lang.tileSettings.large} (75cm)
                     </label>
                   </div>
                   <div className='flex items-center gap-1'>
                     <RadioGroupItem value='extraLarge' id='size-xl' />
-                    <label htmlFor='size-xl' className='text-xs'>
+                    <label htmlFor='size-xl' className='text-xs whitespace-nowrap'>
                       {lang.tileSettings.extraLarge} (100cm)
                     </label>
                   </div>

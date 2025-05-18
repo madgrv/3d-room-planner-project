@@ -317,8 +317,8 @@ export const Furniture: React.FC<FurnitureProps> = ({
       let newPosition: [number, number, number];
 
       switch (movementAxis) {
-        case 'x': // Only move along X axis
-        {
+        case 'x': {
+          // Only move along X axis
           const rawX = worldPos.x;
           // First restrict to room boundaries, then apply grid snapping
           const boundedX = restrictToRoomBoundaries('x', rawX);
@@ -326,8 +326,8 @@ export const Furniture: React.FC<FurnitureProps> = ({
           newPosition = [snappedX, position[1], position[2]];
           break;
         }
-        case 'y': // Only move along Y axis (up/down)
-        {
+        case 'y': {
+          // Only move along Y axis (up/down)
           const rawY = worldPos.y;
           // First restrict to room boundaries (floor to ceiling), then apply grid snapping
           const boundedY = restrictToRoomBoundaries('y', rawY);
@@ -335,8 +335,8 @@ export const Furniture: React.FC<FurnitureProps> = ({
           newPosition = [position[0], snappedY, position[2]];
           break;
         }
-        case 'z': // Only move along Z axis
-        {
+        case 'z': {
+          // Only move along Z axis
           const rawZ = worldPos.z;
           // First restrict to room boundaries, then apply grid snapping
           const boundedZ = restrictToRoomBoundaries('z', rawZ);
@@ -345,9 +345,9 @@ export const Furniture: React.FC<FurnitureProps> = ({
           break;
         }
         case 'xz':
-        default: // Move on floor plane (XZ)
-        // First restrict to room boundaries, then apply grid snapping
-        {
+        default: {
+          // First restrict to room boundaries, then apply grid snapping
+          // Move on floor plane (XZ)
           const boundedFloorX = restrictToRoomBoundaries('x', worldPos.x);
           const boundedFloorZ = restrictToRoomBoundaries('z', worldPos.z);
 
@@ -440,7 +440,30 @@ export const Furniture: React.FC<FurnitureProps> = ({
   // Using radius 0.3 (diameter 0.6) and height 0.45 to better match standard seating dimensions.
   if (type === 'chair')
     geometry = <cylinderGeometry args={[0.3, 0.3, 0.45, 16]} />;
-  if (type === 'table') geometry = <boxGeometry args={[1.2, 0.1, 0.8]} />;
+  if (type === 'table') {
+    // For the table, use a fragment to combine the tabletop and four legs for a more realistic appearance
+    geometry = (
+      <>
+        {/* Tabletop */}
+        <mesh position={[0, 0.55, 0]}>
+          <boxGeometry args={[1.2, 0.1, 0.8]} />
+          <meshStandardMaterial color={color} />
+        </mesh>
+        {/* Four legs, slightly inset from corners */}
+        {[
+          [-0.55, 0, -0.35], // Back left leg
+          [0.55, 0, -0.35], // Back right leg
+          [-0.55, 0, 0.35], // Front left leg
+          [0.55, 0, 0.35], // Front right leg
+        ].map(([x, , z], idx) => (
+          <mesh key={`table-leg-${idx}`} position={[x, 0.25, z]}>
+            <cylinderGeometry args={[0.05, 0.05, 0.6, 12]} />
+            <meshStandardMaterial color={color} />
+          </mesh>
+        ))}
+      </>
+    );
+  }
   if (type === 'sofa') geometry = <boxGeometry args={[1.5, 0.6, 0.7]} />;
   if (type === 'bed') geometry = <boxGeometry args={[2, 0.3, 1]} />;
   if (type === 'wardrobe') geometry = <boxGeometry args={[1, 2, 0.5]} />;

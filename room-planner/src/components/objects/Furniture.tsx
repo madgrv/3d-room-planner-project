@@ -39,7 +39,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
 
   // Access the snap value from the store
   const snapValue = useFurnitureStore((s) => s.snapValue);
-  
+
   // Get room dimensions to restrict movement within boundaries
   const roomDimensions = useRoomStore((s) => s.dimensions);
 
@@ -47,54 +47,57 @@ export const Furniture: React.FC<FurnitureProps> = ({
   const snapToGrid = (value: number): number => {
     return Math.round(value / snapValue) * snapValue;
   };
-  
+
   // Function to restrict a position within room boundaries, accounting for furniture dimensions
   // Also handles wall snapping when boundaries are reached
-  const restrictToRoomBoundaries = (axis: 'x' | 'y' | 'z', value: number): number => {
+  const restrictToRoomBoundaries = (
+    axis: 'x' | 'y' | 'z',
+    value: number
+  ): number => {
     // Calculate room boundaries based on room dimensions
     // The room is centered at origin, so boundaries are -width/2 to width/2 and -length/2 to length/2
     const halfWidth = roomDimensions.width / 2;
     const halfLength = roomDimensions.length / 2;
     const roomHeight = roomDimensions.height;
-    
+
     // Add a small margin to keep objects fully inside the room (0.05 units from walls)
     // Using a smaller margin to allow objects to be placed closer to walls
     const margin = 0.05;
-    
+
     // Account for furniture dimensions - half the size in each dimension
     // This ensures the entire object stays within the room, not just its center point
     const halfSizeX = size[0] / 2;
     // halfSizeY is used in maxY calculation as size[1]
     const halfSizeZ = size[2] / 2;
-    
+
     // Define wall boundaries for each axis
     // These are the positions where the object's center should be when its sides touch the walls
     const minX = -halfWidth + halfSizeX + margin; // Left wall
-    const maxX = halfWidth - halfSizeX - margin;  // Right wall
-    const minY = margin;                          // Floor
-    const maxY = roomHeight - size[1] - margin;   // Ceiling
+    const maxX = halfWidth - halfSizeX - margin; // Right wall
+    const minY = margin; // Floor
+    const maxY = roomHeight - size[1] - margin; // Ceiling
     const minZ = -halfLength + halfSizeZ + margin; // Back wall
-    const maxZ = halfLength - halfSizeZ - margin;  // Front wall
-    
+    const maxZ = halfLength - halfSizeZ - margin; // Front wall
+
     // Define additional snap positions for each axis
     // These are positions where the object's sides (not center) touch the walls
-    const leftWallSnap = -halfWidth + margin;  // Object's left side touches left wall
+    const leftWallSnap = -halfWidth + margin; // Object's left side touches left wall
     const rightWallSnap = halfWidth - size[0] - margin; // Object's right side touches right wall
-    const floorSnap = 0 + margin;  // Object's bottom touches floor (usually the default)
+    const floorSnap = 0 + margin; // Object's bottom touches floor (usually the default)
     const ceilingSnap = roomHeight - size[1] - margin; // Object's top touches ceiling
-    const backWallSnap = -halfLength + margin;  // Object's back touches back wall
+    const backWallSnap = -halfLength + margin; // Object's back touches back wall
     const frontWallSnap = halfLength - size[2] - margin; // Object's front touches front wall
-    
+
     // Wall snapping threshold - how close to a wall before snapping to it
     const wallSnapThreshold = 0.25;
-    
+
     if (axis === 'x') {
       // Check if we're near a wall boundary
       if (!snapEnabled) {
         // When snap is disabled, just apply the boundary limits
         return Math.min(Math.max(value, minX), maxX);
       }
-      
+
       // Check if we're near the left wall (center position)
       if (Math.abs(value - minX) < wallSnapThreshold) {
         return minX; // Snap object center to left wall boundary
@@ -122,7 +125,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
         // When snap is disabled, just apply the boundary limits
         return Math.min(Math.max(value, minY), maxY);
       }
-      
+
       // Check if we're near the floor (object bottom touches floor)
       if (Math.abs(value - floorSnap) < wallSnapThreshold) {
         return floorSnap; // Snap to floor
@@ -136,13 +139,14 @@ export const Furniture: React.FC<FurnitureProps> = ({
         const snappedValue = snapToGrid(value);
         return Math.min(Math.max(snappedValue, minY), maxY);
       }
-    } else { // z-axis
+    } else {
+      // z-axis
       // Check if we're near a wall boundary
       if (!snapEnabled) {
         // When snap is disabled, just apply the boundary limits
         return Math.min(Math.max(value, minZ), maxZ);
       }
-      
+
       // Check if we're near the back wall (center position)
       if (Math.abs(value - minZ) < wallSnapThreshold) {
         return minZ; // Snap object center to back wall boundary
@@ -188,10 +192,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
   } | null>(null); */
 
   // Function to convert mouse position to world position via raycasting based on movement axis
-  const getWorldPosition = (
-    x: number,
-    y: number
-  ): THREE.Vector3 | null => {
+  const getWorldPosition = (x: number, y: number): THREE.Vector3 | null => {
     // Convert mouse coordinates to normalized device coordinates (-1 to +1)
     const rect = gl.domElement.getBoundingClientRect();
     const normalizedX = ((x - rect.left) / rect.width) * 2 - 1;
@@ -207,19 +208,26 @@ export const Furniture: React.FC<FurnitureProps> = ({
     if (movementAxis === 'y') {
       // Create a vertical plane that passes through the object and faces the camera
       // This allows us to use raycasting for vertical movement as well
-      
+
       // Get a vector from camera to object
       const cameraToObject = new THREE.Vector3(
         position[0] - camera.position.x,
         0, // Ignore Y component to keep the plane vertical
         position[2] - camera.position.z
       ).normalize();
-      
+
       // Create a plane that's perpendicular to the camera-to-object vector
       // This plane will be vertical (Y-up) and face the camera
-      const planeNormal = new THREE.Vector3(cameraToObject.x, 0, cameraToObject.z);
-      const verticalPlane = new THREE.Plane(planeNormal, -planeNormal.dot(new THREE.Vector3(position[0], 0, position[2])));
-      
+      const planeNormal = new THREE.Vector3(
+        cameraToObject.x,
+        0,
+        cameraToObject.z
+      );
+      const verticalPlane = new THREE.Plane(
+        planeNormal,
+        -planeNormal.dot(new THREE.Vector3(position[0], 0, position[2]))
+      );
+
       // Find intersection with this vertical plane
       const intersection = new THREE.Vector3();
       if (raycaster.ray.intersectPlane(verticalPlane, intersection)) {
@@ -227,7 +235,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
         return new THREE.Vector3(
           position[0], // Keep original X
           intersection.y, // Use Y from intersection
-          position[2]  // Keep original Z
+          position[2] // Keep original Z
         );
       }
       return null;
@@ -266,12 +274,12 @@ export const Furniture: React.FC<FurnitureProps> = ({
     ({ event, first, last, xy: [clientX, clientY], movement: [mx, my] }) => {
       // Only start dragging if the movement is significant
       const hasSignificantMovement = Math.abs(mx) > 5 || Math.abs(my) > 5;
-      
+
       // Always prevent default to ensure we can drag properly
       if (event instanceof PointerEvent) {
         event.preventDefault();
       }
-      
+
       // Set dragging states based on movement
       if (first) {
         // Don't set dragging state immediately - wait for movement
@@ -292,12 +300,12 @@ export const Furniture: React.FC<FurnitureProps> = ({
           event.stopPropagation();
         }
       }
-      
+
       if (last) {
         setIsDragging(false);
         setGlobalDragging(false);
       }
-      
+
       // Only proceed with dragging if we have significant movement or are already dragging
       if (!hasSignificantMovement && !isDragging) return;
 
@@ -309,46 +317,50 @@ export const Furniture: React.FC<FurnitureProps> = ({
       let newPosition: [number, number, number];
 
       switch (movementAxis) {
-        case 'x':
-          // Only move along X axis
+        case 'x': // Only move along X axis
+        {
           const rawX = worldPos.x;
           // First restrict to room boundaries, then apply grid snapping
           const boundedX = restrictToRoomBoundaries('x', rawX);
           const snappedX = snapEnabled ? snapToGrid(boundedX) : boundedX;
           newPosition = [snappedX, position[1], position[2]];
           break;
-        case 'y':
-          // Only move along Y axis (up/down)
+        }
+        case 'y': // Only move along Y axis (up/down)
+        {
           const rawY = worldPos.y;
           // First restrict to room boundaries (floor to ceiling), then apply grid snapping
           const boundedY = restrictToRoomBoundaries('y', rawY);
           const snappedY = snapEnabled ? snapToGrid(boundedY) : boundedY;
           newPosition = [position[0], snappedY, position[2]];
           break;
-        case 'z':
-          // Only move along Z axis
+        }
+        case 'z': // Only move along Z axis
+        {
           const rawZ = worldPos.z;
           // First restrict to room boundaries, then apply grid snapping
           const boundedZ = restrictToRoomBoundaries('z', rawZ);
           const snappedZ = snapEnabled ? snapToGrid(boundedZ) : boundedZ;
           newPosition = [position[0], position[1], snappedZ];
           break;
+        }
         case 'xz':
-        default:
-          // Move on floor plane (XZ)
-          // First restrict to room boundaries, then apply grid snapping
+        default: // Move on floor plane (XZ)
+        // First restrict to room boundaries, then apply grid snapping
+        {
           const boundedFloorX = restrictToRoomBoundaries('x', worldPos.x);
           const boundedFloorZ = restrictToRoomBoundaries('z', worldPos.z);
-          
+
           const snappedFloorX = snapEnabled
             ? snapToGrid(boundedFloorX)
             : boundedFloorX;
           const snappedFloorZ = snapEnabled
             ? snapToGrid(boundedFloorZ)
             : boundedFloorZ;
-            
+
           newPosition = [snappedFloorX, position[1], snappedFloorZ];
           break;
+        }
       }
 
       setDragPos(newPosition);
@@ -425,8 +437,8 @@ export const Furniture: React.FC<FurnitureProps> = ({
   // Team note: Use different geometry for each furniture type for clarity and future extensibility.
   let geometry = <boxGeometry args={size} />;
   // A typical chair seat is lower and wider for realistic proportions.
-// Using radius 0.3 (diameter 0.6) and height 0.45 to better match standard seating dimensions.
-if (type === 'chair')
+  // Using radius 0.3 (diameter 0.6) and height 0.45 to better match standard seating dimensions.
+  if (type === 'chair')
     geometry = <cylinderGeometry args={[0.3, 0.3, 0.45, 16]} />;
   if (type === 'table') geometry = <boxGeometry args={[1.2, 0.1, 0.8]} />;
   if (type === 'sofa') geometry = <boxGeometry args={[1.5, 0.6, 0.7]} />;

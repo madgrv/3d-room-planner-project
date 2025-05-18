@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './Card';
 import { Switch } from './Switch';

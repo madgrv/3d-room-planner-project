@@ -41,7 +41,7 @@ const SceneContent = ({
 
   // Get the selectFurniture function from the furniture store
   const selectFurniture = useFurnitureStore((state) => state.selectFurniture);
-  
+
   // Set up raycasting for object detection
   const handlePointerDown = useCallback(
     (e: MouseEvent) => {
@@ -91,7 +91,11 @@ const SceneContent = ({
 
       console.log(
         'Raycasting result:',
-        clickedItemId ? `Hit item: ${clickedItemId}` : roomElement ? `Hit element: ${roomElement}` : 'No hit'
+        clickedItemId
+          ? `Hit item: ${clickedItemId}`
+          : roomElement
+          ? `Hit element: ${roomElement}`
+          : 'No hit'
       );
 
       // Handle left-click for selection
@@ -116,7 +120,10 @@ const SceneContent = ({
 
       // Call the onRightClick callback with the clicked item ID and room element
       if (e.button === 2) {
-        console.log('Right-click detected in SceneContent', { clickedItemId, roomElement });
+        console.log('Right-click detected in SceneContent', {
+          clickedItemId,
+          roomElement,
+        });
         onRightClick(e, clickedItemId, roomElement);
         // Only prevent default to avoid showing browser's context menu
         // but don't stop propagation to allow orbit controls to work
@@ -132,7 +139,7 @@ const SceneContent = ({
       scene.children,
       setSelectedElement,
       clearFurnitureSelection,
-      selectFurniture
+      selectFurniture,
     ]
   );
 
@@ -224,9 +231,9 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     (e: MouseEvent, itemId: string | null, roomElement: RoomElementType) => {
       // If dragging, don't show context menu
       if (isDraggingState || globalIsDragging) return;
-      
+
       console.log('Right-click detected:', { itemId, roomElement });
-      
+
       // Show context menu at mouse position
       setContextMenu({
         visible: true,
@@ -235,7 +242,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
         itemId,
         roomElement,
       });
-      
+
       // Prevent default context menu
       e.preventDefault();
     },
@@ -354,7 +361,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     >
       <div
         className='canvas-container flex-grow border border-border rounded-b-lg rounded-tl-none rounded-tr-none overflow-hidden bg-card relative'
-        style={{ minWidth: 0, height: 600 }}
+        style={{ minWidth: 0, height: 700 }}
       >
         <Canvas
           shadows
@@ -381,8 +388,8 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
 
       {/* Context Menu - Positioned at the document level */}
       {contextMenu.visible && (
-        <div 
-          className="fixed"
+        <div
+          className='fixed'
           style={{
             position: 'fixed',
             left: contextMenu.x,
@@ -399,9 +406,9 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
           />
         </div>
       )}
-      
+
       {/* Tile Settings Panel - appears when a room element is selected */}
-      <div className="absolute top-0 right-0 z-10">
+      <div className='absolute top-0 right-0 z-10'>
         <TileSettingsPanel />
       </div>
     </div>

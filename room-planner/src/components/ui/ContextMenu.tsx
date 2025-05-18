@@ -17,6 +17,8 @@ import {
   ArrowRightIcon,
   ArrowUpIcon,
   ArrowDownIcon,
+  ReloadIcon,
+  UpdateIcon,
 } from '@radix-ui/react-icons';
 
 interface ContextMenuProps {
@@ -282,6 +284,38 @@ export function ContextMenu({
               <div className='px-2 py-1 text-xs text-muted-foreground'>
                 Operations
               </div>
+              {/* Rotation controls */}
+              <div className='p-1'>
+                <div className='px-2 py-1 text-xs text-muted-foreground'>
+                  Rotation
+                </div>
+                <div className='flex justify-between px-2'>
+                  <button
+                    className='text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
+                    onClick={() => {
+                      // Rotate counter-clockwise by 90 degrees (π/2 radians)
+                      const newRotation = (selectedItem.rotation - Math.PI / 2) % (Math.PI * 2);
+                      updateFurniture(selectedItem.id, { rotation: newRotation });
+                    }}
+                  >
+                    <ReloadIcon className='h-4 w-4' />
+                    -90°
+                  </button>
+                  <button
+                    className='text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
+                    onClick={() => {
+                      // Rotate clockwise by 90 degrees (π/2 radians)
+                      const newRotation = (selectedItem.rotation + Math.PI / 2) % (Math.PI * 2);
+                      updateFurniture(selectedItem.id, { rotation: newRotation });
+                    }}
+                  >
+                    <UpdateIcon className='h-4 w-4' />
+                    +90°
+                  </button>
+                </div>
+              </div>
+
+              {/* Duplicate */}
               <button
                 className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
                 onClick={handleDuplicate}
@@ -289,8 +323,10 @@ export function ContextMenu({
                 <CopyIcon className='h-3 w-3' />
                 Duplicate
               </button>
+
+              {/* Delete */}
               <button
-                className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
+                className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2 text-destructive hover:text-destructive'
                 onClick={handleDelete}
               >
                 <TrashIcon className='h-3 w-3' />

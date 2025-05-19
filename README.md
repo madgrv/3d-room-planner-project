@@ -1,3 +1,10 @@
+# offCanvas
+https://canvas.offmachines.com/
+
+## 3D Room planner
+
+### WIP
+
 Project Notes Creation Report
 Task Overview
 The task was to create a text file named 'project_notes.txt' containing structured information about a 3D room visualization project built with React Three Fiber and TypeScript. The file needed to include details about core MVP features, technologies used, implementation steps, and user requirements.

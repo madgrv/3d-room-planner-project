@@ -19,6 +19,7 @@ interface SceneContentProps {
     itemId: string | null,
     roomElement: RoomElementType
   ) => void;
+  closeContextMenu: () => void;
   backgroundColor: string;
   theme: string;
   snapEnabled: boolean;
@@ -28,6 +29,7 @@ interface SceneContentProps {
 // This component renders the contents of the Canvas without wrapping in another Canvas
 const SceneContent = ({
   onRightClick,
+  closeContextMenu,
   backgroundColor,
   theme,
   snapEnabled,
@@ -141,6 +143,9 @@ const SceneContent = ({
 
       // Handle left-click for selection
       if (e.button === 0) {
+        // Always close context menu on left click anywhere
+        closeContextMenu();
+        
         if (roomElement) {
           // Select room element and clear furniture selection
           setSelectedElement(roomElement);
@@ -186,6 +191,7 @@ const SceneContent = ({
       clearFurnitureSelection,
       selectFurniture,
       hitObjectRef,
+      closeContextMenu
     ]
   );
 
@@ -447,6 +453,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
         >
           <SceneContent
             onRightClick={handleRightClick}
+            closeContextMenu={handleCloseContextMenu}
             backgroundColor={backgroundColor}
             theme={resolvedTheme || 'light'}
             snapEnabled={snapEnabled}

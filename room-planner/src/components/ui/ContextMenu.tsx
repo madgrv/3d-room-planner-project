@@ -60,14 +60,21 @@ export function ContextMenu({
   // Close the menu when clicking outside
   React.useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Close the menu for any click (left, right, middle) outside the menu
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         onClose();
       }
     };
-
-    document.addEventListener('mousedown', handleClickOutside);
+    
+    // Use mousedown to capture clicks before they're processed
+    document.addEventListener('mousedown', handleClickOutside, { capture: true });
+    
+    // Also handle pointerdown for better mobile support
+    document.addEventListener('pointerdown', handleClickOutside as EventListener, { capture: true });
+    
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside, { capture: true });
+      document.removeEventListener('pointerdown', handleClickOutside as EventListener, { capture: true });
     };
   }, [onClose]);
 

@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import * as THREE from 'three';
-import { useTheme } from 'next-themes';
 import { useTexture } from '@react-three/drei';
 import { TileSize, TileTexture, tileSizeMap } from '@/store/tileStore';
 
@@ -25,7 +24,6 @@ export const TiledSurface = ({
   isSelected = false,
   elementType,
 }: TiledSurfaceProps) => {
-  const { theme } = useTheme();
   const actualTileSize = tileSizeMap[tileSize];
 
   // Calculate the number of tiles in each dimension
@@ -72,14 +70,13 @@ export const TiledSurface = ({
 
   // Create a separate material for the grid lines
   const gridMaterial = useMemo(() => {
-    const isDark = theme === 'dark';
-    const groutColor = isDark ? '#162e30' : '#c5d5d5';
+    const groutColor = '#c5d5d5';
 
     return new THREE.LineBasicMaterial({
       color: groutColor,
       linewidth: 1,
     });
-  }, [theme]);
+  }, []);
 
   // Create grid lines for tiles
   const gridLines = useMemo(() => {

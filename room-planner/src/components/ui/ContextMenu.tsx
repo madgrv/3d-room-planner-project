@@ -65,16 +65,28 @@ export function ContextMenu({
         onClose();
       }
     };
-    
+
     // Use mousedown to capture clicks before they're processed
-    document.addEventListener('mousedown', handleClickOutside, { capture: true });
-    
+    document.addEventListener('mousedown', handleClickOutside, {
+      capture: true,
+    });
+
     // Also handle pointerdown for better mobile support
-    document.addEventListener('pointerdown', handleClickOutside as EventListener, { capture: true });
-    
+    document.addEventListener(
+      'pointerdown',
+      handleClickOutside as EventListener,
+      { capture: true }
+    );
+
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside, { capture: true });
-      document.removeEventListener('pointerdown', handleClickOutside as EventListener, { capture: true });
+      document.removeEventListener('mousedown', handleClickOutside, {
+        capture: true,
+      });
+      document.removeEventListener(
+        'pointerdown',
+        handleClickOutside as EventListener,
+        { capture: true }
+      );
     };
   }, [onClose]);
 
@@ -149,7 +161,9 @@ export function ContextMenu({
   };
 
   // Check if room element is currently visible
-  const isRoomElementVisible = roomElement ? visibility[roomElement as NonNullable<RoomElementType>] : true;
+  const isRoomElementVisible = roomElement
+    ? visibility[roomElement as NonNullable<RoomElementType>]
+    : true;
 
   // Get room element name for display
   const getRoomElementName = (element: RoomElementType): string => {
@@ -172,7 +186,7 @@ export function ContextMenu({
         return lang.contextMenu.roomElement;
     }
   };
-  
+
   // Get translated furniture type name
   const getFurnitureTypeName = (type: string): string => {
     switch (type) {
@@ -278,7 +292,8 @@ export function ContextMenu({
                   onClose();
                 }}
               >
-                <ArrowRightIcon className='h-3 w-3' />{lang.contextMenu.xAxis}
+                <ArrowRightIcon className='h-3 w-3' />
+                {lang.contextMenu.xAxis}
               </button>
               <button
                 className={`w-full text-left px-2 py-1 text-xs ${
@@ -289,7 +304,8 @@ export function ContextMenu({
                   onClose();
                 }}
               >
-                <ArrowUpIcon className='h-3 w-3' />{lang.contextMenu.yAxis}
+                <ArrowUpIcon className='h-3 w-3' />
+                {lang.contextMenu.yAxis}
               </button>
               <button
                 className={`w-full text-left px-2 py-1 text-xs ${
@@ -300,7 +316,8 @@ export function ContextMenu({
                   onClose();
                 }}
               >
-                <ArrowDownIcon className='h-3 w-3' />{lang.contextMenu.zAxis}
+                <ArrowDownIcon className='h-3 w-3' />
+                {lang.contextMenu.zAxis}
               </button>
             </div>
 
@@ -384,7 +401,9 @@ export function ContextMenu({
                 onClick={handleToggleSnap}
               >
                 <ArrowDownIcon className='h-3 w-3' />
-                {snapEnabled ? lang.contextMenu.snapOn : lang.contextMenu.snapOff}
+                {snapEnabled
+                  ? lang.contextMenu.snapOn
+                  : lang.contextMenu.snapOff}
               </button>
               <button
                 className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
@@ -410,12 +429,18 @@ export function ContextMenu({
               {isRoomElementVisible ? (
                 <>
                   <EyeClosedIcon className='h-3 w-3' />
-                  {lang.contextMenu.hideElement.replace('{element}', getRoomElementName(roomElement).toLowerCase())}
+                  {lang.contextMenu.hideElement.replace(
+                    '{element}',
+                    getRoomElementName(roomElement).toLowerCase()
+                  )}
                 </>
               ) : (
                 <>
                   <EyeOpenIcon className='h-3 w-3' />
-                  {lang.contextMenu.showElement.replace('{element}', getRoomElementName(roomElement).toLowerCase())}
+                  {lang.contextMenu.showElement.replace(
+                    '{element}',
+                    getRoomElementName(roomElement).toLowerCase()
+                  )}
                 </>
               )}
             </button>
@@ -426,16 +451,17 @@ export function ContextMenu({
               onClick={handleRoomElementAction}
             >
               <Pencil1Icon className='h-3 w-3' />
-              {lang.contextMenu.selectElement.replace('{element}', getRoomElementName(roomElement))}
+              {lang.contextMenu.selectElement.replace(
+                '{element}',
+                getRoomElementName(roomElement)
+              )}
             </button>
 
             {/* Add texture/color option */}
             <button
               className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
               onClick={() => {
-                alert(
-                  lang.contextMenu.textureChangeMessage
-                );
+                alert(lang.contextMenu.textureChangeMessage);
                 onClose();
               }}
             >

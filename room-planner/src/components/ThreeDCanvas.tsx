@@ -112,13 +112,14 @@ const SceneContent = ({
         console.log('Raycasting result: Hit furniture:', clickedItemId);
       } else if (roomElementIntersects.length > 0) {
         // First check if we have any wall elements in the intersections
-        const wallIntersects = roomElementIntersects.filter(item => 
-          item.element === 'wall-front' || 
-          item.element === 'wall-back' || 
-          item.element === 'wall-left' || 
-          item.element === 'wall-right'
+        const wallIntersects = roomElementIntersects.filter(
+          (item) =>
+            item.element === 'wall-front' ||
+            item.element === 'wall-back' ||
+            item.element === 'wall-left' ||
+            item.element === 'wall-right'
         );
-        
+
         // If we have wall intersections, prioritize them
         if (wallIntersects.length > 0) {
           wallIntersects.sort((a, b) => a.distance - b.distance);
@@ -145,7 +146,7 @@ const SceneContent = ({
       if (e.button === 0) {
         // Always close context menu on left click anywhere
         closeContextMenu();
-        
+
         if (roomElement) {
           // Select room element and clear furniture selection
           setSelectedElement(roomElement);
@@ -191,7 +192,7 @@ const SceneContent = ({
       clearFurnitureSelection,
       selectFurniture,
       hitObjectRef,
-      closeContextMenu
+      closeContextMenu,
     ]
   );
 
@@ -208,11 +209,11 @@ const SceneContent = ({
     <>
       <color attach='background' args={[backgroundColor]} />
 
-      {/* Lighting - adjust intensity based on theme */}
-      <ambientLight intensity={theme === 'dark' ? 0.3 : 0.5} />
+      {/* Lighting - consistent regardless of theme */}
+      <ambientLight intensity={0.5} />
       <directionalLight
         position={[10, 10, 5]}
-        intensity={theme === 'dark' ? 0.8 : 1}
+        intensity={1}
         castShadow
         shadow-mapSize={[2048, 2048]}
       />
@@ -223,7 +224,7 @@ const SceneContent = ({
 
       {/* Environment and Controls */}
       <CameraControls />
-      <Environment preset={theme === 'dark' ? 'night' : 'apartment'} />
+      <Environment preset='apartment' />
 
       {/* Performance Stats (development only) */}
       <Stats />
@@ -253,7 +254,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     y: number;
     itemId: string | null;
     roomElement: RoomElementType;
-  }>({ 
+  }>({
     visible: false,
     x: 0,
     y: 0,

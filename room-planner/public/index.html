@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>offCanvas</title>
+    <!-- This file will be used instead of the root index.html when deployed -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      // This script will dynamically load the correct JavaScript bundle
+      document.addEventListener('DOMContentLoaded', function () {
+        // Find all script files in the assets directory
+        const scriptElement = document.createElement('script');
+        scriptElement.type = 'module';
+        scriptElement.src = './assets/index.js';
+        document.body.appendChild(scriptElement);
+
+        // Find all CSS files in the assets directory
+        const linkElement = document.createElement('link');
+        linkElement.rel = 'stylesheet';
+        linkElement.href = './assets/index.css';
+        document.head.appendChild(linkElement);
+      });
+    </script>
+  </body>
+</html>

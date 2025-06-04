@@ -4,6 +4,8 @@
 import { useState, useEffect } from 'react';
 import en from './en';
 import it from './it';
+import fr from './fr';
+import es from './es';
 
 // Export the type based on the English language structure
 export type LanguageStrings = typeof en;
@@ -12,6 +14,8 @@ export type LanguageStrings = typeof en;
 const languages: Record<string, LanguageStrings> = {
   en,
   it,
+  fr,
+  es,
 };
 
 // Default language code
@@ -125,6 +129,12 @@ export function useLanguage() {
     const newLang = setLanguage(langCode);
     if (newLang) {
       setCurrentLang(newLang);
+      
+      // Force a re-render by updating the document language attribute
+      document.documentElement.lang = langCode;
+      
+      // Force a refresh of all components that use the language
+      window.location.reload();
     }
   };
   

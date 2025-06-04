@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lang'; // Team note: All user-facing text must be localised.
 import { Button } from './Button'; // Team note: Use the shared SHADCN Button for consistency.
 import { TopViewIcon, FrontViewIcon, SideViewIcon, CornerViewIcon } from './ViewIcons';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip'; // Team note: Use the shared SHADCN Button for consistency.
 
 type ViewPreset = 'top' | 'front' | 'side' | 'corner';
 
@@ -57,18 +58,26 @@ export const ViewControls = () => {
     <div className='flex flex-col gap-2 p-2 bg-card text-card-foreground rounded-md border border-border'>
       <h2 className='text-xs font-medium text-muted-foreground mb-1'>{lang.viewControls.title}</h2>
       <div className='flex justify-center gap-1'>
-        {views.map((view) => (
-          <Button
-            key={view.id}
-            size='icon'
-            className='w-8 h-8'
-            onClick={() => handleViewChange(view.id)}
-            variant={activeView === view.id ? 'default' : 'outline'}
-            aria-label={view.label}
-          >
-            {view.icon}
-          </Button>
-        ))}
+        <TooltipProvider>
+          {views.map((view) => (
+            <Tooltip key={view.id}>
+              <TooltipTrigger asChild>
+                <Button
+                  size='icon'
+                  className='w-8 h-8'
+                  onClick={() => handleViewChange(view.id)}
+                  variant={activeView === view.id ? 'default' : 'outline'}
+                  aria-label={view.label}
+                >
+                  {view.icon}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{view.label}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </TooltipProvider>
       </div>
     </div>
   );

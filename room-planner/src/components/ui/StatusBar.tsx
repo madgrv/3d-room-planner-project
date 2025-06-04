@@ -4,10 +4,25 @@
 import * as React from 'react';
 import { useLanguage } from '@/lang';
 import { useFurnitureStore } from '@/store/furnitureStore';
-import { MagnifyingGlassIcon, ArrowRightIcon, ArrowUpIcon, ArrowDownIcon, MoveIcon, ChevronDownIcon } from '@radix-ui/react-icons';
-import { useViewStore } from '@/store/viewStore';
+import { 
+  MagnifyingGlassIcon, 
+  ArrowRightIcon, 
+  ArrowUpIcon, 
+  ArrowDownIcon, 
+  MoveIcon, 
+  ChevronDownIcon,
+  ReloadIcon,
+  UpdateIcon,
+  BoxIcon,
+  GridIcon
+} from '@radix-ui/react-icons';
+import { useViewStore, RotationAmount } from '@/store/viewStore';
+import { useRoomElementStore, RoomElementType } from '@/store/roomElementStore';
+import { useTileStore } from '@/store/tileStore';
 import { Popover, PopoverContent, PopoverTrigger } from './popover';
 import { Slider } from './slider';
+import { Switch } from './Switch';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './tooltip';
 
 interface StatusBarProps {
   selectedItemId: string | null;
@@ -17,6 +32,7 @@ interface StatusBarProps {
   onChangeMode?: (mode: 'select' | 'move' | 'rotate') => void;
   snapValue?: number;
   onSnapValueChange?: (value: number) => void;
+  // No need to pass selectedRoomElement as a prop since we'll get it from the store
 }
 
 export function StatusBar({
@@ -34,8 +50,16 @@ export function StatusBar({
   // Get and set the movement axis from the store
   const movementAxis = useViewStore((state) => state.movementAxis);
   const setMovementAxis = useViewStore((state) => state.setMovementAxis);
+  
+  // Get and set the rotation amount from the store
+  const rotationAmount = useViewStore((state) => state.rotationAmount);
+  const setRotationAmount = useViewStore((state) => state.setRotationAmount);
 
-  // Get the selected item
+  // Get the selected room element from the store
+  const selectedRoomElement = useRoomElementStore((state) => state.selectedElement);
+  const roomElementVisibility = useRoomElementStore((state) => state.visibility);
+
+  // Get the selected furniture item
   const selectedItem = React.useMemo(() => {
     if (!selectedItemId) return null;
     return furniture.find(item => item.id === selectedItemId) || null;
@@ -48,22 +72,43 @@ export function StatusBar({
 
   // Format rotation as a string with 2 decimal places
   const formatRotation = (rotation: number) => {
-    return `${rotation.toFixed(2)}°`;
+    // Convert radians to degrees for display
+    const degrees = (rotation * 180 / Math.PI) % 360;
+    return `${degrees.toFixed(0)}°`;
+  };
+  
+  // Format room element name for display
+  const formatRoomElementName = (element: NonNullable<RoomElementType>) => {
+    switch(element) {
+      case 'floor': return 'Floor';
+      case 'ceiling': return 'Ceiling';
+      case 'wall-front': return 'Front Wall';
+      case 'wall-back': return 'Back Wall';
+      case 'wall-left': return 'Left Wall';
+      case 'wall-right': return 'Right Wall';
+      default: return element;
+    }
   };
 
   return (
-    <div className="flex items-center justify-between px-3 py-1 bg-card text-card-foreground border-t border-border text-xs">
+    <div className="flex flex-wrap items-center justify-between gap-y-2 px-3 py-2 bg-card text-card-foreground border-t border-border text-xs">
       {/* Left section: Selected object info */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-1 sm:mb-0">
         <div className="flex items-center gap-1">
           <span className="text-muted-foreground">{lang.statusBar.selectedObject}</span>
           <span>
             {selectedItem
               ? lang.furnitureControls[selectedItem.type as keyof typeof lang.furnitureControls] || selectedItem.type
-              : lang.statusBar.noSelection}
+              : selectedRoomElement
+                ? formatRoomElementName(selectedRoomElement)
+                : lang.statusBar.noSelection}
           </span>
+          {/* Show an icon to indicate the type of selection */}
+          {selectedItem && <MoveIcon className="h-3 w-3 ml-1 text-muted-foreground" />}
+          {selectedRoomElement && <BoxIcon className="h-3 w-3 ml-1 text-muted-foreground" />}
         </div>
         
+        {/* Show furniture properties */}
         {selectedItem && (
           <>
             <div className="flex items-center gap-1">
@@ -76,10 +121,24 @@ export function StatusBar({
             </div>
           </>
         )}
+        
+        {/* Show room element properties */}
+        {selectedRoomElement && (
+          <>
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground">{lang.statusBar.type}</span>
+              <span>{formatRoomElementName(selectedRoomElement)}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground">{lang.statusBar.visible}</span>
+              <span>{roomElementVisibility[selectedRoomElement] ? 'Yes' : 'No'}</span>
+            </div>
+          </>
+        )}
       </div>
       
       {/* Right section: Mode and snap controls */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <div className="flex items-center gap-1">
           <span className="text-muted-foreground">{lang.statusBar.mode}</span>
           <div className="flex bg-background rounded border border-border">
@@ -118,14 +177,14 @@ export function StatusBar({
             <Popover>
               <PopoverTrigger asChild>
                 <button className="flex items-center gap-1 text-xs px-1 py-0.5 rounded border border-border">
-                  <span>Grid: {snapValue}</span>
+                  <span>{lang.statusBar.grid} {snapValue}</span>
                   <ChevronDownIcon className="h-3 w-3" />
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-56 p-3">
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-xs font-medium">Snap Value</span>
+                    <span className="text-xs font-medium">{lang.statusBar.snapValue}</span>
                     <span className="text-xs">{snapValue}</span>
                   </div>
                   <Slider
@@ -148,37 +207,188 @@ export function StatusBar({
         {/* Movement axis selector - only show in move mode */}
         {mode === 'move' && (
           <div className="flex items-center gap-1">
-            <span className="text-muted-foreground">Axis:</span>
+            <span className="text-muted-foreground">{lang.statusBar.axis}</span>
             <div className="flex bg-background rounded border border-border">
-              <button
-                className={`px-2 py-0.5 text-xs ${movementAxis === 'xz' ? 'bg-accent' : ''}`}
-                onClick={() => setMovementAxis('xz')}
-                title="Move on floor plane (XZ)"
-              >
-                <MoveIcon className="h-3 w-3" />
-              </button>
-              <button
-                className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'x' ? 'bg-accent' : ''}`}
-                onClick={() => setMovementAxis('x')}
-                title="Move along X axis"
-              >
-                <ArrowRightIcon className="h-3 w-3" />
-              </button>
-              <button
-                className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'y' ? 'bg-accent' : ''}`}
-                onClick={() => setMovementAxis('y')}
-                title="Move along Y axis (up/down)"
-              >
-                <ArrowUpIcon className="h-3 w-3" />
-              </button>
-              <button
-                className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'z' ? 'bg-accent' : ''}`}
-                onClick={() => setMovementAxis('z')}
-                title="Move along Z axis"
-              >
-                <ArrowDownIcon className="h-3 w-3" />
-              </button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className={`px-2 py-0.5 text-xs ${movementAxis === 'xz' ? 'bg-accent' : ''}`}
+                      onClick={() => setMovementAxis('xz')}
+                      aria-label={lang.statusBar?.moveFloorPlane || 'Move on floor plane (XZ)'}
+                    >
+                      <MoveIcon className="h-3 w-3" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{lang.statusBar.moveFloorPlane}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'x' ? 'bg-accent' : ''}`}
+                      onClick={() => setMovementAxis('x')}
+                      aria-label={lang.statusBar?.moveXAxis || 'Move along X axis'}
+                    >
+                      <ArrowRightIcon className="h-3 w-3" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{lang.statusBar.moveXAxis}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'y' ? 'bg-accent' : ''}`}
+                      onClick={() => setMovementAxis('y')}
+                      aria-label={lang.statusBar?.moveYAxis || 'Move along Y axis (up/down)'}
+                    >
+                      <ArrowUpIcon className="h-3 w-3" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{lang.statusBar.moveYAxis}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className={`px-2 py-0.5 text-xs border-l border-border ${movementAxis === 'z' ? 'bg-accent' : ''}`}
+                      onClick={() => setMovementAxis('z')}
+                      aria-label={lang.statusBar?.moveZAxis || 'Move along Z axis'}
+                    >
+                      <ArrowDownIcon className="h-3 w-3" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{lang.statusBar.moveZAxis}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
+          </div>
+        )}
+        
+        {/* Rotation controls - only show in rotate mode */}
+        {mode === 'rotate' && selectedItem && (
+          <div className="flex items-center gap-3">
+            {/* Rotation amount selector */}
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground">{lang.statusBar.increment}</span>
+              <div className="flex bg-background rounded border border-border">
+                {[90, 45, 15, 5].map((amount) => (
+                  <TooltipProvider key={`rotation-${amount}`}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={`px-2 py-0.5 text-xs ${amount !== 90 ? 'border-l border-border' : ''} ${rotationAmount === amount ? 'bg-accent' : ''}`}
+                          onClick={() => setRotationAmount(amount as RotationAmount)}
+                          aria-label={`Rotate by ${amount} degrees`}
+                        >
+                          {amount}°
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>{lang.statusBar.rotateBy.replace('{amount}', amount.toString())}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                ))}
+              </div>
+            </div>
+            
+            {/* Rotation direction buttons */}
+            <div className="flex items-center gap-1">
+              <span className="text-muted-foreground">{lang.statusBar.rotate}</span>
+              <div className="flex bg-background rounded border border-border">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        className="px-2 py-0.5 text-xs"
+                        onClick={() => {
+                          if (selectedItem) {
+                            // Convert degrees to radians
+                            const radians = (rotationAmount * Math.PI) / 180;
+                            // Rotate counter-clockwise
+                            const newRotation = (selectedItem.rotation - radians) % (Math.PI * 2);
+                            useFurnitureStore.getState().updateFurniture(selectedItem.id, { rotation: newRotation });
+                          }
+                        }}
+                        aria-label="Rotate counter-clockwise"
+                      >
+                        <ReloadIcon className="h-3 w-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{lang.statusBar.rotateCounterClockwise.replace('{amount}', rotationAmount.toString())}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        className="px-2 py-0.5 text-xs border-l border-border"
+                        onClick={() => {
+                          if (selectedItem) {
+                            // Convert degrees to radians
+                            const radians = (rotationAmount * Math.PI) / 180;
+                            // Rotate clockwise
+                            const newRotation = (selectedItem.rotation + radians) % (Math.PI * 2);
+                            useFurnitureStore.getState().updateFurniture(selectedItem.id, { rotation: newRotation });
+                          }
+                        }}
+                        aria-label="Rotate clockwise"
+                      >
+                        <UpdateIcon className="h-3 w-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{lang.statusBar.rotateClockwise.replace('{amount}', rotationAmount.toString())}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {/* Tile controls - only show when a room element is selected */}
+        {selectedRoomElement && (
+          <div className="flex items-center gap-3">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">{lang.statusBar.tiles}</span>
+                    <Switch
+                      checked={useTileStore.getState().elementTilingEnabled[selectedRoomElement] || false}
+                      onCheckedChange={(checked) => {
+                        useTileStore.getState().setTilingEnabled(selectedRoomElement, checked);
+                      }}
+                      aria-label="Toggle tiling"
+                    />
+                    <GridIcon className="h-3 w-3 text-muted-foreground" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{lang.statusBar.toggleTiling.replace('{element}', formatRoomElementName(selectedRoomElement))}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         )}
       </div>

@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useRoomStore } from '@/store/roomStore';
 import { Button } from './Button';
+import { Input } from './input'; // Use shared SHADCN Input for all number fields
 import { useLanguage } from '@/lang';
 
 export const RoomControls = () => {
+  // Handler to allow Enter key to confirm/apply room settings for any input
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      applyChanges();
+    }
+  };
   const { lang } = useLanguage();
   const { dimensions, setDimensions } = useRoomStore();
   const [width, setWidth] = useState(dimensions.width);
@@ -58,21 +65,27 @@ export const RoomControls = () => {
           <label className='block text-xs font-medium'>
             {lang.roomControls.widthLabel}
           </label>
-          <input
+          {/* Use shared SHADCN Input for consistency and theming */}
+          {/* Pressing Enter in this input will confirm the value and apply changes */}
+          <Input
             type='number'
             min='1'
             max='20'
             step='0.1'
             value={width}
             onChange={handleWidthChange}
+            onKeyDown={handleInputKeyDown}
             className={inputStyle}
+            aria-label={lang.roomControls.widthLabel}
           />
         </div>
         <div className='flex items-center gap-1'>
           <label className='block text-xs font-medium' htmlFor='room-length'>
             {lang.roomControls.lengthLabel}
           </label>
-          <input
+          {/* Use shared SHADCN Input for consistency and theming */}
+          {/* Pressing Enter in this input will confirm the value and apply changes */}
+          <Input
             id='room-length'
             type='number'
             min='1'
@@ -80,14 +93,18 @@ export const RoomControls = () => {
             step='0.1'
             value={length}
             onChange={handleLengthChange}
+            onKeyDown={handleInputKeyDown}
             className={inputStyle}
+            aria-label={lang.roomControls.lengthLabel}
           />
         </div>
         <div className='flex items-center gap-1'>
           <label className='block text-xs font-medium' htmlFor='room-height'>
             {lang.roomControls.heightLabel}
           </label>
-          <input
+          {/* Use shared SHADCN Input for consistency and theming */}
+          {/* Pressing Enter in this input will confirm the value and apply changes */}
+          <Input
             id='room-height'
             type='number'
             min='1'
@@ -95,7 +112,9 @@ export const RoomControls = () => {
             step='0.1'
             value={height}
             onChange={handleHeightChange}
+            onKeyDown={handleInputKeyDown}
             className={inputStyle}
+            aria-label={lang.roomControls.heightLabel}
           />
         </div>
         {/* Team note: Using the shared SHADCN Button component for consistency and reuse across the app. */}

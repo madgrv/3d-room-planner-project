@@ -139,9 +139,28 @@ export const CameraControls = () => {
 
     // Set position based on preset
     switch (preset) {
-      case 'top':
-        camera.position.set(0, height * 2, 0);
+      case 'top': {
+        // Calculate camera height based on room dimensions and field of view
+        // We want to ensure the entire room is visible from the top view
+        
+        // Get the diagonal length of the room (for rectangular rooms)
+        const roomDiagonal = Math.sqrt(width * width + length * length);
+        
+        // Calculate the camera height needed to view the entire room
+        // This uses the camera's field of view and the room's diagonal
+        const fov = camera instanceof THREE.PerspectiveCamera ? camera.fov : 50;
+        const fovRadians = (fov * Math.PI) / 180;
+        
+        // The multiplier 1.2 provides some padding around the room
+        const cameraHeight = (roomDiagonal / 2) / Math.tan(fovRadians / 2) * 1.2;
+        
+        // Position camera directly above the room centre
+        camera.position.set(0, cameraHeight, 0);
+        
+        // Ensure the camera is looking at the centre of the room floor
+        controls.target.set(0, 0, 0);
         break;
+      }
       case 'front':
         camera.position.set(0, height / 2, length * 1.5);
         break;

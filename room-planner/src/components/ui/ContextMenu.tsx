@@ -5,8 +5,7 @@ import * as React from 'react';
 import { useLanguage } from '@/lang';
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { useViewStore } from '@/store/viewStore';
-import { useRoomElementStore, RoomElementType, RoomElementState } from '@/store/roomElementStore';
-import { shallow } from 'zustand/shallow';
+import { RoomElementType, useRoomElementStore } from '@/store/roomElementStore';
 
 import {
   CopyIcon,
@@ -143,7 +142,7 @@ export function ContextMenu({
   };
 
   // Check if room element is currently visible
-  const isRoomElementVisible = roomElement ? visibility[roomElement] : true;
+  const isRoomElementVisible = roomElement ? visibility[roomElement as NonNullable<RoomElementType>] : true;
 
   // Get room element name for display
   const getRoomElementName = (element: RoomElementType): string => {

@@ -31,7 +31,6 @@ const SceneContent = ({
   onRightClick,
   closeContextMenu,
   backgroundColor,
-  theme,
   snapEnabled,
   hitObjectRef,
 }: SceneContentProps) => {
@@ -129,7 +128,8 @@ const SceneContent = ({
       } else {
         // Find the first intersection with a roomElement (wall, floor, or ceiling)
         const firstRoomElementHit = intersects.find(
-          intersect => intersect.object.userData && intersect.object.userData.roomElement
+          (intersect) =>
+            intersect.object.userData && intersect.object.userData.roomElement
         );
         if (firstRoomElementHit) {
           roomElement = firstRoomElementHit.object.userData.roomElement;

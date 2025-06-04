@@ -21,7 +21,6 @@ interface SceneContentProps {
   ) => void;
   closeContextMenu: () => void;
   backgroundColor: string;
-  theme: string;
   snapEnabled: boolean;
   hitObjectRef: React.MutableRefObject<boolean>;
 }
@@ -31,7 +30,6 @@ const SceneContent = ({
   onRightClick,
   closeContextMenu,
   backgroundColor,
-  theme,
   snapEnabled,
   hitObjectRef,
 }: SceneContentProps) => {
@@ -456,7 +454,6 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
             onRightClick={handleRightClick}
             closeContextMenu={handleCloseContextMenu}
             backgroundColor={backgroundColor}
-            theme={resolvedTheme || 'light'}
             snapEnabled={snapEnabled}
             hitObjectRef={hitObjectRef}
           />

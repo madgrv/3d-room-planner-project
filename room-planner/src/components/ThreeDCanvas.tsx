@@ -98,7 +98,7 @@ const SceneContent = ({
         }
       }
 
-      // Prioritize furniture over room elements
+      // Prioritize furniture over room elements, and walls over floor
       let clickedItemId: string | null = null;
       let roomElement: RoomElementType = null;
 
@@ -109,10 +109,25 @@ const SceneContent = ({
         clickedItemId = furnitureIntersects[0].itemId;
         console.log('Raycasting result: Hit furniture:', clickedItemId);
       } else if (roomElementIntersects.length > 0) {
-        // Sort by distance and take the closest
-        roomElementIntersects.sort((a, b) => a.distance - b.distance);
-        roomElement = roomElementIntersects[0].element;
-        console.log('Raycasting result: Hit element:', roomElement);
+        // First check if we have any wall elements in the intersections
+        const wallIntersects = roomElementIntersects.filter(item => 
+          item.element === 'wall-front' || 
+          item.element === 'wall-back' || 
+          item.element === 'wall-left' || 
+          item.element === 'wall-right'
+        );
+        
+        // If we have wall intersections, prioritize them
+        if (wallIntersects.length > 0) {
+          wallIntersects.sort((a, b) => a.distance - b.distance);
+          roomElement = wallIntersects[0].element;
+          console.log('Raycasting result: Hit wall element:', roomElement);
+        } else {
+          // For floor and other room elements
+          roomElementIntersects.sort((a, b) => a.distance - b.distance);
+          roomElement = roomElementIntersects[0].element;
+          console.log('Raycasting result: Hit element:', roomElement);
+        }
       }
 
       console.log(

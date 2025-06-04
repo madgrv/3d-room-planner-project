@@ -113,11 +113,16 @@ export const TiledSurface = ({
       userData={{ roomElement: elementType }}
     >
       {/* Main tile mesh with texture */}
-      <mesh>
+      <mesh userData={{ roomElement: elementType }}>
         {/* Use the original dimensions to maintain wall size */}
         <planeGeometry args={[width, length]} />
         <primitive object={surfaceMaterial} attach='material' />
       </mesh>
+      {/*
+        userData is set on the mesh itself so raycasting can correctly identify
+        the room element (floor, wall, etc.) for selection. This matches the approach
+        used for non-tiled surfaces and ensures consistent selection logic.
+      */}
 
       {/* Grid lines for tiles */}
       <lineSegments>

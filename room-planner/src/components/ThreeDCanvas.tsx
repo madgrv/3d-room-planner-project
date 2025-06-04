@@ -62,6 +62,20 @@ const SceneContent = ({
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(scene.children, true);
 
+      // Debug: Log all raycast hits with object name, userData, and distance
+      if (intersects.length > 0) {
+        console.group('Raycast Intersections');
+        intersects.forEach((intersect, idx) => {
+          const obj = intersect.object;
+          console.log(
+            `#${idx}: name='${obj.name}', userData=`,
+            obj.userData,
+            `distance=${intersect.distance}`
+          );
+        });
+        console.groupEnd();
+      }
+
       // Find all intersected objects with userData
       const furnitureIntersects: { itemId: string; distance: number }[] = [];
       const roomElementIntersects: {
@@ -98,36 +112,34 @@ const SceneContent = ({
         }
       }
 
-      // Prioritize furniture over room elements, and walls over floor
+      // Prioritise furniture if hit, otherwise select the closest room element (wall, floor, etc.)
+      // Always select the visually topmost (closest) mesh, regardless of element type.
+      // This ensures Blender-like behaviour: no hardcoded priority for walls or floor—just pick the closest hit.
       let clickedItemId: string | null = null;
       let roomElement: RoomElementType = null;
 
-      // If we have furniture intersections, use the closest one
       if (furnitureIntersects.length > 0) {
-        // Sort by distance and take the closest
         furnitureIntersects.sort((a, b) => a.distance - b.distance);
         clickedItemId = furnitureIntersects[0].itemId;
         console.log('Raycasting result: Hit furniture:', clickedItemId);
-      } else if (roomElementIntersects.length > 0) {
-        // First check if we have any wall elements in the intersections
-        const wallIntersects = roomElementIntersects.filter(
-          (item) =>
-            item.element === 'wall-front' ||
-            item.element === 'wall-back' ||
-            item.element === 'wall-left' ||
-            item.element === 'wall-right'
+        // Mark that we hit a valid object so onPointerMissed does not clear the selection
+        if (hitObjectRef) hitObjectRef.current = true;
+      } else {
+        // Find the first intersection with a roomElement (wall, floor, or ceiling)
+        const firstRoomElementHit = intersects.find(
+          (intersect) =>
+            intersect.object.userData && intersect.object.userData.roomElement
         );
-
-        // If we have wall intersections, prioritize them
-        if (wallIntersects.length > 0) {
-          wallIntersects.sort((a, b) => a.distance - b.distance);
-          roomElement = wallIntersects[0].element;
-          console.log('Raycasting result: Hit wall element:', roomElement);
-        } else {
-          // For floor and other room elements
-          roomElementIntersects.sort((a, b) => a.distance - b.distance);
-          roomElement = roomElementIntersects[0].element;
-          console.log('Raycasting result: Hit element:', roomElement);
+        if (firstRoomElementHit) {
+          roomElement = firstRoomElementHit.object.userData.roomElement;
+          console.log(
+            'Raycasting result: Hit room element:',
+            roomElement,
+            'at distance:',
+            firstRoomElementHit.distance
+          );
+          // Mark that we hit a valid object so onPointerMissed does not clear the selection
+          if (hitObjectRef) hitObjectRef.current = true;
         }
       }
 

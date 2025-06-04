@@ -7,7 +7,7 @@ type VisibilityState = {
   [key in NonNullable<RoomElementType>]: boolean;
 };
 
-interface RoomElementState {
+export interface RoomElementState {
   // Currently selected room element
   selectedElement: RoomElementType;
   

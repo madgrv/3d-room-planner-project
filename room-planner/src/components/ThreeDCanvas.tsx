@@ -22,6 +22,7 @@ interface SceneContentProps {
   backgroundColor: string;
   theme: string;
   snapEnabled: boolean;
+  hitObjectRef: React.MutableRefObject<boolean>;
 }
 
 // This component renders the contents of the Canvas without wrapping in another Canvas
@@ -30,6 +31,7 @@ const SceneContent = ({
   backgroundColor,
   theme,
   snapEnabled,
+  hitObjectRef,
 }: SceneContentProps) => {
   const { scene, camera, raycaster, gl, mouse } = useThree();
   const setSelectedElement = useRoomElementStore(
@@ -62,7 +64,10 @@ const SceneContent = ({
 
       // Find all intersected objects with userData
       const furnitureIntersects: { itemId: string; distance: number }[] = [];
-      const roomElementIntersects: { element: RoomElementType; distance: number }[] = [];
+      const roomElementIntersects: {
+        element: RoomElementType;
+        distance: number;
+      }[] = [];
 
       // First pass: collect all intersections
       for (const intersect of intersects) {
@@ -75,7 +80,7 @@ const SceneContent = ({
           if (obj.userData && obj.userData.furnitureId) {
             furnitureIntersects.push({
               itemId: obj.userData.furnitureId,
-              distance: distance
+              distance: distance,
             });
             break;
           }
@@ -84,7 +89,7 @@ const SceneContent = ({
           if (obj.userData && obj.userData.roomElement) {
             roomElementIntersects.push({
               element: obj.userData.roomElement as RoomElementType,
-              distance: distance
+              distance: distance,
             });
             break;
           }
@@ -102,12 +107,12 @@ const SceneContent = ({
         // Sort by distance and take the closest
         furnitureIntersects.sort((a, b) => a.distance - b.distance);
         clickedItemId = furnitureIntersects[0].itemId;
-      } 
-      // Otherwise, if we have room element intersections, use the closest one
-      else if (roomElementIntersects.length > 0) {
+        console.log('Raycasting result: Hit furniture:', clickedItemId);
+      } else if (roomElementIntersects.length > 0) {
         // Sort by distance and take the closest
         roomElementIntersects.sort((a, b) => a.distance - b.distance);
         roomElement = roomElementIntersects[0].element;
+        console.log('Raycasting result: Hit element:', roomElement);
       }
 
       console.log(
@@ -126,11 +131,15 @@ const SceneContent = ({
           setSelectedElement(roomElement);
           clearFurnitureSelection();
           console.log('Selected room element:', roomElement);
+          hitObjectRef.current = true; // Mark that an object was hit
+          e.preventDefault(); // Prevent default behavior for room element selection
         } else if (clickedItemId) {
           // Select furniture and clear room element selection
           setSelectedElement(null);
           selectFurniture(clickedItemId);
           console.log('Selected furniture:', clickedItemId);
+          hitObjectRef.current = true; // Mark that an object was hit
+          e.preventDefault(); // Prevent default behavior for furniture selection
         } else {
           // Clicked on empty space, clear all selections
           setSelectedElement(null);
@@ -161,6 +170,7 @@ const SceneContent = ({
       setSelectedElement,
       clearFurnitureSelection,
       selectFurniture,
+      hitObjectRef,
     ]
   );
 
@@ -207,8 +217,13 @@ interface ThreeDCanvasProps {
 export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
   const { resolvedTheme } = useTheme();
   // These variables are used elsewhere or will be used in future updates
-  // const isDragging = useDragStore((state) => state.isDragging);
-  // const selectedElement = useRoomElementStore((state) => state.selectedElement);
+  const selectedElement = useRoomElementStore((state) => state.selectedElement);
+  useEffect(() => {
+    console.log('Selected Element changed:', selectedElement);
+  }, [selectedElement]);
+
+  // Ref to track if an object was hit in SceneContent's handlePointerDown
+  const hitObjectRef = useRef(false);
 
   // State for context menu
   const [contextMenu, setContextMenu] = useState<{
@@ -217,7 +232,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     y: number;
     itemId: string | null;
     roomElement: RoomElementType;
-  }>({
+  }>({ 
     visible: false,
     x: 0,
     y: 0,
@@ -260,20 +275,20 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
 
       // Get the canvas container's position
       const canvasRect = canvasContainerRef.current?.getBoundingClientRect();
-      
+
       if (canvasRect) {
         // Calculate position relative to the viewport
         const x = e.clientX;
         const y = e.clientY;
-        
+
         // Ensure the menu stays within the viewport
         const menuWidth = 200; // Approximate width of the context menu
         const menuHeight = 300; // Approximate height of the context menu
-        
+
         // Adjust position if it would go off-screen
         const adjustedX = Math.min(x, window.innerWidth - menuWidth);
         const adjustedY = Math.min(y, window.innerHeight - menuHeight);
-        
+
         // Show context menu at adjusted position
         setContextMenu({
           visible: true,
@@ -327,9 +342,6 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
         startPos.x = e.clientX;
         startPos.y = e.clientY;
         hasMoved = false;
-
-        // Immediately hide the context menu when right mouse button is pressed
-        setContextMenu((prev) => ({ ...prev, visible: false }));
       }
     };
 
@@ -409,9 +421,13 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
             far: 1000,
           }}
           onPointerMissed={() => {
-            // Clear selections when clicking on empty space
-            useRoomElementStore.getState().setSelectedElement(null);
-            useFurnitureStore.getState().clearSelection();
+            // Only clear selections if no object was hit during the pointer event
+            if (!hitObjectRef.current) {
+              useRoomElementStore.getState().setSelectedElement(null);
+              useFurnitureStore.getState().clearSelection();
+            }
+            // Reset the ref for the next pointer event
+            hitObjectRef.current = false;
           }}
         >
           <SceneContent
@@ -419,6 +435,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
             backgroundColor={backgroundColor}
             theme={resolvedTheme || 'light'}
             snapEnabled={snapEnabled}
+            hitObjectRef={hitObjectRef}
           />
         </Canvas>
       </div>

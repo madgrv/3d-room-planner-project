@@ -5,7 +5,8 @@ import * as React from 'react';
 import { useLanguage } from '@/lang';
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { useViewStore } from '@/store/viewStore';
-import { useRoomElementStore, RoomElementType } from '@/store/roomElementStore';
+import { useRoomElementStore, RoomElementType, RoomElementState } from '@/store/roomElementStore';
+import { shallow } from 'zustand/shallow';
 
 import {
   CopyIcon,

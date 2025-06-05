@@ -21,7 +21,6 @@ interface SceneContentProps {
   ) => void;
   closeContextMenu: () => void;
   backgroundColor: string;
-  theme: string;
   snapEnabled: boolean;
   hitObjectRef: React.MutableRefObject<boolean>;
 }
@@ -62,20 +61,6 @@ const SceneContent = ({
       // Perform raycasting
       raycaster.setFromCamera(mouse, camera);
       const intersects = raycaster.intersectObjects(scene.children, true);
-
-      // Debug: Log all raycast hits with object name, userData, and distance
-      if (intersects.length > 0) {
-        console.group('Raycast Intersections');
-        intersects.forEach((intersect, idx) => {
-          const obj = intersect.object;
-          console.log(
-            `#${idx}: name='${obj.name}', userData=`,
-            obj.userData,
-            `distance=${intersect.distance}`
-          );
-        });
-        console.groupEnd();
-      }
 
       // Find all intersected objects with userData
       const furnitureIntersects: { itemId: string; distance: number }[] = [];
@@ -122,7 +107,6 @@ const SceneContent = ({
       if (furnitureIntersects.length > 0) {
         furnitureIntersects.sort((a, b) => a.distance - b.distance);
         clickedItemId = furnitureIntersects[0].itemId;
-        console.log('Raycasting result: Hit furniture:', clickedItemId);
         // Mark that we hit a valid object so onPointerMissed does not clear the selection
         if (hitObjectRef) hitObjectRef.current = true;
       } else {
@@ -133,25 +117,10 @@ const SceneContent = ({
         );
         if (firstRoomElementHit) {
           roomElement = firstRoomElementHit.object.userData.roomElement;
-          console.log(
-            'Raycasting result: Hit room element:',
-            roomElement,
-            'at distance:',
-            firstRoomElementHit.distance
-          );
           // Mark that we hit a valid object so onPointerMissed does not clear the selection
           if (hitObjectRef) hitObjectRef.current = true;
         }
       }
-
-      console.log(
-        'Raycasting result:',
-        clickedItemId
-          ? `Hit item: ${clickedItemId}`
-          : roomElement
-          ? `Hit element: ${roomElement}`
-          : 'No hit'
-      );
 
       // Handle left-click for selection
       if (e.button === 0) {
@@ -162,30 +131,23 @@ const SceneContent = ({
           // Select room element and clear furniture selection
           setSelectedElement(roomElement);
           clearFurnitureSelection();
-          console.log('Selected room element:', roomElement);
           hitObjectRef.current = true; // Mark that an object was hit
           e.preventDefault(); // Prevent default behavior for room element selection
         } else if (clickedItemId) {
           // Select furniture and clear room element selection
           setSelectedElement(null);
           selectFurniture(clickedItemId);
-          console.log('Selected furniture:', clickedItemId);
           hitObjectRef.current = true; // Mark that an object was hit
           e.preventDefault(); // Prevent default behavior for furniture selection
         } else {
           // Clicked on empty space, clear all selections
           setSelectedElement(null);
           clearFurnitureSelection();
-          console.log('Cleared selections');
         }
       }
 
       // Call the onRightClick callback with the clicked item ID and room element
       if (e.button === 2) {
-        console.log('Right-click detected in SceneContent', {
-          clickedItemId,
-          roomElement,
-        });
         onRightClick(e, clickedItemId, roomElement);
         // Only prevent default to avoid showing browser's context menu
         // but don't stop propagation to allow orbit controls to work
@@ -304,8 +266,6 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
       // If dragging, don't show context menu
       if (isDraggingState || globalIsDragging) return;
 
-      console.log('Right-click detected:', { itemId, roomElement });
-
       // Get the canvas container's position
       const canvasRect = canvasContainerRef.current?.getBoundingClientRect();
 
@@ -395,7 +355,6 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
           canvasRef.current &&
           e.target === canvasRef.current
         ) {
-          console.log('Background right-click detected');
           // Show context menu at the click position
           setContextMenu({
             visible: true,
@@ -467,7 +426,6 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
             onRightClick={handleRightClick}
             closeContextMenu={handleCloseContextMenu}
             backgroundColor={backgroundColor}
-            theme={resolvedTheme || 'light'}
             snapEnabled={snapEnabled}
             hitObjectRef={hitObjectRef}
           />

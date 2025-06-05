@@ -1,5 +1,6 @@
 import { TopBar } from '@/components/ui/TopBar';
 import { ThreeDCanvas } from '@/components/ThreeDCanvas';
+import { DragAndDrop3DProvider } from '@/components/ThreeDCanvas/DragAndDrop3DContext';
 import { BottomBar } from '@/components/ui/BottomBar';
 import { FurnitureLibrary } from '@/components/ui/FurnitureLibrary';
 import { useFurnitureStore } from '@/store/furnitureStore';
@@ -22,28 +23,31 @@ function App() {
       <TopBar />
       
       {/* Main Content */}
-      <div className='flex flex-1 overflow-hidden'>
-        {/* Left Sidebar - Furniture Library */}
-        {isLibraryOpen && (
-          <aside className='w-80 border-r border-border flex-shrink-0 overflow-hidden flex flex-col'>
-            <FurnitureLibrary />
-          </aside>
-        )}
-        
-        {/* Main 3D View */}
-        <div className='flex-1 relative'>
-          <ThreeDCanvas snapEnabled={snapEnabled} />
+      {/* Drag-and-drop context only wraps the relevant subtree for modularity */}
+      <DragAndDrop3DProvider>
+        <div className='flex flex-1 overflow-hidden'>
+          {/* Left Sidebar - Furniture Library */}
+          {isLibraryOpen && (
+            <aside className='w-80 border-r border-border flex-shrink-0 overflow-hidden flex flex-col'>
+              <FurnitureLibrary />
+            </aside>
+          )}
           
-          {/* Toggle Library Button */}
-          <button
-            onClick={() => setIsLibraryOpen(!isLibraryOpen)}
-            className='absolute top-4 left-4 z-10 p-2 bg-card rounded-md shadow-md hover:bg-accent transition-colors'
-            title={isLibraryOpen ? 'Hide library' : 'Show library'}
-          >
-            {isLibraryOpen ? '◀' : '▶'}
-          </button>
+          {/* Main 3D View */}
+          <div className='flex-1 relative'>
+            <ThreeDCanvas snapEnabled={snapEnabled} />
+            
+            {/* Toggle Library Button */}
+            <button
+              onClick={() => setIsLibraryOpen(!isLibraryOpen)}
+              className='absolute top-4 left-4 z-10 p-2 bg-card rounded-md shadow-md hover:bg-accent transition-colors'
+              title={isLibraryOpen ? 'Hide library' : 'Show library'}
+            >
+              {isLibraryOpen ? '◀' : '▶'}
+            </button>
+          </div>
         </div>
-      </div>
+      </DragAndDrop3DProvider>
       
       {/* Bottom Bar */}
       <div className='border-t border-border'>

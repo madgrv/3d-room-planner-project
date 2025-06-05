@@ -146,6 +146,18 @@ const en = {
     wallRight: 'Right Wall',
     ceiling: 'Ceiling',
   },
+  furnitureLibrary: {
+    chairLabel: 'Chair',
+    chairDimensions: '45 × 45 × 85 cm',
+    tableLabel: 'Table',
+    tableDimensions: '120 × 70 × 75 cm',
+    sofaLabel: 'Sofa',
+    sofaDimensions: '200 × 90 × 80 cm',
+    bedLabel: 'Bed',
+    bedDimensions: '200 × 160 × 50 cm',
+    wardrobeLabel: 'Wardrobe',
+    wardrobeDimensions: '100 × 50 × 200 cm',
+  }
 };
 
 export default en;

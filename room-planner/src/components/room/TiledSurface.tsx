@@ -113,11 +113,15 @@ export const TiledSurface = ({
       userData={{ roomElement: elementType }}
     >
       {/* Main tile mesh with texture */}
-      <mesh userData={{ roomElement: elementType }}>
+      <mesh userData={{ roomElement: elementType }} receiveShadow>
         {/* Use the original dimensions to maintain wall size */}
         <planeGeometry args={[width, length]} />
         <primitive object={surfaceMaterial} attach='material' />
       </mesh>
+      {/*
+        receiveShadow enables the mesh to display shadows cast from other objects or lights,
+        making the tiles appear more grounded and visually realistic.
+      */}
       {/*
         userData is set on the mesh itself so raycasting can correctly identify
         the room element (floor, wall, etc.) for selection. This matches the approach

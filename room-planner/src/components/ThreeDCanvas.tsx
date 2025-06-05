@@ -183,13 +183,34 @@ const SceneContent = ({
       <color attach='background' args={[backgroundColor]} />
 
       {/* Lighting - consistent regardless of theme */}
-      <ambientLight intensity={0.5} />
+      {/* Lower ambient light for stronger contrast and more natural shadows */}
+      <ambientLight intensity={0.15} />
+
+      {/* Main sun: strong, warm, high-quality shadow casting */}
       <directionalLight
-        position={[10, 10, 5]}
-        intensity={1}
+        position={[10, 20, 10]}
+        intensity={0.5}
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[4096, 4096]}
+        shadow-bias={-0.0005}
+        color='#ffe7c6' // Warm sunlight
       />
+
+      {/* Cool sky fill: softens shadows, adds realism */}
+      {/* <directionalLight
+        position={[-10, 10, -10]}
+        intensity={2}
+        color='#bcd7ff' // Cool sky fill
+      />
+
+      <directionalLight
+        position={[10, 10, -10]}
+        intensity={1}
+        color='#aa9eff'
+      /> */}
+
+      {/* Optional: subtle environment for reflections only, not ambient light */}
+      <Environment preset='warehouse' background={false} blur={0.8} />
 
       {/* Room and Grid */}
       <Room snapEnabled={snapEnabled} />
@@ -197,7 +218,8 @@ const SceneContent = ({
 
       {/* Environment and Controls */}
       <CameraControls />
-      <Environment preset='apartment' />
+      {/* <Environment preset='city' background={false} blur={0.8} /> */}
+      {/* <Environment preset='apartment' /> */}
 
       {/* Performance Stats (development only) */}
       <Stats />

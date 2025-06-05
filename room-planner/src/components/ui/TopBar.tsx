@@ -1,7 +1,7 @@
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { RoomControls } from './RoomControls';
 import { ViewControls } from './ViewControls';
-import { FurnitureControls } from './FurnitureControls';
+
 import { LanguageSelector } from './LanguageSelector';
 import { useLanguage } from '@/lang';
 
@@ -35,7 +35,6 @@ export function TopBar({ className = '' }: TopBarProps) {
         <div className='flex flex-wrap gap-3'>
           <RoomControls />
           <ViewControls />
-          <FurnitureControls />
         </div>
       </div>
     </div>

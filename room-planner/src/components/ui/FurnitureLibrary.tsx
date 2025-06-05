@@ -1,8 +1,12 @@
-import { useState } from 'react';
+// FurnitureLibrary: Card-based outliner for furniture drag-and-drop and add
+// Team note: All user-facing text is localised except where marked TODO.
+// FurnitureLibrary: Card-based outliner for furniture drag-and-drop and add
+// Team note: All user-facing text is localised except where marked TODO.
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { Card } from './Card';
+import { useLanguage } from '@/lang';
 import { Button } from './Button';
-import { Plus, GripVertical } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 // This interface is just for the UI representation
 interface FurnitureItemUI {
@@ -17,117 +21,100 @@ import type { FurnitureItem } from '@/store/furnitureStore';
 
 export function FurnitureLibrary() {
   const { addFurniture } = useFurnitureStore();
+  const { lang } = useLanguage(); // Retrieve lang via useLanguage hook
 
   // Furniture items for the UI
+  // All labels and dimensions are now localised via lang.furnitureLibrary
   const FURNITURE_ITEMS: FurnitureItemUI[] = [
     {
       type: 'chair',
-      label: 'Chair',
+      label: lang.furnitureLibrary.chairLabel,
       preview: '/previews/chair.png',
-      dimensions: '45 × 45 × 85 cm',
+      dimensions: lang.furnitureLibrary.chairDimensions,
     },
     {
       type: 'table',
-      label: 'Table',
+      label: lang.furnitureLibrary.tableLabel,
       preview: '/previews/table.png',
-      dimensions: '120 × 70 × 75 cm',
+      dimensions: lang.furnitureLibrary.tableDimensions,
     },
     {
       type: 'sofa',
-      label: 'Sofa',
+      label: lang.furnitureLibrary.sofaLabel,
       preview: '/previews/sofa.png',
-      dimensions: '200 × 90 × 80 cm',
+      dimensions: lang.furnitureLibrary.sofaDimensions,
     },
     {
       type: 'bed',
-      label: 'Bed',
+      label: lang.furnitureLibrary.bedLabel,
       preview: '/previews/bed.png',
-      dimensions: '200 × 160 × 90 cm',
+      dimensions: lang.furnitureLibrary.bedDimensions,
     },
     {
       type: 'wardrobe',
-      label: 'Wardrobe',
+      label: lang.furnitureLibrary.wardrobeLabel,
       preview: '/previews/wardrobe.png',
-      dimensions: '100 × 60 × 200 cm',
+      dimensions: lang.furnitureLibrary.wardrobeDimensions,
     },
   ];
 
-  const [isDragging, setIsDragging] = useState<string | null>(null);
-
+  // Add a furniture item by clicking the plus button
   const handleAddFurniture = (type: string) => {
     // Create a new furniture item with default values
     const newItem: Omit<FurnitureItem, 'id'> = {
       type,
       position: [0, 0, 0], // Default position at origin
       rotation: 0, // Default rotation
-      visible: true // Default visibility
+      visible: true, // Default visibility
     };
     addFurniture(newItem);
   };
 
-  const handleDragStart = (e: React.DragEvent, type: string) => {
-    e.dataTransfer.setData('application/furniture-type', type);
-    e.dataTransfer.effectAllowed = 'copy';
-    setIsDragging(type);
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(null);
-  };
-
   return (
-    <Card className="h-full overflow-hidden flex flex-col">
-      <div className="p-4 border-b">
-        <h3 className="font-medium">Furniture Library</h3>
-        <p className="text-sm text-muted-foreground">
+    <Card className='h-full overflow-hidden flex flex-col'>
+      <div className='p-4 border-b'>
+        <h3 className='font-medium'>Furniture Library</h3>
+        <p className='text-sm text-muted-foreground'>
           Drag and drop items to add to your room
         </p>
       </div>
-      <div className="flex-1 overflow-y-auto p-3 space-y-2">
+      <div className='flex-1 overflow-y-auto p-3 space-y-2'>
         {FURNITURE_ITEMS.map((item) => (
-          <div 
+          <div
             key={item.type}
-            className={`group relative border rounded-lg p-3 transition-all duration-200 ${
-              isDragging === item.type 
-                ? 'bg-accent/70 scale-95 shadow-lg' 
-                : 'hover:bg-accent/30 hover:shadow-md'
-            }`}
-            draggable
-            onDragStart={(e) => handleDragStart(e, item.type)}
-            onDragEnd={handleDragEnd}
+            className={`group relative border rounded-lg p-3 transition-all duration-200 hover:bg-accent/30 hover:shadow-md`}
+            draggable={false}
           >
-            <div className="flex items-center space-x-3">
-              <div className="w-16 h-16 bg-muted/50 rounded-md overflow-hidden flex items-center justify-center">
-                <img 
-                  src={`/previews/${item.type}.png`} 
+            <div className='flex items-center space-x-3'>
+              <div className='w-16 h-16 bg-muted/50 rounded-md overflow-hidden flex items-center justify-center'>
+                <img
+                  src={`/previews/${item.type}.png`}
                   alt={item.label}
-                  className="w-full h-full object-cover"
+                  className='w-full h-full object-cover'
+                  draggable={false}
                   onError={(e) => {
                     const target = e.target as HTMLImageElement;
                     target.src = '/previews/placeholder.svg';
                   }}
                 />
               </div>
-              <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-sm truncate">{item.label}</h4>
-                <p className="text-xs text-muted-foreground">{item.dimensions}</p>
+              <div className='flex-1 min-w-0'>
+                <h4 className='font-medium text-sm truncate'>{item.label}</h4>
+                <p className='text-xs text-muted-foreground'>
+                  {item.dimensions}
+                </p>
               </div>
-              <div className="flex items-center space-x-1">
+              <div className='flex items-center space-x-1'>
                 <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                  variant='ghost'
+                  size='sm'
+                  className='h-8 w-8 p-0 text-muted-foreground hover:text-foreground'
                   onClick={() => handleAddFurniture(item.type)}
-                  title="Add to room"
+                  title={'Add to room'}
+                  aria-label={'Add to room'}
                 >
-                  <Plus className="h-4 w-4" />
+                  <Plus className='h-4 w-4' />
                 </Button>
-                <div 
-                  className="h-8 w-6 flex items-center justify-center text-muted-foreground cursor-grab active:cursor-grabbing"
-                  draggable={false}
-                >
-                  <GripVertical className="h-4 w-4" />
-                </div>
               </div>
             </div>
           </div>

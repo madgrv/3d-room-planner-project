@@ -11,7 +11,7 @@ export const Grid = () => {
   // Always render the grid, even when floor tiling is enabled, so it is visible beneath transparent tiles.
   return (
     <DreiGrid
-      position={[0, 0.005, 0]} // Slightly below the floor to avoid z-fighting, but close enough for visual alignment
+      position={[0, -0.01, 0]} // Slightly below the floor to avoid z-fighting, but close enough for visual alignment
       args={[gridSize, gridSize]}
       cellSize={0.5}
       cellThickness={0.5}

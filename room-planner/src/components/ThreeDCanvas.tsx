@@ -5,7 +5,8 @@ import { Room } from './room/Room';
 import { Grid } from './room/Grid';
 import { CameraControls } from './controls/CameraControls';
 import { useTheme } from 'next-themes';
-import { useDragStore } from '@/store/dragStore';
+import { useDragAndDrop3DContext } from './ThreeDCanvas/DragAndDrop3DContext';
+import { DropPreview3D } from './ThreeDCanvas/DropPreview3D'; // Modular drag preview overlay
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ContextMenu } from './ui/ContextMenu';
 import { TileSettingsPanel } from './ui/TileSettingsPanel';
@@ -23,6 +24,7 @@ interface SceneContentProps {
   backgroundColor: string;
   snapEnabled: boolean;
   hitObjectRef: React.MutableRefObject<boolean>;
+  dragAndDrop: ReturnType<typeof useDragAndDrop3D>;
 }
 
 // This component renders the contents of the Canvas without wrapping in another Canvas
@@ -32,6 +34,7 @@ const SceneContent = ({
   backgroundColor,
   snapEnabled,
   hitObjectRef,
+  dragAndDrop,
 }: SceneContentProps) => {
   const { scene, camera, raycaster, gl, mouse } = useThree();
   const setSelectedElement = useRoomElementStore(
@@ -43,6 +46,19 @@ const SceneContent = ({
 
   // Get the selectFurniture function from the furniture store
   const selectFurniture = useFurnitureStore((state) => state.selectFurniture);
+
+  // Set up raycasting for object detection
+  // Pointer move handler for drag-and-drop preview
+  const handlePointerMove = useCallback(
+    (e: MouseEvent) => {
+      if (dragAndDrop.isDragging) {
+        const rect = gl.domElement.getBoundingClientRect();
+        mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+        const pos = dragAndDrop.getDropPosition(e, camera, gl, mouse);
+        dragAndDrop.updateDropPreview(pos);
+      }
+    }, [dragAndDrop, camera, gl, mouse]);
 
   // Set up raycasting for object detection
   const handlePointerDown = useCallback(
@@ -173,10 +189,12 @@ const SceneContent = ({
   useEffect(() => {
     const canvas = gl.domElement;
     canvas.addEventListener('pointerdown', handlePointerDown);
+    canvas.addEventListener('pointermove', handlePointerMove);
     return () => {
       canvas.removeEventListener('pointerdown', handlePointerDown);
+      canvas.removeEventListener('pointermove', handlePointerMove);
     };
-  }, [gl, handlePointerDown]);
+  }, [gl, handlePointerDown, handlePointerMove]);
 
   return (
     <>
@@ -215,6 +233,11 @@ const SceneContent = ({
       {/* Room and Grid */}
       <Room snapEnabled={snapEnabled} />
       <Grid />
+      {/* Drag-and-drop drop preview overlay (ghost mesh) */}
+      <DropPreview3D
+        position={dragAndDrop.dropPreview}
+        visible={dragAndDrop.isDragging && !!dragAndDrop.dropPreview}
+      />
 
       {/* Environment and Controls */}
       <CameraControls />
@@ -231,6 +254,10 @@ interface ThreeDCanvasProps {
   snapEnabled?: boolean;
 }
 
+/**
+ * ThreeDCanvas: main 3D canvas and drag-and-drop integration.
+ * Uses modular drag-and-drop hook and overlays for maintainability.
+ */
 export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
   const { resolvedTheme } = useTheme();
   // These variables are used elsewhere or will be used in future updates
@@ -241,6 +268,9 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
 
   // Ref to track if an object was hit in SceneContent's handlePointerDown
   const hitObjectRef = useRef(false);
+
+  // Drag-and-drop logic (shared via context)
+  const dragAndDrop = useDragAndDrop3DContext();
 
   // State for context menu
   const [contextMenu, setContextMenu] = useState<{
@@ -256,14 +286,6 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     itemId: null,
     roomElement: null,
   });
-
-  // Track if mouse is being dragged (for camera rotation)
-  const [isDraggingState, setIsDragging] = useState(false);
-
-  // Get the global dragging state (for furniture dragging)
-  const globalIsDragging = useDragStore(
-    (state: { isDragging: boolean }) => state.isDragging
-  );
 
   // After mounting, we can safely access the theme
   const [mounted, setMounted] = useState(false);
@@ -282,139 +304,32 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
   // Create a ref for the canvas container
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
-  // Handle right-click on canvas
+  // Handle right-click on canvas (do not show context menu if dragging furniture)
   const handleRightClick = useCallback(
     (e: MouseEvent, itemId: string | null, roomElement: RoomElementType) => {
-      // If dragging, don't show context menu
-      if (isDraggingState || globalIsDragging) return;
-
-      // Get the canvas container's position
-      const canvasRect = canvasContainerRef.current?.getBoundingClientRect();
-
-      if (canvasRect) {
-        // Calculate position relative to the viewport
-        const x = e.clientX;
-        const y = e.clientY;
-
-        // Ensure the menu stays within the viewport
-        const menuWidth = 200; // Approximate width of the context menu
-        const menuHeight = 300; // Approximate height of the context menu
-
-        // Adjust position if it would go off-screen
-        const adjustedX = Math.min(x, window.innerWidth - menuWidth);
-        const adjustedY = Math.min(y, window.innerHeight - menuHeight);
-
-        // Show context menu at adjusted position
-        setContextMenu({
-          visible: true,
-          x: adjustedX,
-          y: adjustedY,
-          itemId,
-          roomElement,
-        });
-      } else {
-        // Fallback if we can't get the canvas position
-        setContextMenu({
-          visible: true,
-          x: e.clientX,
-          y: e.clientY,
-          itemId,
-          roomElement,
-        });
-      }
-
-      // Prevent default context menu
+      if (dragAndDrop.isDragging) return;
+      // canvasContainerRef is kept for future logic (e.g., viewport bounds), but not used here.
+      const menuWidth = 200;
+      const menuHeight = 300;
+      const x = Math.min(e.clientX, window.innerWidth - menuWidth);
+      const y = Math.min(e.clientY, window.innerHeight - menuHeight);
+      setContextMenu({
+        visible: true,
+        x,
+        y,
+        itemId,
+        roomElement,
+      });
       e.preventDefault();
     },
-    [isDraggingState, globalIsDragging]
+    [dragAndDrop.isDragging]
   );
 
   // Close context menu
   const handleCloseContextMenu = () => {
-    setContextMenu({ ...contextMenu, visible: false });
+    setContextMenu((prev) => ({ ...prev, visible: false }));
   };
 
-  // Handle native right-click event
-
-  // Create a ref to store the canvas element
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  // Set up mouse event listeners to detect dragging
-  useEffect(() => {
-    const startPos = { x: 0, y: 0 };
-    let hasMoved = false;
-
-    // Get the canvas element
-    const canvas = document.querySelector('canvas');
-    if (canvas) {
-      canvasRef.current = canvas;
-    }
-
-    const handleMouseDown = (e: MouseEvent) => {
-      // Only track right mouse button
-      if (e.button === 2) {
-        // Record the starting position
-        startPos.x = e.clientX;
-        startPos.y = e.clientY;
-        hasMoved = false;
-      }
-    };
-
-    const handleMouseUp = (e: MouseEvent) => {
-      // Only process right mouse button
-      if (e.button === 2) {
-        // If the mouse hasn't moved significantly, it's a click not a drag
-        const distance = Math.sqrt(
-          Math.pow(e.clientX - startPos.x, 2) +
-            Math.pow(e.clientY - startPos.y, 2)
-        );
-
-        // We only handle background right-clicks here
-        // Object right-clicks are handled by SceneContent's raycasting
-        if (
-          distance < 5 &&
-          !hasMoved &&
-          canvasRef.current &&
-          e.target === canvasRef.current
-        ) {
-          // Show context menu at the click position
-          setContextMenu({
-            visible: true,
-            x: e.clientX,
-            y: e.clientY,
-            itemId: null,
-            roomElement: null,
-          });
-        }
-      }
-
-      // Reset dragging state
-      setIsDragging(false);
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      // If right mouse button is pressed and moving, consider it dragging
-      if (e.buttons === 2) {
-        hasMoved = true;
-        setIsDragging(true);
-
-        // Ensure context menu is hidden when dragging
-        setContextMenu((prev) => ({ ...prev, visible: false }));
-      }
-    };
-
-    // Add event listeners to document
-    document.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mouseup', handleMouseUp);
-    document.addEventListener('mousemove', handleMouseMove);
-
-    // Clean up event listeners
-    return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('mousemove', handleMouseMove);
-    };
-  }, []);
 
   return (
     <div
@@ -450,6 +365,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
             backgroundColor={backgroundColor}
             snapEnabled={snapEnabled}
             hitObjectRef={hitObjectRef}
+            dragAndDrop={dragAndDrop}
           />
         </Canvas>
       </div>

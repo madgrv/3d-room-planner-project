@@ -1,7 +1,10 @@
 import { TopBar } from '@/components/ui/TopBar';
 import { ThreeDCanvas } from '@/components/ThreeDCanvas';
+import { DragAndDrop3DProvider } from '@/components/ThreeDCanvas/DragAndDrop3DContext';
 import { BottomBar } from '@/components/ui/BottomBar';
+import { FurnitureLibrary } from '@/components/ui/FurnitureLibrary';
 import { useFurnitureStore } from '@/store/furnitureStore';
+import { useState } from 'react';
 
 // Add TypeScript declaration for window.setView
 declare global {
@@ -11,14 +14,43 @@ declare global {
 }
 
 function App() {
-  // Get snap state from the furniture store
   const snapEnabled = useFurnitureStore((state) => state.snapEnabled);
+  const [isLibraryOpen, setIsLibraryOpen] = useState(true);
 
   return (
-    <div className='h-screen flex flex-col px-6 py-3 py-2 bg-background text-foreground'>
+    <div className='h-screen flex flex-col bg-background text-foreground'>
+      {/* Top Bar */}
       <TopBar />
-      <ThreeDCanvas snapEnabled={snapEnabled} />
-      <div className='mt-3'>
+      
+      {/* Main Content */}
+      {/* Drag-and-drop context only wraps the relevant subtree for modularity */}
+      <DragAndDrop3DProvider>
+        <div className='flex flex-1 overflow-hidden'>
+          {/* Left Sidebar - Furniture Library */}
+          {isLibraryOpen && (
+            <aside className='w-80 border-r border-border flex-shrink-0 overflow-hidden flex flex-col'>
+              <FurnitureLibrary />
+            </aside>
+          )}
+          
+          {/* Main 3D View */}
+          <div className='flex-1 relative'>
+            <ThreeDCanvas snapEnabled={snapEnabled} />
+            
+            {/* Toggle Library Button */}
+            <button
+              onClick={() => setIsLibraryOpen(!isLibraryOpen)}
+              className='absolute top-4 left-4 z-10 p-2 bg-card rounded-md shadow-md hover:bg-accent transition-colors'
+              title={isLibraryOpen ? 'Hide library' : 'Show library'}
+            >
+              {isLibraryOpen ? '◀' : '▶'}
+            </button>
+          </div>
+        </div>
+      </DragAndDrop3DProvider>
+      
+      {/* Bottom Bar */}
+      <div className='border-t border-border'>
         <BottomBar />
       </div>
     </div>

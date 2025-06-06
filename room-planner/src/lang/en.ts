@@ -2,7 +2,31 @@
 // This is the master language file that defines the structure for all translations
 // All other language files must conform to this structure
 
-const en = {
+export default {
+  sidebar: {
+    roomSettings: 'Room Settings',
+    furnitureLibrary: 'Furniture Library',
+    tileSettings: {
+      title: 'Tile Settings',
+      enableTiling: 'Enable Tiling',
+      tileSize: 'Tile Size',
+      tileTexture: 'Tile Texture',
+      small: 'Small',
+      medium: 'Medium',
+      large: 'Large',
+      extraLarge: 'Extra Large',
+      ceramic: 'Ceramic',
+      marble: 'Marble',
+      floreal: 'Floreal',
+      wood: 'Wood',
+      floor: 'Floor',
+      wallFront: 'Front Wall',
+      wallBack: 'Back Wall',
+      wallLeft: 'Left Wall',
+      wallRight: 'Right Wall',
+      ceiling: 'Ceiling',
+    },
+  },
   code: 'en',
   app: {
     title: 'offCanvas',
@@ -127,25 +151,17 @@ const en = {
     tiles: 'Tiles:',
     toggleTiling: 'Toggle tiling for {element}',
   },
-  tileSettings: {
-    title: 'Tile Settings',
-    enableTiling: 'Enable Tiling',
-    tileSize: 'Tile Size',
-    tileTexture: 'Tile Texture',
-    small: 'Small',
-    medium: 'Medium',
-    large: 'Large',
-    extraLarge: 'Extra Large',
-    ceramic: 'Ceramic',
-    marble: 'Marble',
-    floreal: 'Floreal',
-    floor: 'Floor',
-    wallFront: 'Front Wall',
-    wallBack: 'Back Wall',
-    wallLeft: 'Left Wall',
-    wallRight: 'Right Wall',
-    ceiling: 'Ceiling',
-  },
-};
 
-export default en;
+  furnitureLibrary: {
+    chairLabel: 'Chair',
+    chairDimensions: '45 × 45 × 85 cm',
+    tableLabel: 'Table',
+    tableDimensions: '120 × 70 × 75 cm',
+    sofaLabel: 'Sofa',
+    sofaDimensions: '200 × 90 × 80 cm',
+    bedLabel: 'Bed',
+    bedDimensions: '200 × 160 × 50 cm',
+    wardrobeLabel: 'Wardrobe',
+    wardrobeDimensions: '100 × 50 × 200 cm',
+  }
+};

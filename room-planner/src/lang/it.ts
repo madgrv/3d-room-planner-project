@@ -1,10 +1,31 @@
 // Italian language strings for the 3D Room Planner application
 // This file follows the structure defined in the English language file
 
-import en from './en';
-
-// Define the Italian language using the English file as the type definition
-const it: typeof en = {
+export default {
+  sidebar: {
+    roomSettings: 'Impostazioni Stanza',
+    furnitureLibrary: 'Libreria Arredamento',
+    tileSettings: {
+      title: 'Impostazioni Piastrelle',
+      enableTiling: 'Abilita Piastrellatura',
+      tileSize: 'Dimensione Piastrella',
+      tileTexture: 'Texture Piastrella',
+      small: 'Piccola',
+      medium: 'Media',
+      large: 'Grande',
+      extraLarge: 'Extra Grande',
+      ceramic: 'Ceramica',
+      marble: 'Marmo',
+      floreal: 'Floreale',
+      wood: 'Legno',
+      floor: 'Pavimento',
+      wallFront: 'Parete Frontale',
+      wallBack: 'Parete Posteriore',
+      wallLeft: 'Parete Sinistra',
+      wallRight: 'Parete Destra',
+      ceiling: 'Soffitto',
+    },
+  },
   code: 'it',
   app: {
     title: 'offCanvas',
@@ -129,25 +150,17 @@ const it: typeof en = {
     tiles: 'Piastrelle:',
     toggleTiling: 'Attiva/disattiva piastrelle per {element}',
   },
-  tileSettings: {
-    title: 'Impostazioni Piastrelle',
-    enableTiling: 'Attiva Piastrellatura',
-    tileSize: 'Dimensione Piastrella',
-    tileTexture: 'Texture Piastrella',
-    small: 'Piccola',
-    medium: 'Media',
-    large: 'Grande',
-    extraLarge: 'Extra Grande',
-    ceramic: 'Ceramica',
-    marble: 'Marmo',
-    floreal: 'Floreale',
-    floor: 'Pavimento',
-    wallFront: 'Parete Frontale',
-    wallBack: 'Parete Posteriore',
-    wallLeft: 'Parete Sinistra',
-    wallRight: 'Parete Destra',
-    ceiling: 'Soffitto',
-  },
-};
 
-export default it;
+  furnitureLibrary: {
+    chairLabel: 'Sedia',
+    chairDimensions: '45 × 45 × 85 cm',
+    tableLabel: 'Tavolo',
+    tableDimensions: '120 × 70 × 75 cm',
+    sofaLabel: 'Divano',
+    sofaDimensions: '200 × 90 × 80 cm',
+    bedLabel: 'Letto',
+    bedDimensions: '200 × 160 × 50 cm',
+    wardrobeLabel: 'Armadio',
+    wardrobeDimensions: '100 × 50 × 200 cm',
+  }
+};

@@ -1,10 +1,31 @@
 // French language strings for the 3D Room Planner application
 // This file follows the structure defined in the English language file
 
-import en from './en';
-
-// Define the French language using the English file as the type definition
-const fr: typeof en = {
+export default {
+  sidebar: {
+    roomSettings: 'Paramètres de la Pièce',
+    furnitureLibrary: 'Bibliothèque de Mobilier',
+    tileSettings: {
+      title: 'Paramètres des carreaux',
+      enableTiling: 'Activer le carrelage',
+      tileSize: 'Taille des carreaux',
+      tileTexture: 'Texture des carreaux',
+      small: 'Petit',
+      medium: 'Moyen',
+      large: 'Grand',
+      extraLarge: 'Très Grand',
+      ceramic: 'Céramique',
+      marble: 'Marbre',
+      floreal: 'Floral',
+      wood: 'Bois',
+      floor: 'Sol',
+      wallFront: 'Mur avant',
+      wallBack: 'Mur arrière',
+      wallLeft: 'Mur gauche',
+      wallRight: 'Mur droit',
+      ceiling: 'Plafond',
+    },
+  },
   code: 'fr',
   app: {
     title: 'offCanvas',
@@ -62,12 +83,12 @@ const fr: typeof en = {
     delete: 'Supprimer',
   },
   contextMenu: {
-    title: 'Options d\'objet',
+    title: "Options d'objet",
     mode: 'Mode',
     select: 'Sélectionner',
     move: 'Déplacer',
     rotate: 'Pivoter',
-    snap: 'Aligner l\'objet',
+    snap: "Aligner l'objet",
     duplicate: 'Dupliquer',
     edit: 'Modifier',
     delete: 'Supprimer',
@@ -113,13 +134,13 @@ const fr: typeof en = {
     moveMode: 'Déplacer',
     rotateMode: 'Pivoter',
     moveFloorPlane: 'Déplacer sur le plan (XZ)',
-    moveXAxis: 'Déplacer le long de l\'axe X',
-    moveYAxis: 'Déplacer le long de l\'axe Y (haut/bas)',
-    moveZAxis: 'Déplacer le long de l\'axe Z',
+    moveXAxis: "Déplacer le long de l'axe X", 
+    moveYAxis: "Déplacer le long de l'axe Y (haut/bas)",
+    moveZAxis: "Déplacer le long de l'axe Z",
     type: 'Type:',
     visible: 'Visible:',
     grid: 'Grille:',
-    snapValue: 'Valeur d\'accrochage',
+    snapValue: "Valeur d'accrochage",
     axis: 'Axe:',
     increment: 'Incrément:',
     rotateBy: 'Pivoter de {amount} degrés',
@@ -129,25 +150,17 @@ const fr: typeof en = {
     tiles: 'Carreaux:',
     toggleTiling: 'Activer/désactiver les carreaux pour {element}',
   },
-  tileSettings: {
-    title: 'Paramètres de Carrelage',
-    enableTiling: 'Activer le Carrelage',
-    tileSize: 'Taille des Carreaux',
-    tileTexture: 'Texture',
-    small: 'Petit',
-    medium: 'Moyen',
-    large: 'Grand',
-    extraLarge: 'Très Grand',
-    ceramic: 'Céramique',
-    marble: 'Marbre',
-    floreal: 'Floral',
-    floor: 'Sol',
-    wallFront: 'Mur Avant',
-    wallBack: 'Mur Arrière',
-    wallLeft: 'Mur Gauche',
-    wallRight: 'Mur Droit',
-    ceiling: 'Plafond',
-  },
-};
 
-export default fr;
+  furnitureLibrary: {
+    chairLabel: 'Chaise',
+    chairDimensions: '45 × 45 × 85 cm',
+    tableLabel: 'Table',
+    tableDimensions: '120 × 70 × 75 cm',
+    sofaLabel: 'Canapé',
+    sofaDimensions: '200 × 90 × 80 cm',
+    bedLabel: 'Lit',
+    bedDimensions: '200 × 160 × 50 cm',
+    wardrobeLabel: 'Armoire',
+    wardrobeDimensions: '100 × 50 × 200 cm',
+  }
+};

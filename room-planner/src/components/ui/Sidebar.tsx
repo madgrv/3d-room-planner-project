@@ -27,7 +27,7 @@ export function Sidebar() {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="tile-settings">
-          <AccordionTrigger className="px-4">{lang.sidebar?.tileSettings || 'Tile Settings'}</AccordionTrigger>
+          <AccordionTrigger className="px-4">{lang.sidebar?.tileSettings?.title || 'Tile Settings'}</AccordionTrigger>
           <AccordionContent>
             <TileSettingsPanel />
           </AccordionContent>

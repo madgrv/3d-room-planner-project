@@ -5,7 +5,7 @@
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { Card } from './Card';
 import { useLanguage } from '@/lang';
-import { Button } from './button';
+import { Button } from './Button';
 import { Plus } from 'lucide-react';
 
 // This interface is just for the UI representation

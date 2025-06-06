@@ -149,6 +149,7 @@ export type LanguageStrings = {
     ceramic: string;
     marble: string;
     floreal: string;
+    wood: string;
     floor: string;
     wallFront: string;
     wallBack: string;

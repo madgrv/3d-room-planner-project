@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/lang'; // Team note: All user-facing text must be localised.
-import { Button } from './button'; // Team note: Use the shared SHADCN Button for consistency.
+import { Button } from './Button'; // Team note: Use the shared SHADCN Button for consistency.
 import {
   TopViewIcon,
   FrontViewIcon,

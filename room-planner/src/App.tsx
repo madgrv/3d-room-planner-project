@@ -8,7 +8,7 @@ import { useFurnitureStore } from '@/store/furnitureStore';
 import { useState } from 'react';
 import { ViewControls } from './components/ui/ViewControls';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 // Add TypeScript declaration for window.setView
 declare global {

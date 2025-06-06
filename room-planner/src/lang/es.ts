@@ -1,10 +1,12 @@
 // Spanish language strings for the 3D Room Planner application
 // This file follows the structure defined in the English language file
 
-import en from './en';
-
-// Define the Spanish language using the English file as the type definition
-const es: typeof en = {
+export default {
+  sidebar: {
+    roomSettings: 'Ajustes de la Habitación',
+    furnitureLibrary: 'Biblioteca de Mobiliario',
+    tileSettings: 'Configuración de baldosas',
+  },
   code: 'es',
   app: {
     title: 'offCanvas',
@@ -148,6 +150,16 @@ const es: typeof en = {
     wallRight: 'Pared Derecha',
     ceiling: 'Techo',
   },
+  furnitureLibrary: {
+    chairLabel: 'Silla',
+    chairDimensions: '45 × 45 × 85 cm',
+    tableLabel: 'Mesa',
+    tableDimensions: '120 × 70 × 75 cm',
+    sofaLabel: 'Sofá',
+    sofaDimensions: '200 × 90 × 80 cm',
+    bedLabel: 'Cama',
+    bedDimensions: '200 × 160 × 50 cm',
+    wardrobeLabel: 'Armario',
+    wardrobeDimensions: '100 × 50 × 200 cm',
+  }
 };
-
-export default es;

@@ -23,8 +23,7 @@ interface SceneContentProps {
   hitObjectRef: React.MutableRefObject<boolean>;
 }
 
-import { useDragAndDrop3DContext } from './DragAndDrop3DContext';
-import { useFurnitureStore } from '@/store/furnitureStore';
+// import { useDragAndDrop3DContext } from './DragAndDrop3DContext';
 
 const SceneContent = ({
   onRightClick,
@@ -98,30 +97,30 @@ const SceneContent = ({
     };
   }, [gl, handlePointerDown]);
 
-  // --- Modular 3D drag-and-drop drop handling ---
-  // Listen for pointer up globally to finalise drop
-  const dragAndDrop = useDragAndDrop3DContext();
-  const addFurniture = useFurnitureStore((state) => state.addFurniture);
-  
-  useEffect(() => {
-    function handlePointerUp(e: PointerEvent) {
-      // Only handle if a drag is in progress and a drop preview exists
-      if (dragAndDrop.isDragging && dragAndDrop.dropPreview && dragAndDrop.dragItemRef.current) {
-        // Add the dragged furniture item at the drop preview position
-        const { id } = dragAndDrop.dragItemRef.current;
-        addFurniture({
-          type: id,
-          position: [dragAndDrop.dropPreview.x, dragAndDrop.dropPreview.y, dragAndDrop.dropPreview.z],
-          rotation: 0,
-          visible: true,
-        });
-        dragAndDrop.onDragEnd();
-      }
-    }
-    window.addEventListener('pointerup', handlePointerUp);
-    return () => window.removeEventListener('pointerup', handlePointerUp);
-  }, [dragAndDrop, addFurniture]);
-  // --- End drop handling ---
+  // // --- Modular 3D drag-and-drop drop handling ---
+  // // Listen for pointer up globally to finalise drop
+  // const dragAndDrop = useDragAndDrop3DContext();
+  // const addFurniture = useFurnitureStore((state) => state.addFurniture);
+
+  // useEffect(() => {
+  //   function handlePointerUp(e: PointerEvent) {
+  //     // Only handle if a drag is in progress and a drop preview exists
+  //     if (dragAndDrop.isDragging && dragAndDrop.dropPreview && dragAndDrop.dragItemRef.current) {
+  //       // Add the dragged furniture item at the drop preview position
+  //       const { id } = dragAndDrop.dragItemRef.current;
+  //       addFurniture({
+  //         type: id,
+  //         position: [dragAndDrop.dropPreview.x, dragAndDrop.dropPreview.y, dragAndDrop.dropPreview.z],
+  //         rotation: 0,
+  //         visible: true,
+  //       });
+  //       dragAndDrop.onDragEnd();
+  //     }
+  //   }
+  //   window.addEventListener('pointerup', handlePointerUp);
+  //   return () => window.removeEventListener('pointerup', handlePointerUp);
+  // }, [dragAndDrop, addFurniture]);
+  // // --- End drop handling ---
 
   return (
     <>

@@ -11,8 +11,8 @@
     --card-foreground: 0 0% 12.55%;
     --popover: 0 0% 98.82%;
     --popover-foreground: 0 0% 12.55%;
-    --primary: 15.88 30.91% 21.57%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 30 100% 50%;
+    --primary-foreground: 0 0% 0%;
     --secondary: 29.57 100% 59.02%;
     --secondary-foreground: 16.36 69.62% 15.49%;
     --muted: 0 0% 93.73%;
@@ -23,12 +23,12 @@
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 84.71%;
     --input: 0 0% 84.71%;
-    --ring: 15.88 30.91% 21.57%;
-    --chart-1: 15.88 30.91% 21.57%;
+    --ring: 30 100% 50%;
+    --chart-1: 30 100% 50%;
     --chart-2: 34.13 100.00% 57.25%;
     --chart-3: 0 0% 90.98%;
     --chart-4: 34.62 100% 59.22%;
-    --chart-5: 15.79 34.55% 21.57%;
+    --chart-5: 30 100% 50%;
     --sidebar: 0 0% 98.43%;
     --sidebar-foreground: 0 0% 14.51%;
     --sidebar-primary: 0 0% 20.39%;
@@ -69,7 +69,7 @@
     --accent-foreground: 0 0% 93.33%;
     --destructive: 10.11 100% 36.08%;
     --destructive-foreground: 0 0% 100%;
-    --border: 43.64 21.57% 10%;
+    --border: 43.64 21.57% 20%;
     --input: 0 0% 28.24%;
     --ring: 29.57 100% 59.02%;
     --chart-1: 29.57 100% 59.02%;
@@ -83,7 +83,7 @@
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 240 5.45% 10.78%;
     --sidebar-accent-foreground: 240 6.59% 64.31%;
-    --sidebar-border: 240 5.45% 10.78%;
+    --sidebar-border: 240 5.45% 20%;
     --sidebar-ring: 240 6.73% 56.27%;
     --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;

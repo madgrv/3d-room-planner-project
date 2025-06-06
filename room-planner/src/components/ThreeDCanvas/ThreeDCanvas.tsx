@@ -30,7 +30,11 @@ export default function ThreeDCanvas() {
   const hitObjectRef = useRef(false);
 
   // Handler for right-click in SceneContent
-  function handleRightClick(e: MouseEvent, itemId: string | null, roomElement: RoomElementType | null) {
+  function handleRightClick(
+    e: MouseEvent,
+    itemId: string | null,
+    roomElement: RoomElementType | null
+  ) {
     openContextMenu(e.clientX, e.clientY, itemId, roomElement);
   }
 

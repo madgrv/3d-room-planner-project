@@ -97,7 +97,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
         // When snap is disabled, just apply the boundary limits
         return Math.min(Math.max(value, minX), maxX);
       }
-      
+
       // PRIORITY 1: Edge-based snapping - check if we're near positions where object's edges touch walls
       // Check if we're near the position where object's left side touches left wall
       if (Math.abs(value - leftWallSnap) < wallSnapThreshold) {
@@ -442,23 +442,23 @@ export const Furniture: React.FC<FurnitureProps> = ({
   // Team note: Use different geometry for each furniture type for clarity and future extensibility.
   // Each furniture type uses child meshes for proper structure and edge-based snapping
   let geometry;
-  
+
   // Default fallback for any unspecified furniture type
   if (!['chair', 'table', 'sofa', 'bed', 'wardrobe'].includes(type)) {
     geometry = (
-      <mesh position={[0, size[1]/2, 0]}>
+      <mesh position={[0, size[1] / 2, 0]}>
         <boxGeometry args={size} />
         <meshStandardMaterial color={color} roughness={0.7} metalness={0.1} />
       </mesh>
     );
   }
-  
+
   // Chair with seat and legs
   else if (type === 'chair') {
     geometry = (
       <>
         {/* Seat */}
-        <mesh position={[0, 0.45/2, 0]}>
+        <mesh position={[0, 0.45 / 2, 0]}>
           <cylinderGeometry args={[0.3, 0.3, 0.45, 16]} />
           <meshStandardMaterial color={color} roughness={0.7} metalness={0.1} />
         </mesh>
@@ -470,19 +470,23 @@ export const Furniture: React.FC<FurnitureProps> = ({
         {/* Four legs */}
         {[
           [-0.2, 0, -0.2], // Back left leg
-          [0.2, 0, -0.2],  // Back right leg
-          [-0.2, 0, 0.2],  // Front left leg
-          [0.2, 0, 0.2],   // Front right leg
+          [0.2, 0, -0.2], // Back right leg
+          [-0.2, 0, 0.2], // Front left leg
+          [0.2, 0, 0.2], // Front right leg
         ].map(([x, , z], idx) => (
           <mesh key={`chair-leg-${idx}`} position={[x, 0.2, z]}>
             <cylinderGeometry args={[0.03, 0.03, 0.4, 8]} />
-            <meshStandardMaterial color='#6b4f2d' roughness={0.7} metalness={0.1} />
+            <meshStandardMaterial
+              color='#6b4f2d'
+              roughness={0.7}
+              metalness={0.1}
+            />
           </mesh>
         ))}
       </>
     );
   }
-  
+
   // Table with tabletop and legs
   else if (type === 'table') {
     geometry = (
@@ -495,19 +499,23 @@ export const Furniture: React.FC<FurnitureProps> = ({
         {/* Four legs, slightly inset from corners */}
         {[
           [-0.55, 0, -0.35], // Back left leg
-          [0.55, 0, -0.35],  // Back right leg
-          [-0.55, 0, 0.35],  // Front left leg
-          [0.55, 0, 0.35],   // Front right leg
+          [0.55, 0, -0.35], // Back right leg
+          [-0.55, 0, 0.35], // Front left leg
+          [0.55, 0, 0.35], // Front right leg
         ].map(([x, , z], idx) => (
           <mesh key={`table-leg-${idx}`} position={[x, 0.25, z]}>
             <cylinderGeometry args={[0.05, 0.05, 0.6, 12]} />
-            <meshStandardMaterial color={color} roughness={0.7} metalness={0.1} />
+            <meshStandardMaterial
+              color={color}
+              roughness={0.7}
+              metalness={0.1}
+            />
           </mesh>
         ))}
       </>
     );
   }
-  
+
   // Sofa with base, backrest and armrests
   else if (type === 'sofa') {
     geometry = (
@@ -535,7 +543,7 @@ export const Furniture: React.FC<FurnitureProps> = ({
       </>
     );
   }
-  
+
   // Bed with base and mattress
   else if (type === 'bed') {
     geometry = (
@@ -543,22 +551,34 @@ export const Furniture: React.FC<FurnitureProps> = ({
         {/* Base */}
         <mesh position={[0, 0.1, 0]}>
           <boxGeometry args={[2, 0.2, 1]} />
-          <meshStandardMaterial color='#8B4513' roughness={0.7} metalness={0.1} />
+          <meshStandardMaterial
+            color='#8B4513'
+            roughness={0.7}
+            metalness={0.1}
+          />
         </mesh>
         {/* Mattress */}
         <mesh position={[0, 0.25, 0]}>
           <boxGeometry args={[1.9, 0.1, 0.9]} />
-          <meshStandardMaterial color='#F5F5DC' roughness={0.7} metalness={0.1} />
+          <meshStandardMaterial
+            color='#F5F5DC'
+            roughness={0.7}
+            metalness={0.1}
+          />
         </mesh>
         {/* Headboard */}
         <mesh position={[0, 0.5, -0.45]}>
           <boxGeometry args={[1.9, 0.6, 0.1]} />
-          <meshStandardMaterial color='#8B4513' roughness={0.7} metalness={0.1} />
+          <meshStandardMaterial
+            color='#8B4513'
+            roughness={0.7}
+            metalness={0.1}
+          />
         </mesh>
       </>
     );
   }
-  
+
   // Wardrobe with body and doors
   else if (type === 'wardrobe') {
     geometry = (
@@ -569,18 +589,30 @@ export const Furniture: React.FC<FurnitureProps> = ({
           <meshStandardMaterial color={color} roughness={0.7} metalness={0.1} />
         </mesh>
         {/* Door handles */}
-        <mesh position={[-0.2, 1, 0.26]} rotation={[Math.PI/2, 0, 0]}>
+        <mesh position={[-0.2, 1, 0.26]} rotation={[Math.PI / 2, 0, 0]}>
           <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} />
-          <meshStandardMaterial color='#C0C0C0' roughness={0.3} metalness={0.8} />
+          <meshStandardMaterial
+            color='#C0C0C0'
+            roughness={0.3}
+            metalness={0.8}
+          />
         </mesh>
-        <mesh position={[0.2, 1, 0.26]} rotation={[Math.PI/2, 0, 0]}>
+        <mesh position={[0.2, 1, 0.26]} rotation={[Math.PI / 2, 0, 0]}>
           <cylinderGeometry args={[0.02, 0.02, 0.1, 8]} />
-          <meshStandardMaterial color='#C0C0C0' roughness={0.3} metalness={0.8} />
+          <meshStandardMaterial
+            color='#C0C0C0'
+            roughness={0.3}
+            metalness={0.8}
+          />
         </mesh>
         {/* Door seam */}
         <mesh position={[0, 1, 0.251]}>
           <boxGeometry args={[0.01, 1.9, 0.01]} />
-          <meshStandardMaterial color='#5c4033' roughness={0.7} metalness={0.1} />
+          <meshStandardMaterial
+            color='#5c4033'
+            roughness={0.7}
+            metalness={0.1}
+          />
         </mesh>
       </>
     );

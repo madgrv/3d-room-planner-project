@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRoomStore } from '@/store/roomStore';
-import { Button } from './Button';
+import { Button } from './button';
 import { Input } from './input'; // Use shared SHADCN Input for all number fields
 import { useLanguage } from '@/lang';
 
@@ -56,10 +56,8 @@ export const RoomControls = () => {
     'w-16 h-8 px-2 border rounded-[2px] focus:outline-none focus:ring focus:border-blue-400 text-xs';
 
   return (
-    <div className='flex flex-col gap-2 room-controls p-2 bg-card text-card-foreground rounded-md border border-border'>
-      <h2 className='text-xs font-medium text-muted-foreground mb-1'>
-        {lang.roomControls.title}
-      </h2>
+    <div className='flex flex-col gap-2 room-controls p-2 bg-card text-card-foreground rounded-md'>
+      
       <div className='flex flex-wrap items-center justify-center gap-2'>
         <div className='flex items-center gap-1'>
           <label className='block text-xs font-medium'>

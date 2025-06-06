@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { useLanguage } from '@/lang';
-import { Button } from './Button';
+import { Button } from './button';
 import {
   EyeOpenIcon,
   EyeClosedIcon,
@@ -59,7 +59,7 @@ export function OutlinerPanel({ onSelectItem }: OutlinerPanelProps) {
   };
 
   return (
-    <div className='flex flex-col gap-2 pt-2 pl-2 bg-card text-card-foreground rounded-md border border-border'>
+    <div className='flex flex-col pt-2 pl-2 gap-2 bg-card text-card-foreground border border-border'>
       <h2 className='text-xs font-medium text-muted-foreground'>
         {lang.outlinerPanel.title}
       </h2>

@@ -5,7 +5,7 @@
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { Card } from './Card';
 import { useLanguage } from '@/lang';
-import { Button } from './Button';
+import { Button } from './button';
 import { Plus } from 'lucide-react';
 
 // This interface is just for the UI representation
@@ -71,9 +71,9 @@ export function FurnitureLibrary() {
   };
 
   return (
-    <Card className='h-full overflow-hidden flex flex-col'>
-      <div className='p-4 border-b'>
-        <h3 className='font-medium'>Furniture Library</h3>
+    <Card className='h-full overflow-hidden flex flex-col border-0 shadow-none'>
+
+      <div className='p-4'>
         <p className='text-sm text-muted-foreground'>
           Drag and drop items to add to your room
         </p>

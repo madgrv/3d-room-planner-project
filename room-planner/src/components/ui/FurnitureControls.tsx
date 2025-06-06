@@ -3,7 +3,7 @@
 
 import * as React from 'react';
 import { useFurnitureStore } from '@/store/furnitureStore';
-import { Button } from './Button';
+import { Button } from './button';
 import { useLanguage } from '@/lang';
 import {
   DropdownMenu,

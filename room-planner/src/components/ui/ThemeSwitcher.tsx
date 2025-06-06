@@ -53,7 +53,7 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   const { theme, setTheme, systemTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { lang } = useLanguage();
-  
+
   // Determine the current theme, accounting for 'system' preference
   const currentTheme = theme === 'system' ? systemTheme : theme;
 
@@ -71,14 +71,16 @@ export function ThemeSwitcher({ className }: { className?: string }) {
   if (!mounted) return null;
 
   return (
-    <div className={`flex items-center space-x-3 p-2 rounded-lg transition-colors shadow-sm ${className}`}>
+    <div
+      className={`flex items-center space-x-3 p-2 rounded-lg transition-colors ${className}`}
+    >
       <SunIcon />
       <Switch
         id='theme-mode'
         checked={currentTheme === 'dark'}
         onCheckedChange={toggleTheme}
         aria-label={lang.themeSwitcher.toggleLabel}
-        className="data-[state=checked]:bg-[hsl(29.57_100%_59.02%)] data-[state=unchecked]:bg-[hsl(15.88_30.91%_21.57%)]"
+        className='data-[state=checked]:bg-[hsl(29.57_100%_59.02%)] data-[state=unchecked]:bg-[hsl(15.88_30.91%_21.57%)]'
       />
       <MoonIcon />
       <span className='text-sm font-medium transition-colors font-sans'>

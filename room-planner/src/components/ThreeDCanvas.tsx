@@ -1,5 +1,5 @@
 import { Canvas, useThree } from '@react-three/fiber';
-import { Environment, Stats } from '@react-three/drei';
+import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { Room } from './room/Room';
 import { Grid } from './room/Grid';
@@ -9,9 +9,9 @@ import { useDragAndDrop3DContext } from './ThreeDCanvas/DragAndDrop3DContext';
 import { DropPreview3D } from './ThreeDCanvas/DropPreview3D'; // Modular drag preview overlay
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ContextMenu } from './ui/ContextMenu';
-import { TileSettingsPanel } from './ui/TileSettingsPanel';
 import { useRoomElementStore, RoomElementType } from '@/store/roomElementStore';
 import { useFurnitureStore } from '@/store/furnitureStore';
+import { useDragAndDrop3D } from './ThreeDCanvas/hooks/useDragAndDrop3D';
 
 // SceneContent component with raycasting capability
 interface SceneContentProps {
@@ -58,7 +58,9 @@ const SceneContent = ({
         const pos = dragAndDrop.getDropPosition(e, camera, gl, mouse);
         dragAndDrop.updateDropPreview(pos);
       }
-    }, [dragAndDrop, camera, gl, mouse]);
+    },
+    [dragAndDrop, camera, gl, mouse]
+  );
 
   // Set up raycasting for object detection
   const handlePointerDown = useCallback(
@@ -244,8 +246,7 @@ const SceneContent = ({
       {/* <Environment preset='city' background={false} blur={0.8} /> */}
       {/* <Environment preset='apartment' /> */}
 
-      {/* Performance Stats (development only) */}
-      <Stats />
+      {/* Environment lighting */}
     </>
   );
 };
@@ -330,14 +331,13 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
     setContextMenu((prev) => ({ ...prev, visible: false }));
   };
 
-
   return (
     <div
-      className='relative'
-      style={{ userSelect: 'none', position: 'relative' }}
+      className='relative w-full h-full'
+      style={{ userSelect: 'none' }}
     >
       <div
-        className='canvas-container flex-grow border border-border rounded-b-lg rounded-tl-none rounded-tr-none overflow-hidden bg-card relative h-[450px] md:h-[670px]'
+        className='canvas-container flex-grow overflow-hidden bg-card relative h-full w-full'
         style={{ minWidth: 0 }}
         ref={canvasContainerRef}
       >
@@ -383,7 +383,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
 
       {/* Tile Settings Panel - appears when a room element is selected */}
       <div className='absolute bottom-0 left-0 z-10'>
-        <TileSettingsPanel />
+
       </div>
     </div>
   );

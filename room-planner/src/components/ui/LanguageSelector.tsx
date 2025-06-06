@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from './dropdown-menu';
-import { Button } from './Button';
+import { Button } from './button';
 import { Globe } from 'lucide-react';
 
 interface LanguageSelectorProps {

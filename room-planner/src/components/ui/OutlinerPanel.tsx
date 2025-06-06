@@ -4,7 +4,7 @@
 import * as React from 'react';
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { useLanguage } from '@/lang';
-import { Button } from './Button';
+import { Button } from './button';
 import {
   EyeOpenIcon,
   EyeClosedIcon,

@@ -6,13 +6,14 @@ import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from './
 import { useLanguage } from '@/lang';
 import { RoomControls } from './RoomControls';
 import { FurnitureLibrary } from './FurnitureLibrary';
+import { TileSettingsPanel } from './TileSettingsPanel';
 
 export function Sidebar() {
   const { lang } = useLanguage();
 
   return (
     <aside className="w-full max-w-xs bg-card text-card-foreground border-r border-border h-full flex flex-col">
-      <Accordion type="multiple" className="w-full">
+      <Accordion type="multiple" defaultValue={["room-settings"]} className="w-full">
         <AccordionItem value="room-settings">
           <AccordionTrigger className="px-4">{lang.sidebar?.roomSettings || 'Room Settings'}</AccordionTrigger>
           <AccordionContent>
@@ -23,6 +24,12 @@ export function Sidebar() {
           <AccordionTrigger className="px-4">{lang.sidebar?.furnitureLibrary || 'Furniture Library'}</AccordionTrigger>
           <AccordionContent>
             <FurnitureLibrary />
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="tile-settings">
+          <AccordionTrigger className="px-4">{lang.sidebar?.tileSettings || 'Tile Settings'}</AccordionTrigger>
+          <AccordionContent>
+            <TileSettingsPanel />
           </AccordionContent>
         </AccordionItem>
       </Accordion>

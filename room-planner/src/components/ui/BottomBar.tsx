@@ -12,13 +12,15 @@ interface BottomBarProps {
 
 export function BottomBar({ className = '' }: BottomBarProps) {
   // Get selection state directly from the furniture store
-  const selectedItemId = useFurnitureStore((state) => state.selectedFurnitureId);
+  const selectedItemId = useFurnitureStore(
+    (state) => state.selectedFurnitureId
+  );
   const selectFurniture = useFurnitureStore((state) => state.selectFurniture);
-  
+
   const [mode, setMode] = React.useState<'select' | 'move' | 'rotate'>(
     'move' // Set default to 'move' so axis selector is visible
   );
-  
+
   // Get snap state and value from the furniture store
   const snapEnabled = useFurnitureStore((state) => state.snapEnabled);
   const setSnapEnabled = useFurnitureStore((state) => state.setSnapEnabled);

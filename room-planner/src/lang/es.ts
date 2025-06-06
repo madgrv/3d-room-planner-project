@@ -5,6 +5,7 @@ export default {
   sidebar: {
     roomSettings: 'Ajustes de la Habitación',
     furnitureLibrary: 'Biblioteca de Mobiliario',
+    tileSettings: 'Configuración de baldosas',
   },
   code: 'es',
   app: {

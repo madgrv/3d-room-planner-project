@@ -9,7 +9,6 @@ import { useDragAndDrop3DContext } from './ThreeDCanvas/DragAndDrop3DContext';
 import { DropPreview3D } from './ThreeDCanvas/DropPreview3D'; // Modular drag preview overlay
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { ContextMenu } from './ui/ContextMenu';
-import { TileSettingsPanel } from './ui/TileSettingsPanel';
 import { useRoomElementStore, RoomElementType } from '@/store/roomElementStore';
 import { useFurnitureStore } from '@/store/furnitureStore';
 import { useDragAndDrop3D } from './ThreeDCanvas/hooks/useDragAndDrop3D';
@@ -384,7 +383,7 @@ export function ThreeDCanvas({ snapEnabled = false }: ThreeDCanvasProps) {
 
       {/* Tile Settings Panel - appears when a room element is selected */}
       <div className='absolute bottom-0 left-0 z-10'>
-        <TileSettingsPanel />
+
       </div>
     </div>
   );

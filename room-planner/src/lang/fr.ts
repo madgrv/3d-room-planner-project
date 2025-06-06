@@ -5,6 +5,7 @@ export default {
   sidebar: {
     roomSettings: 'Paramètres de la Pièce',
     furnitureLibrary: 'Bibliothèque de Mobilier',
+    tileSettings: 'Paramètres des carreaux',
   },
   code: 'fr',
   app: {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRoomStore } from '@/store/roomStore';
-import { Button } from './Button';
+import { Button } from './button';
 import { Input } from './input'; // Use shared SHADCN Input for all number fields
 import { useLanguage } from '@/lang';
 

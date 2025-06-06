@@ -6,6 +6,7 @@ export default {
   sidebar: {
     roomSettings: 'Room Settings',
     furnitureLibrary: 'Furniture Library',
+    tileSettings: 'Tile Settings',
   },
   code: 'en',
   app: {
@@ -143,6 +144,7 @@ export default {
     ceramic: 'Ceramic',
     marble: 'Marble',
     floreal: 'Floreal',
+    wood: 'Wood',
     floor: 'Floor',
     wallFront: 'Front Wall',
     wallBack: 'Back Wall',

@@ -5,6 +5,7 @@ export default {
   sidebar: {
     roomSettings: 'Impostazioni Stanza',
     furnitureLibrary: 'Libreria Arredamento',
+    tileSettings: 'Impostazioni Piastrelle',
   },
   code: 'it',
   app: {

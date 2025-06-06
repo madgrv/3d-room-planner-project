@@ -56,7 +56,8 @@ export function BottomBar({ className = '' }: BottomBarProps) {
       />
 
       {/* Main content area with Outliner Panel */}
-      <div className='flex-grow bg-background pt-2'>
+      <div className='flex-grow bg-background'>
+
         <div className='flex gap-3'>
           <div className='flex-grow'>
             <OutlinerPanel onSelectItem={handleSelectItem} />

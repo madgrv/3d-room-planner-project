@@ -31,11 +31,14 @@ function App() {
       <DragAndDrop3DProvider>
         <div className='flex flex-1 overflow-hidden w-full'>
           {/* Left Sidebar - Room Settings & Furniture Library */}
-          {isLibraryOpen && (
-            <aside className='w-80 border-r border-border flex-shrink-0 overflow-y-auto flex flex-col'>
-              <Sidebar />
-            </aside>
-          )}
+          <aside className={`
+            ${isLibraryOpen ? 'w-80' : 'w-0 overflow-hidden'}
+            border-r border-border flex-shrink-0 overflow-y-auto
+            transition-all duration-300 ease-in-out
+            flex flex-col
+          `}>
+            <Sidebar />
+          </aside>
 
           {/* Main 3D View */}
           <div className='flex-1 relative min-w-0'>
@@ -53,7 +56,7 @@ function App() {
                          shadow-sm hover:shadow-lg
                          hover:scale-105 transform origin-bottom-right
                          transition-all duration-200
-                         text-foreground dark:text-white dark:hover:text-orange-400 dark:focus:text-orange-400
+                         text-foreground hover:text-primary dark:text-white dark:hover:text-orange-400 dark:focus:text-orange-400
                         '
               title={isLibraryOpen ? 'Hide library' : 'Show library'}
             >

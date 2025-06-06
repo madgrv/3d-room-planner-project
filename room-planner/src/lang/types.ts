@@ -29,6 +29,7 @@ export type LanguageStrings = {
       wallLeft: string;
       wallRight: string;
       ceiling: string;
+      selectSurface: string;
     };
   };
   code: string;

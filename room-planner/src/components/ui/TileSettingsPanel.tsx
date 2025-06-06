@@ -24,9 +24,13 @@ export function TileSettingsPanel() {
   const radioLabelStyle = 'text-xs font-medium';
   const radioGroupStyle = 'flex flex-col gap-1.5 mt-1';
 
-  // Only show panel when a room element is selected
+  // Show instructions when no tileable surface is selected
   if (!selectedElement) {
-    return null;
+    return (
+      <div className='p-4 bg-card text-card-foreground text-sm text-muted-foreground text-center'>
+        <p>{lang.sidebar.tileSettings.selectSurface}</p>
+      </div>
+    );
   }
 
   // Handle tile size change

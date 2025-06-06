@@ -10,8 +10,6 @@ import { RoomElementType, useRoomElementStore } from '@/store/roomElementStore';
 import {
   CopyIcon,
   TrashIcon,
-  EyeOpenIcon,
-  EyeClosedIcon,
   Pencil1Icon,
   MoveIcon,
   ArrowRightIcon,
@@ -40,10 +38,6 @@ export function ContextMenu({
   const { furniture, removeFurniture, updateFurniture } = useFurnitureStore();
   // Access the store using individual selectors to prevent infinite update loops
   // Only extract the specific values we need from the store
-  const toggleVisibility = useRoomElementStore(
-    (state) => state.toggleVisibility
-  );
-  const visibility = useRoomElementStore((state) => state.visibility);
   const setSelectedElement = useRoomElementStore(
     (state) => state.setSelectedElement
   );
@@ -129,18 +123,6 @@ export function ContextMenu({
     onClose();
   };
 
-  // Handle toggle visibility
-  const handleToggleVisibility = () => {
-    if (!selectedItem) return;
-
-    // Toggle visibility
-    updateFurniture(selectedItem.id, {
-      visible: selectedItem.visible === false ? true : false,
-    });
-
-    onClose();
-  };
-
   // Edit state and handlers removed as they are not currently used in the UI. Add back if/when inline editing is implemented.
 
   // Handle room element selection
@@ -151,19 +133,6 @@ export function ContextMenu({
       onClose();
     }
   };
-
-  // Toggle visibility of room element
-  const handleToggleRoomElementVisibility = () => {
-    if (roomElement) {
-      toggleVisibility(roomElement);
-      onClose();
-    }
-  };
-
-  // Check if room element is currently visible
-  const isRoomElementVisible = roomElement
-    ? visibility[roomElement as NonNullable<RoomElementType>]
-    : true;
 
   // Get room element name for display
   const getRoomElementName = (element: RoomElementType): string => {
@@ -382,22 +351,6 @@ export function ContextMenu({
               </button>
               <button
                 className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
-                onClick={handleToggleVisibility}
-              >
-                {selectedItem.visible === false ? (
-                  <>
-                    <EyeOpenIcon className='h-3 w-3' />
-                    {lang.contextMenu.show}
-                  </>
-                ) : (
-                  <>
-                    <EyeClosedIcon className='h-3 w-3' />
-                    {lang.contextMenu.hide}
-                  </>
-                )}
-              </button>
-              <button
-                className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
                 onClick={handleToggleSnap}
               >
                 <ArrowDownIcon className='h-3 w-3' />
@@ -421,30 +374,6 @@ export function ContextMenu({
               {getRoomElementName(roomElement)}
             </div>
 
-            {/* Toggle visibility */}
-            <button
-              className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
-              onClick={handleToggleRoomElementVisibility}
-            >
-              {isRoomElementVisible ? (
-                <>
-                  <EyeClosedIcon className='h-3 w-3' />
-                  {lang.contextMenu.hideElement.replace(
-                    '{element}',
-                    getRoomElementName(roomElement).toLowerCase()
-                  )}
-                </>
-              ) : (
-                <>
-                  <EyeOpenIcon className='h-3 w-3' />
-                  {lang.contextMenu.showElement.replace(
-                    '{element}',
-                    getRoomElementName(roomElement).toLowerCase()
-                  )}
-                </>
-              )}
-            </button>
-
             {/* Select element */}
             <button
               className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
@@ -455,18 +384,6 @@ export function ContextMenu({
                 '{element}',
                 getRoomElementName(roomElement)
               )}
-            </button>
-
-            {/* Add texture/color option */}
-            <button
-              className='w-full text-left px-2 py-1 text-xs hover:bg-accent rounded flex items-center gap-2'
-              onClick={() => {
-                alert(lang.contextMenu.textureChangeMessage);
-                onClose();
-              }}
-            >
-              <Pencil1Icon className='h-3 w-3' />
-              {lang.contextMenu.changeTexture}
             </button>
           </>
         ) : (

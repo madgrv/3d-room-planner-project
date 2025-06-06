@@ -2,7 +2,11 @@
 // This is the master language file that defines the structure for all translations
 // All other language files must conform to this structure
 
-const en = {
+export default {
+  sidebar: {
+    roomSettings: 'Room Settings',
+    furnitureLibrary: 'Furniture Library',
+  },
   code: 'en',
   app: {
     title: 'offCanvas',
@@ -159,5 +163,3 @@ const en = {
     wardrobeDimensions: '100 × 50 × 200 cm',
   }
 };
-
-export default en;

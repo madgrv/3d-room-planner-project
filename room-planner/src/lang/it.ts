@@ -1,10 +1,11 @@
 // Italian language strings for the 3D Room Planner application
 // This file follows the structure defined in the English language file
 
-import en from './en';
-
-// Define the Italian language using the English file as the type definition
-const it: typeof en = {
+export default {
+  sidebar: {
+    roomSettings: 'Impostazioni Stanza',
+    furnitureLibrary: 'Libreria Arredamento',
+  },
   code: 'it',
   app: {
     title: 'offCanvas',
@@ -148,6 +149,16 @@ const it: typeof en = {
     wallRight: 'Parete Destra',
     ceiling: 'Soffitto',
   },
+  furnitureLibrary: {
+    chairLabel: 'Sedia',
+    chairDimensions: '45 × 45 × 85 cm',
+    tableLabel: 'Tavolo',
+    tableDimensions: '120 × 70 × 75 cm',
+    sofaLabel: 'Divano',
+    sofaDimensions: '200 × 90 × 80 cm',
+    bedLabel: 'Letto',
+    bedDimensions: '200 × 160 × 50 cm',
+    wardrobeLabel: 'Armadio',
+    wardrobeDimensions: '100 × 50 × 200 cm',
+  }
 };
-
-export default it;

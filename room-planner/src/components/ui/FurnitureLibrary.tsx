@@ -72,12 +72,6 @@ export function FurnitureLibrary() {
 
   return (
     <Card className='h-full overflow-hidden flex flex-col border-0 shadow-none'>
-
-      <div className='p-4'>
-        <p className='text-sm text-muted-foreground'>
-          Drag and drop items to add to your room
-        </p>
-      </div>
       <div className='flex-1 overflow-y-auto p-3 space-y-2'>
         {FURNITURE_ITEMS.map((item) => (
           <div

@@ -57,14 +57,11 @@ export const RoomControls = () => {
 
   return (
     <div className='flex flex-col gap-2 room-controls p-2 bg-card text-card-foreground rounded-md'>
-      
-      <div className='flex flex-wrap items-center justify-center gap-2'>
+      <div className='flex flex-wrap items-center justify-evenly align-center gap-2'>
         <div className='flex items-center gap-1'>
           <label className='block text-xs font-medium'>
             {lang.roomControls.widthLabel}
           </label>
-          {/* Use shared SHADCN Input for consistency and theming */}
-          {/* Pressing Enter in this input will confirm the value and apply changes */}
           <Input
             type='number'
             min='1'
@@ -81,8 +78,6 @@ export const RoomControls = () => {
           <label className='block text-xs font-medium' htmlFor='room-length'>
             {lang.roomControls.lengthLabel}
           </label>
-          {/* Use shared SHADCN Input for consistency and theming */}
-          {/* Pressing Enter in this input will confirm the value and apply changes */}
           <Input
             id='room-length'
             type='number'
@@ -100,8 +95,6 @@ export const RoomControls = () => {
           <label className='block text-xs font-medium' htmlFor='room-height'>
             {lang.roomControls.heightLabel}
           </label>
-          {/* Use shared SHADCN Input for consistency and theming */}
-          {/* Pressing Enter in this input will confirm the value and apply changes */}
           <Input
             id='room-height'
             type='number'
@@ -115,7 +108,6 @@ export const RoomControls = () => {
             aria-label={lang.roomControls.heightLabel}
           />
         </div>
-        {/* Team note: Using the shared SHADCN Button component for consistency and reuse across the app. */}
         <Button
           onClick={applyChanges}
           size='sm'

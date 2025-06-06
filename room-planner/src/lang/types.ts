@@ -1,8 +1,6 @@
 // Type definitions for language strings
 // All language files must conform to this structure
 
-import en from './en';
-
 // Type for the top-level language object exported by each language file
 // This object contains 'sidebar' (shared UI labels) and a language code key ('en', 'it', etc.)
 // The language code key contains all actual translation strings, matching the structure of the 'en' object
@@ -12,6 +10,26 @@ export type LanguageStrings = {
   sidebar: {
     roomSettings: string;
     furnitureLibrary: string;
+    tileSettings: {
+      title: string;
+      enableTiling: string;
+      tileSize: string;
+      tileTexture: string;
+      small: string;
+      medium: string;
+      large: string;
+      extraLarge: string;
+      ceramic: string;
+      marble: string;
+      floreal: string;
+      wood: string;
+      floor: string;
+      wallFront: string;
+      wallBack: string;
+      wallLeft: string;
+      wallRight: string;
+      ceiling: string;
+    };
   };
   code: string;
   app: {
@@ -137,26 +155,7 @@ export type LanguageStrings = {
     tiles: string;
     toggleTiling: string;
   };
-  tileSettings: {
-    title: string;
-    enableTiling: string;
-    tileSize: string;
-    tileTexture: string;
-    small: string;
-    medium: string;
-    large: string;
-    extraLarge: string;
-    ceramic: string;
-    marble: string;
-    floreal: string;
-    wood: string;
-    floor: string;
-    wallFront: string;
-    wallBack: string;
-    wallLeft: string;
-    wallRight: string;
-    ceiling: string;
-  };
+
   furnitureLibrary: {
     chairLabel: string;
     chairDimensions: string;
@@ -172,6 +171,5 @@ export type LanguageStrings = {
 };
 
 // For future maintainers: All language files must export an object matching this shape.
-// Access translation strings as lang.en.statusBar, lang.en.furnitureControls, etc.
+// Access translation strings as lang.statusBar, lang.furnitureControls, etc.
 // Shared sidebar labels are in lang.sidebar.
-

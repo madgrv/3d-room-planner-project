@@ -53,18 +53,18 @@ export function TileSettingsPanel() {
   return (
     <div ref={panelRef} className='p-4 bg-card text-card-foreground'>
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-medium">{lang.tileSettings.enableTiling}</span>
+        <span className="text-sm font-medium">{lang.sidebar.tileSettings.enableTiling}</span>
         <Switch
           checked={tilingEnabled}
           onCheckedChange={(checked) => setTilingEnabled(selectedElement, checked)}
-          aria-label={lang.tileSettings.enableTiling}
+          aria-label={lang.sidebar.tileSettings.enableTiling}
         />
       </div>
 
       {tilingEnabled && (
         <div className="space-y-4">
           <div>
-            <h4 className="text-sm font-semibold mb-2">{lang.tileSettings.tileSize}</h4>
+            <h4 className="text-sm font-semibold mb-2">{lang.sidebar.tileSettings.tileSize}</h4>
             <RadioGroup
               value={tileSettings?.size || 'small'}
               onValueChange={handleTileSizeChange}
@@ -72,21 +72,21 @@ export function TileSettingsPanel() {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="small" id="size-small" />
-                <label htmlFor="size-small" className={radioLabelStyle}>{lang.tileSettings.small}</label>
+                <label htmlFor="size-small" className={radioLabelStyle}>{lang.sidebar.tileSettings.small}</label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="medium" id="size-medium" />
-                <label htmlFor="size-medium" className={radioLabelStyle}>{lang.tileSettings.medium}</label>
+                <label htmlFor="size-medium" className={radioLabelStyle}>{lang.sidebar.tileSettings.medium}</label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="large" id="size-large" />
-                <label htmlFor="size-large" className={radioLabelStyle}>{lang.tileSettings.large}</label>
+                <label htmlFor="size-large" className={radioLabelStyle}>{lang.sidebar.tileSettings.large}</label>
               </div>
             </RadioGroup>
           </div>
 
           <div>
-            <h4 className="text-sm font-semibold mb-2">{lang.tileSettings.tileTexture}</h4>
+            <h4 className="text-sm font-semibold mb-2">{lang.sidebar.tileSettings.tileTexture}</h4>
             <RadioGroup
               value={tileSettings?.texture || 'wood'}
               onValueChange={handleTextureChange}
@@ -94,15 +94,15 @@ export function TileSettingsPanel() {
             >
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="wood" id="texture-wood" />
-                <label htmlFor="texture-wood" className={radioLabelStyle}>{lang.tileSettings.wood}</label>
+                <label htmlFor="texture-wood" className={radioLabelStyle}>{lang.sidebar.tileSettings.wood}</label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="marble" id="texture-marble" />
-                <label htmlFor="texture-marble" className={radioLabelStyle}>{lang.tileSettings.marble}</label>
+                <label htmlFor="texture-marble" className={radioLabelStyle}>{lang.sidebar.tileSettings.marble}</label>
               </div>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="ceramic" id="texture-ceramic" />
-                <label htmlFor="texture-ceramic" className={radioLabelStyle}>{lang.tileSettings.ceramic}</label>
+                <label htmlFor="texture-ceramic" className={radioLabelStyle}>{lang.sidebar.tileSettings.ceramic}</label>
               </div>
             </RadioGroup>
           </div>

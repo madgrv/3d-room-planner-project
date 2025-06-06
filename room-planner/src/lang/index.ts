@@ -12,10 +12,10 @@ export type LanguageStrings = typeof en;
 
 // All available languages
 const languages: Record<string, LanguageStrings> = {
-  en,
-  it,
-  fr,
-  es,
+  en: en as LanguageStrings,
+  it: it as LanguageStrings,
+  fr: fr as LanguageStrings,
+  es: es as LanguageStrings,
 };
 
 // Default language code
